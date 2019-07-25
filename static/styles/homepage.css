@@ -1,0 +1,63 @@
+:root {
+  --main-bg-color: brown;
+  --max-header-height: 200px;
+  --min-header-height: 40px;
+  --cur-shadow: 0;
+  --max-shadow: 0.8;
+}
+
+
+body {
+    margin: 0;
+}
+
+
+.roboto { 
+  font-family: 'Roboto Slab', serif;
+}
+.inconsolata {
+  font-family: 'Inconsolata', monospace;
+}
+.eczar {
+  font-family: 'Eczar', serif;
+}
+.josefin {
+  font-family: 'Josefin Sans';
+}
+
+
+#title-bar { 
+  width: 100%;
+  height: var(--max-header-height);
+  position: fixed;
+  top: 0;
+  background-color: #FF9447;
+  -webkit-box-shadow: 0 10px 6px -6px rgba(0, 0, 0, var(--cur-shadow));
+     -moz-box-shadow: 0 10px 6px -6px rgba(0, 0, 0, var(--cur-shadow));
+          box-shadow: 0 10px 6px -6px rgba(0, 0, 0, var(--cur-shadow));
+  display: grid;
+  grid-template-columns: 25% 50% 25%;
+}
+#title-text {
+  grid-column-start: 2;
+  color: white;
+  display: grid;
+}
+#title-text .first-name {
+  place-self: end center;
+  font-family: 'Bree Serif';
+  font-size: 40px;
+}
+#title-text .last-name {
+  place-self: start center;
+  font-family: 'Josefin Sans';
+  font-weight: bold;
+  font-size: 70px;
+}
+
+
+#test-text {
+  margin-top:200px;
+  padding:10px 15px 30px;
+  font-size:20px;
+}
