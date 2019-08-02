@@ -1,0 +1,13 @@
+[Unit]
+Description=uWSGI instance to serve okenney
+After=network.target
+
+[Service]
+User=alfred
+Group=www-data
+WorkingDirectory=/home/alfred/okenney
+Environment="PATH=/home/alfred/okenney/okenneyenv/bin"
+ExecStart=/home/alfred/okenney/okenneyenv/bin/uwsgi --ini okenney.ini
+
+[Install]
+WantedBy=multi-user.target
