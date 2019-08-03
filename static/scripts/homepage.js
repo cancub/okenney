@@ -1,7 +1,7 @@
-$titleBar = $('#title-bar');
-$alf = $('#title-text .first-name');
-$okenney = $('#title-text .last-name');
 $(function() {
+    var $titleBar = $('#title-bar');
+    var $alf = $('#title-text .first-name');
+    var $okenney = $('#title-text .last-name');
     var minTitleHeight = 40;
     var maxTitleHeight = 200;
     var titleHeightRange = maxTitleHeight - minTitleHeight;
@@ -12,7 +12,7 @@ $(function() {
     var minOkenneySize = 20;
     var maxOkenneySize = 70;
     var okenneySizeRange = maxOkenneySize - minOkenneySize;
-    var maxShadow = getComputedStyle(document.body,null).getPropertyValue('--max-shadow')
+    var maxShadow = getComputedStyle(document.body,null).getPropertyValue('--max-shadow');
     function resizeTitle(percent){
         if (percent == 0){
             $titleBar.height(minTitleHeight);
