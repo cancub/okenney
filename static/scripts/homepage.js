@@ -33,7 +33,7 @@ $(function() {
                 $titleBar.height( percent * titleHeightRange + minTitleHeight);
                 $alf.css({'font-size': percent * alfSizeRange + minAlfSize});
                 $okenney.css({'font-size': percent * okenneySizeRange + minOkenneySize});
-                document.body.style.setProperty('--cur-shadow', percent*maxShadow);
+                document.body.style.setProperty('--cur-shadow', (1-percent)*maxShadow);
             }
         }
     }
