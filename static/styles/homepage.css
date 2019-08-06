@@ -15,19 +15,15 @@ img {
   width: 100%;
 }
 
-.roboto { 
-  font-family: 'Roboto Slab', serif;
+.open-sans {
+  font-family: 'Open Sans', sans-serif;
 }
-.inconsolata {
-  font-family: 'Inconsolata', monospace;
+.content-column {
+  width:40em;
+  line-height: 1.6;
+  letter-spacing: 0.2px;
+  margin: 0 auto;
 }
-.eczar {
-  font-family: 'Eczar', serif;
-}
-.josefin {
-  font-family: 'Josefin Sans';
-}
-
 
 #title-bar { 
   width: 100%;
