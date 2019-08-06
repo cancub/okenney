@@ -5,11 +5,15 @@ from flask import render_template, url_for, escape
 app = Flask(__name__)
 
 # a route where we will display a welcome message via an HTML template
-@app.route("/")
+@app.route('/')
 def main():
-    message = "Hello, World"
-    return render_template('index.html', message=message)    
+    return render_template('index.html', message=message)
+
+@app.route('/sketch')
+def sketch():
+    return render_template('sketch/index.html')
+
 
 # run the application
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)
