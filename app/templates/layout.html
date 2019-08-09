@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  <meta> name="description" content="{% block description %}{% endblock %}"</meta>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Overall Style -->
+  <link rel="stylesheet" href="/styles/layout.css">
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Acme|Bree+Serif|Eczar|Merriweather+Sans|Josefin+Sans&display=swap" rel="stylesheet">
+  <!-- jQuery -->
+  <script src="/lib/jquery-3.4.1.min.js"></script>
+  <!-- Scripts -->
+  <script src="/scripts/header.js"></script>
+  {% block head %}
+  {% endblock %}
+</head>
+
+<body>
+  <div id="title-bar">
+    <!-- Here be options -->
+    <div id="title-text">
+      <div class="first-name">Alf</div>
+      <div class="last-name">O'KENNEY</div>
+    </div>
+    <!-- Here be search bar and help -->
+  </div>
+  <div id="content">
+    <div class="content-column content-column-text">
+      {% block content_column %}{% endblock %}
+    </div>
+  </div>
+  <div id="footer">
+    {% block footer %}
+    &copy; Copyright 2019 by <a href="http://www.okenney.ca/">Alf O'Kenney</a>.
+    {% endblock %}
+  </div>
+</body>
+
+</html>
