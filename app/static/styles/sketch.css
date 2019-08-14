@@ -14,8 +14,7 @@ body {
     /* prevent selection highlight */
     -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
-        
-.header, .footer{
+.header{
     background-color: #FF9447;
     text-align: center;
 }
@@ -41,26 +40,6 @@ body {
     color: white;
     padding:0 60px;
 }
-.navbtn {
-    cursor: pointer;
-    float:left;
-    padding: 6px 10px;
-    font-weight: bold;
-    line-height: 18px;
-    font-size: 14px;
-    color: #eee;
-    text-shadow: 0px -1px #000;
-    border: solid 1px #111;
-    border-radius: 4px;
-    background-color: #404040;
-    box-shadow: 0 0 1px 1px #555,inset 0 1px 0 0 #666;     
-}
-.navbtn-hover, .navbtn:active {
-    color: #222;
-    text-shadow: 0px 1px #aaa;
-    background-color: #aaa;
-    box-shadow: 0 0 1px 1px #444,inset 0 1px 0 0 #ccc;   
-}
 
 #content{
     position: absolute;
@@ -75,33 +54,5 @@ body {
     cursor:crosshair ;
     background-color:#fff;
 }
-.palette-case {
-    width:260px;
-    margin:auto;
-    text-align:center;
 }
-.palette-box {
-    float:left;
-    padding:2px 6px 2px 6px;
-}
-.palette {
-    border:2px solid #777;
-    height:36px;
-    width:36px;
-}
-.red{
-    background-color:#c22;
-}
-.blue{
-    background-color:#22c;
-}
-.green{
-    background-color:#2c2;
-}
-.white{
-    background-color:#fff;
-}
-.black{
-    background-color:#000;
-    border:2px dashed #fff;
 }
