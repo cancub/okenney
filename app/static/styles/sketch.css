@@ -54,5 +54,12 @@ body {
     cursor:crosshair ;
     background-color:#fff;
 }
+#editor {
+    width: fit-content;
+    height: fit-content;
 }
+.editor-container {
+    overflow: auto;
+    width: 100vh;
+    height: 100vh;
 }
