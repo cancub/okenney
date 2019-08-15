@@ -1,6 +1,8 @@
 # okenney
 okenneyenv/
 
+.editorconfig
+
 app.db
 
 # Byte-compiled / optimized / DLL files
