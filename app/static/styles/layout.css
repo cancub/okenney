@@ -1,9 +1,7 @@
 :root {
   --main-bg-color: brown;
-  --max-header-height: 200px;
-  --min-header-height: 40px;
-  --cur-shadow: 0;
-  --max-shadow: 0.5;
+  --cur-shadow:0;
+  --max-shadow:0.5;
 }
 
 body {
@@ -15,13 +13,20 @@ body {
   font-family: 'Open Sans', sans-serif;
 }
 
+#title-text {
+  grid-column-start: 2;
+  place-self: center;
+  color: white;
+  display: grid;
+}
+
 .content-column-text {
   font-size:16px;
   line-height: 1.6;
   letter-spacing: 0.2px;
 }
 
-@media (max-width:639px) {
+@media (max-width:640px) {
   #content {
     padding:0 12px 0;
     margin-top:100px;
@@ -31,29 +36,23 @@ body {
   }
   #title-bar {
     width: 100%;
-    height: var(--min-header-height);
+    height: 60px;
     position: fixed;
     top: 0;
     background-color: #FF9447;
     box-shadow: 0 1px 6px 0 rgba(32,33,36, var(--cur-shadow));
     display: grid;
-    grid-template-columns: 25% 60% 25%;
+    grid-template-columns: 20% 60% 20%;
   }
-  #title-text {
-    grid-column-start: 2;
-    color: white;
-    display: grid;
-  }
-  #title-text .first-name {
-    place-self: end center;
-    font-family: 'Bree Serif';
-    font-size: 0px;
-  }
-  #title-text .last-name {
-    place-self: start center;
+  #mobileName {
+    place-self: center;
+    font-size: 30px;
     font-family: 'Josefin Sans';
     font-weight: bold;
-    font-size: 70px;
+    padding-top: 8px;
+  }
+  #desktopName {
+    display: none;
   }
 }
 
@@ -66,28 +65,30 @@ body {
   }
   #title-bar {
     width: 100%;
-    height: var(--max-header-height);
-    position: fixed;
-    top: 0;
+    height: 150px;
     background-color: #FF9447;
     box-shadow: 0 1px 6px 0 rgba(32,33,36, var(--cur-shadow));
     display: grid;
-    grid-template-columns: 25% 50% 25%;
+    grid-template-columns: 20% 60% 20%;
   }
-  #title-text {
-    grid-column-start: 2;
-    color: white;
+  #mobileName {
+    display: none;
+  }
+  #desktopName {
     display: grid;
+    grid-template-rows: 35% 65%;
   }
   #title-text .first-name {
-    place-self: end center;
+    place-self: end start;
     font-family: 'Bree Serif';
-    font-size: 40px;
+    font-size: 30px;
+    padding-left:29px;
   }
   #title-text .last-name {
     place-self: start center;
     font-family: 'Josefin Sans';
     font-weight: bold;
-    font-size: 70px;
+    font-size: 50px;
   }
+  
 }

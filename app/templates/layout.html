@@ -2,12 +2,18 @@
 <html>
 
 <head>
-  <title>{% block title %}{% endblock %}</title>
-  <meta> name="description" content="{% block description %}{% endblock %}"</meta>
+{% block title %}
+  <title>A Better Imperfect</title>
+{% endblock %}
+{% block description %}
+  <meta name="description" content="Analysing society's relationships with philosophy, politics and technology to search
+  for a better (imperfect) future. Inspired by lines from Voltaire's La_Bégueule 'Dans ses écrits, un sage Italien /
+  Dit que le mieux est l'ennemi du bien'">
+{% endblock %}
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Overall Style -->
   <link rel="stylesheet" href="/styles/layout.css">
+  <!-- Overall Style -->
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Acme|Bree+Serif|Eczar|Merriweather+Sans|Josefin+Sans&display=swap" rel="stylesheet">
   <!-- jQuery -->
@@ -22,8 +28,11 @@
   <div id="title-bar">
     <!-- Here be options -->
     <div id="title-text">
-      <div class="first-name">Alf</div>
-      <div class="last-name">O'KENNEY</div>
+      <div id="mobileName">A O' K</div>
+      <div id="desktopName">
+        <div class="first-name">Alf</div>
+        <div class="last-name">O'KENNEY</div>
+      </div>
     </div>
     <!-- Here be search bar and help -->
   </div>
