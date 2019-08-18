@@ -1,3 +1,7 @@
+:root{
+    --header-height: 50px;
+}
+
 body {
     margin:0px;
     width:100%;
@@ -5,7 +9,7 @@ body {
 .header{
     background-color: #FF9447;
     text-align: center;
-    height: 50px;
+    height: var(--header-height);
 }
 .title {
     padding-top:10px;
@@ -17,6 +21,6 @@ body {
 
 .editor-container {
     overflow: auto;
-    width: 100vh;
-    height: 100vh;
+    width: 100vw;
+    height: calc(100vh - var(--header-height));
 }
