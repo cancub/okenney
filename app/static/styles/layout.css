@@ -1,12 +1,8 @@
-:root {
-  --main-bg-color: brown;
+body {
+  margin: 0;
+  width: 100%;
   --cur-shadow:0;
   --max-shadow:0.5;
-}
-
-body {
-    margin: 0;
-    width: 100%;
 }
 
 .open-sans {
@@ -66,7 +62,7 @@ body {
   #title-bar {
     width: 100%;
     height: 150px;
-    background-color: #FF9447;
+    background-color: var(--okenney-orange);
     box-shadow: 0 1px 6px 0 rgba(32,33,36, var(--cur-shadow));
     display: grid;
     grid-template-columns: 20% 60% 20%;

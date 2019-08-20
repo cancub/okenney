@@ -1,26 +1,24 @@
-:root{
-    --header-height: 50px;
-}
-
 body {
     margin:0px;
     width:100%;
 }
-.header{
-    background-color: #FF9447;
-    text-align: center;
-    height: var(--header-height);
+#floatingHeader{
+    width: 100%;
+    position: absolute;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
 }
-.title {
-    padding-top:10px;
-    width: auto;
-    font-size: 25px;
-    font-weight: bold;
-    color: white;
+.buttons-container{
+    padding: 10px;
+    display:flex;
 }
-
+.sketch-button {
+    padding:5px;
+}
+/* make separate style for selected toggle button */
 .editor-container {
     overflow: auto;
     width: 100vw;
-    height: calc(100vh - var(--header-height));
+    height: 100vh;
 }

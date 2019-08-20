@@ -6,6 +6,7 @@
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta content="utf-8" http-equiv="encoding">
+    <link rel="stylesheet" href="/styles/identity.css">
     <link rel="stylesheet" type="text/css" href="/styles/sketch.css"></link>
     <script src="/libs/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="/libs/raphael.js"></script>
@@ -14,11 +15,26 @@
   	<script type="text/javascript" src="/scripts/sketch.js"></script>
   </head>
   <body>
-    <div id="sketch-header" class="header">
-      <!-- <a id="new-button" class="navbtn">New</a> -->
-      <!-- <a id="zoom-in" class="navbtn">+</a> -->
-      <!-- <a id="zoom-out" class="navbtn">-</a> -->
-      <div class="title">Draw your regions</div>
+    <div id="floatingHeader">
+      <div id="panDrawToggle" class='buttons-container'>
+        <div class="rounded-l sketch-button toggle-button-selected">
+          <img src="/images/icons8-move-48.png">
+        </div>
+        <div class="rounded-r sketch-button toggle-button-unselected">
+          <img src="/images/icons8-edit-48.png">
+        </div>
+      </div>
+      <div id="navButtons" class='buttons-container'>
+        <div id="undo" class="rounded-l okenney-button sketch-button">
+          <img src="/images/icons8-undo-48.png">
+        </div>
+        <div style="background-color: white;">
+          <span style="background-color:rgb(212, 212, 212); width:1px;height:75%; margin-top:auto; margin-bottom:auto"/>
+        </div>
+        <div id="redo" class="rounded-r okenney-button sketch-button">
+          <img src="/images/icons8-redo-48.png">
+        </div>
+      </div>
     </div>
     <div class="editor-container">
       <div id="editor"/>
