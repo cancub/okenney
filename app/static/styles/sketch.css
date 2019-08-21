@@ -17,8 +17,15 @@ body {
     padding:5px;
 }
 /* make separate style for selected toggle button */
-.editor-container {
-    overflow: auto;
+#editor-container {
     width: 100vw;
     height: 100vh;
+}
+
+.draw {
+    overflow: hidden;
+}
+
+.pan {
+    overflow: auto;
 }

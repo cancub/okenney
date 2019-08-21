@@ -1,11 +1,13 @@
 $(function() {
     var filename = 'pmr-carte.jpg';
+    var $toggleButtons = $('#togglePanDraw div');
     var sketchpadWidth, sketchpadHeight;
 
     function toggle(event){
         // was the toggle flipped? if so, flip
         if ($(event.currentTarget).hasClass('toggle-button-unselected')){
-            $('#panDrawToggle div').toggleClass('toggle-button-unselected toggle-button-selected');
+            $toggleButtons.toggleClass('toggle-button-unselected toggle-button-selected');
+            $('#editor-container').toggleClass('pan draw');
         }
         event.stopPropagation();
     }
@@ -31,7 +33,7 @@ $(function() {
         },
     });
 
-    $.each($('#panDrawToggle div'), function(i, element) {
+    $.each($('#togglePanDraw div'), function(i, element) {
         $(element).click(element, toggle);
     });
 

@@ -16,11 +16,11 @@
   </head>
   <body>
     <div id="floatingHeader">
-      <div id="panDrawToggle" class='buttons-container'>
-        <div class="rounded-l sketch-button toggle-button-selected">
+      <div id="togglePanDraw" class='buttons-container'>
+        <div name="pan" class="rounded-l sketch-button toggle-button-selected">
           <img src="/images/icons8-move-48.png">
         </div>
-        <div class="rounded-r sketch-button toggle-button-unselected">
+        <div name="draw" class="rounded-r sketch-button toggle-button-unselected">
           <img src="/images/icons8-edit-48.png">
         </div>
       </div>
@@ -36,7 +36,7 @@
         </div>
       </div>
     </div>
-    <div class="editor-container">
+    <div id="editor-container" class="pan">
       <div id="editor"/>
     </div>
   </body>
