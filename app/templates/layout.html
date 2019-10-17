@@ -26,26 +26,31 @@
 </head>
 
 <body>
-  <div id="title-bar">
+  <div id="header-bar" class="title-bar">
     <!-- Here be options -->
-    <div id="title-text">
-      <div id="mobileName">A O' K</div>
-      <div id="desktopName">
-        <div class="first-name">Alf</div>
-        <div class="last-name">O'KENNEY</div>
+    <div class="mobile-name title-text">
+      A O' K
+    </div>
+    <div class="desktop-name title-text">
+      <div class="first-name">
+        Alf
       </div>
+      <div class="last-name">
+        O'KENNEY
+      </div>
+    </div>
     </div>
     <!-- Here be search bar and help -->
   </div>
   <div id="content">
+    <div class="left-column"></div>
     <div class="content-column content-column-text">
       {% block content_column %}{% endblock %}
     </div>
+    <div class="right-column"></div>
   </div>
   <div id="footer">
-    {% block footer %}
-    &copy; Copyright 2019 by <a href="http://www.okenney.ca/">Alf O'Kenney</a>.
-    {% endblock %}
+    {% block footer %} {% endblock %}
   </div>
 </body>
 
