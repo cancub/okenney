@@ -27,21 +27,40 @@
 </head>
 
 <body>
-  <div id="header-bar" class="title-bar">
+  <div id="HeaderBar" class="title-bar">
     <!-- Here be options -->
-    <div class="mobile-name title-text">
-      A O' K
-    </div>
-    <div class="desktop-name title-text">
-      <div class="first-name">
-        Alf
+    <div id="MyName">
+      <div class="mobile-name title-text">
+        A O' K
       </div>
-      <div class="last-name">
-        O'KENNEY
+      <div class="desktop-name title-text">
+        <div class="first-name">
+          Alf
+        </div>
+        <div class="last-name">
+          O'KENNEY
+        </div>
       </div>
     </div>
+    <button id="OpenSearch" class="search-bar-button">
+      <i class="material-icons md-30 md-light">
+        search
+      </i>
+    </button>
+    <!-- Search -->
+    <div id="BarDeRecherche" class="search-bar" style="display: none;">
+      <button id="FaireRechercher" class="search-bar search-bar-button" >
+        <i class="search-bar material-icons md-30 md-dark md-inactive">
+          search
+        </i>
+      </button>
+      <input type="text" class="search-bar entry-box open-sans" placeholder="Search OKenney.ca">
+      <button id="ClearText" class="search-bar search-bar-button" style="display:none;">
+        <i class="search-bar material-icons md-30 md-dark">
+          cancel
+        </i>
+      </button>
     </div>
-    <!-- Here be search bar and help -->
   </div>
   <div id="content">
     <div class="left-column"></div>
