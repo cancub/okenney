@@ -20,57 +20,94 @@
   <!-- jQuery -->
   <script src="/libs/jquery-3.4.1.min.js"></script>
   <!-- Scripts -->
-  <script src="/scripts/header.js"></script>
+  <script src="/scripts/layout.js"></script>
   {% block head %}
   {% endblock %}
 </head>
 
 <body>
-  <div id="HeaderBar" class="title-bar">
-    <!-- Here be options -->
-    <div id="MyName">
-      <div class="mobile-name title-text">
-        A O' K
-      </div>
-      <div class="desktop-name title-text">
-        <div class="first-name">
-          Alf
+
+  <div id="HeaderContainer" class="title-bar ombre-bas ombre-gauche-double">
+
+    <div id="HeaderBar">
+
+      <!-- Here be hamburgers -->
+
+      <!-- Branding -->
+      <div id="MyName">
+        <div class="mobile-name title-text">
+          A O' K
         </div>
-        <div class="last-name">
-          O'KENNEY
+        <div class="desktop-name title-text">
+          <div class="first-name">
+            Alf
+          </div>
+          <div class="last-name">
+            O'KENNEY
+          </div>
         </div>
       </div>
-    </div>
-    <button id="OpenSearch" class="search-bar-button">
-      <i class="material-icons md-30 md-light">
-        search
-      </i>
-    </button>
-    <!-- Search -->
-    <div id="BarDeRecherche" class="search-bar" style="display: none;">
-      <button id="FaireRechercher" class="search-bar search-bar-button" >
-        <i class="search-bar material-icons md-30 md-dark md-inactive">
+
+      <!-- Search -->
+      <button id="Loupe" class="search-bar-button">
+        <i class="material-icons md-30 md-light">
           search
         </i>
       </button>
-      <input type="text" class="search-bar entry-box open-sans" placeholder="Search OKenney.ca">
-      <button id="ClearText" class="search-bar search-bar-button" style="display:none;">
-        <i class="search-bar material-icons md-30 md-dark">
-          cancel
-        </i>
-      </button>
+
+    </div>
+
+  </div>
+
+  <div id="Corps">
+    <div id="ColonneGauche"></div>
+    <div id="Contenu">
+      <div id="ColonneContenu"class="content-column content-column-text">
+        {% block content_column %}{% endblock %}
+      </div>
+      <div id="ColonneDriote"></div>
     </div>
   </div>
-  <div id="content">
-    <div class="left-column"></div>
-    <div class="content-column content-column-text">
-      {% block content_column %}{% endblock %}
-    </div>
-    <div class="right-column"></div>
-  </div>
+
   <div id="footer">
     {% block footer %} {% endblock %}
   </div>
+
+
+  <div id="Recherche" class="title-bar tiers-menu">
+
+    <div id="OptionsAvance">
+      <div id="DateOption"></div>
+      <div id="AutreOption"></div>
+    </div>
+
+    <div id="BarreDeRecherche">
+
+      <button id="FaireRechercher" class="search-bar-button" >
+        <i class="material-icons md-30 md-dark md-inactive">
+          search
+        </i>
+      </button>
+
+      <input type="text" class="entry-box open-sans" placeholder="Search OKenney.ca">
+
+      <button id="SupprimerText" class="search-bar-button" style="display:none;">
+        <i class="material-icons md-30 md-dark">
+          cancel
+        </i>
+      </button>
+
+    </div>
+
+  </div>
+
+  <div id="ListeMenu">
+    <div class="option-de-menu"></div>
+    <div class="option-de-menu"></div>
+    <div class="option-de-menu"></div>
+    <div class="option-de-menu"></div>
+  </div>
+
 </body>
 
 </html>
