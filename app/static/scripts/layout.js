@@ -1,6 +1,7 @@
 $( function () {
     var $header = $('#HeaderContainer');
     var $loupe = $('#Loupe');
+    var $menuHB = $('#MenuHB');
     var $searchBar = $('#BarreDeRecherche');
     var $searchInputText = $('#BarreDeRecherche .entry-box');
     var $doSearch = $('#FaireRechercher');
@@ -40,6 +41,13 @@ $( function () {
         }
     })
 
+    $menuHB.click(function () {
+        $(this).toggleClass('open');
+    });
+    function hideMenu() {
+        $menuHB.removeClass('open');
+    }
+
     /* En-tete glisseur */
     function toggleSearch() {
         if (amMobile()) {
@@ -68,6 +76,7 @@ $( function () {
     $(document).mouseup(function(e) {
         if ($(e.target).closest('#Corps').length == 1) {
             hideSearch();
+            hideMenu();
             e.stopPropagation();
         }
     });
