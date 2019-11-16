@@ -54,8 +54,10 @@ $( function () {
             var distance = $(window).width() - mobileRemaining;
             $header.animate({ 'left': (searchVisible ? '-' : '+') + '=' + distance + 'px' }, mobileSlideSpeed);
         }
-        else
+        else {
             $header.animate({ 'top': (searchVisible ? '+' : '-') + '=' + desktopSlide + 'px' }, desktopSlideSpeed);
+            $loupe.toggleClass('open');
+        }
         searchVisible = !searchVisible;
         if (searchVisible)
             $searchInputText.focus();
@@ -69,6 +71,7 @@ $( function () {
             else
                 $header.animate({ 'top': '+=' + desktopSlide + 'px' }, desktopSlideSpeed);
             searchVisible = false;
+            $loupe.removeClass('open')
         }
     }
     $loupe.click( toggleSearch );    
