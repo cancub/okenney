@@ -1,12 +1,14 @@
 $( function () {
     var $header = $('#HeaderContainer');
     var $loupe = $('#Loupe');
-    var $menuHB = $('#MenuHB');
+    var $menuHB = $('#MenuBoutonHB');
+    var $menuDT = $('#MenuBoutonDT');
     var $searchBar = $('#BarreDeRecherche');
     var $searchInputText = $('#BarreDeRecherche .entry-box');
     var $doSearch = $('#FaireRechercher');
     var $clearSearch = $('#SupprimerText');
     var searchVisible = false;
+    var menuVisible = false;
     var mobileSlideSpeed = 500;
     var desktopSlideSpeed = 400;
     var mobileRemaining = 60;
@@ -41,21 +43,97 @@ $( function () {
         }
     })
 
+    /* Menu */
     $menuHB.click(function () {
         $(this).toggleClass('open');
+        toggleMenu();
+    });
+    $menuDT.click(function() {
+        toggleMenu();
     });
     function hideMenu() {
         $menuHB.removeClass('open');
+        if (menuVisible) {
+            if (amMobile()) {
+                $('.menu-slider-right').animate(
+                    { left: '-=200px' },
+                    {
+                        easing: 'swing',
+                        duration: mobileSlideSpeed,
+                    },
+                );
+            }
+            else {
+                $('.menu-slider-right').animate(
+                    { left: '-=160px'},
+                    {
+                        easing: 'swing',
+                        duration: desktopSlideSpeed,
+                    },
+                );
+                $('.menu-slider-left').animate(
+                    { left: '+=80px'},
+                    {
+                        easing: 'swing',
+                        duration: desktopSlideSpeed,
+                    },
+                );
+            }
+        }
+        menuVisible = false;
+    }
+    function toggleMenu() {
+        console.log(menuVisible)
+        if (menuVisible) {
+            console.log('hiding');
+            hideMenu();
+        }
+        else {
+            if (amMobile()) {
+                $('.menu-slider-right').animate(
+                    { left: '+=200px' },
+                    {
+                        easing: 'swing',
+                        duration: mobileSlideSpeed,
+                    },
+                );
+            }
+            else {
+                $('.menu-slider-right').animate(
+                    { left: '+=160px' },
+                    {
+                        easing: 'swing',
+                        duration: desktopSlideSpeed,
+                    },
+                );
+                $('.menu-slider-left').animate(
+                    { left: '-=80px' },
+                    {
+                        easing: 'swing',
+                        duration: desktopSlideSpeed,
+                    },
+                );
+            }
+            menuVisible = true;
+        }
     }
 
     /* En-tete glisseur */
+    /* TODO:
+    clean up toggle search to call hide search */
     function toggleSearch() {
         if (amMobile()) {
             var distance = $(window).width() - mobileRemaining;
-            $header.animate({ 'left': (searchVisible ? '-' : '+') + '=' + distance + 'px' }, mobileSlideSpeed);
+            $header.animate(
+                {'left': (searchVisible ? '-' : '+') + '=' + distance + 'px' },
+                mobileSlideSpeed,
+            );
         }
         else {
-            $header.animate({ 'top': (searchVisible ? '+' : '-') + '=' + desktopSlide + 'px' }, desktopSlideSpeed);
+            $header.animate(
+                { 'top': (searchVisible ? '+' : '-') + '=' + desktopSlide + 'px' },
+                desktopSlideSpeed,
+            );
             $loupe.toggleClass('open');
         }
         searchVisible = !searchVisible;
@@ -66,10 +144,17 @@ $( function () {
         if (searchVisible){
             if (amMobile()) {
                 var distance = $(window).width() - mobileRemaining;
-                $header.animate({ 'left': '-=' + distance + 'px' }, mobileSlideSpeed);
+                $header.animate(
+                    { 'left': '-=' + distance + 'px' },
+                    mobileSlideSpeed,
+                );
             }
-            else
-                $header.animate({ 'top': '+=' + desktopSlide + 'px' }, desktopSlideSpeed);
+            else {
+                $header.animate(
+                    { 'top': '+=' + desktopSlide + 'px' },
+                    desktopSlideSpeed,
+                );
+            }
             searchVisible = false;
             $loupe.removeClass('open')
         }
@@ -77,10 +162,13 @@ $( function () {
     $loupe.click( toggleSearch );    
     /* Cacher En-tete avec clique sur Corps */
     $(document).mouseup(function(e) {
-        if ($(e.target).closest('#Corps').length == 1) {
-            hideSearch();
-            hideMenu();
-            e.stopPropagation();
-        }
+        $.each(['Contenu', 'ColonneGauche','footer'], function (i, element) {
+            if ($(e.target).closest('#' + element).length == 1) {
+                hideSearch();
+                hideMenu();
+                e.stopPropagation();
+                return false;
+            }
+        });
     });
 });

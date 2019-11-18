@@ -16,6 +16,7 @@
   <!-- Overall Style -->
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Acme|Bree+Serif|Eczar|Merriweather+Sans|Josefin+Sans&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Poppins:500&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <!-- jQuery -->
   <script src="/libs/jquery-3.4.1.min.js"></script>
@@ -31,14 +32,15 @@
 
     <div id="HeaderBar">
 
-      <!-- Here be hamburgers -->
-      <div id="MenuHB">
+      <div id="MenuBoutonHB">
         <span></span>
         <span></span>
         <span></span>
         <span></span>
       </div>
-      <!-- Branding -->
+      <div id="MenuBoutonDT">
+        <span>MENU</span>
+      </div>
       <div id="MyName">
         <div class="mobile-name title-text">
           A O' K
@@ -53,7 +55,6 @@
         </div>
       </div>
 
-      <!-- Search -->
       <button id="Loupe" class="search-bar-button">
         <i class="material-icons md-30 md-light">
           search
@@ -64,53 +65,60 @@
 
   </div>
 
-  <div id="Corps">
-    <div id="ColonneGauche"></div>
-    <div id="Contenu">
-      <div id="ColonneContenu"class="content-column content-column-text">
-        {% block content_column %}{% endblock %}
-      </div>
-      <div id="ColonneDriote"></div>
+  <div id="ColonneGaucheOmbre" class="ombre-droite menu-slider-left"></div>
+  <div id="ColonneGauche" class="tiers-contenu menu-slider-left">
+  </div>
+
+  <div id="ContenuOmbre"class="ombre-gauche menu-slider-right"></div>
+  <div id="Contenu" class="tiers-contenu menu-slider-right">
+    <div id="ColonneContenu"class="content-column">
+      {% block content_column %}{% endblock %}
+    </div>
+    <div id="ColonneDriote"></div>
     </div>
   </div>
 
-  <div id="footer">
+  <div id="Footer" class="tiers-contenu">
     {% block footer %} {% endblock %}
   </div>
 
 
   <div id="Recherche" class="title-bar tiers-menu">
 
-    <div id="OptionsAvance">
+    <div id="OptionsAvance" style="grid-area:1/1/2/2">
       <div id="DateOption"></div>
       <div id="AutreOption"></div>
     </div>
 
-    <div id="BarreDeRecherche">
+    <div id="RecipientBarre">
+      <div id="BarreDeRecherche">
+        
+        <button id="FaireRechercher" class="search-bar-button" >
+          <i class="material-icons md-30 md-dark md-inactive">
+            search
+          </i>
+        </button>
+        
+        <input type="text" class="entry-box open-sans" placeholder="Search OKenney.ca">
+        
+        <button id="SupprimerText" class="search-bar-button" style="display:none;">
+            <i class="material-icons md-30 md-dark">
+              cancel
+            </i>
+          </button>
 
-      <button id="FaireRechercher" class="search-bar-button" >
-        <i class="material-icons md-30 md-dark md-inactive">
-          search
-        </i>
-      </button>
-
-      <input type="text" class="entry-box open-sans" placeholder="Search OKenney.ca">
-
-      <button id="SupprimerText" class="search-bar-button" style="display:none;">
-        <i class="material-icons md-30 md-dark">
-          cancel
-        </i>
-      </button>
-
+      </div>
     </div>
-
+        
   </div>
-
-  <div id="ListeMenu">
-    <div class="option-de-menu"></div>
-    <div class="option-de-menu"></div>
-    <div class="option-de-menu"></div>
-    <div class="option-de-menu"></div>
+  
+  <div id="Menu" class="tiers-menu">
+    <div id="OptionsMenus">
+      <div class="option-de-menu">Biography</div>
+      <div class="option-de-menu">Politics</div>
+      <div class="option-de-menu">Philosophy</div>
+      <div class="option-de-menu">Projects</div>
+    </div>
   </div>
 
 </body>
