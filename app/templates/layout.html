@@ -15,8 +15,7 @@
   <link rel="stylesheet" href="/styles/layout.css">
   <!-- Overall Style -->
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Acme|Bree+Serif|Eczar|Merriweather+Sans|Josefin+Sans&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Poppins:500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Bree+Serif|Josefin+Sans|Poppins:500|Nunito+Sans&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <!-- jQuery -->
   <script src="/libs/jquery-3.4.1.min.js"></script>
@@ -28,96 +27,78 @@
 
 <body>
 
-  <div id="HeaderContainer" class="title-bar ombre-bas ombre-gauche-double">
+  <div id="EnTete">
+    <div class="tiers-aplan">
+      <div id="RecipientBarre">
+        <div id="BarreDeRecherche">
 
-    <div id="HeaderBar">
-
-      <div id="MenuBoutonHB">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
+          <button id="FaireRechercher" class="bouton-bdr" >
+            <i class="material-icons md-30 md-dark md-inactive">
+              search
+            </i>
+          </button>
+          
+          <input type="text" class="open-sans" placeholder="Search OKenney.ca">
+          
+          <button id="SupprimerText" class="bouton-bdr" style="display:none;">
+              <i class="material-icons md-30 md-dark">
+                cancel
+              </i>
+          </button>
+        </div>
       </div>
-      <div id="MenuBoutonDT">
-        <span>MENU</span>
+    </div>
+    <div class="tiers-nom glisseur ombre-b ombre-g">
+      <div id="BoutonsMenus">
+        <div name="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div name="bureau">
+          <span>MENU</span>
+        </div>
       </div>
-      <div id="MyName">
-        <div class="mobile-name title-text">
+      <div id="Nom">
+        <div name="mobile" class="texte-titre">
           A O' K
         </div>
-        <div class="desktop-name title-text">
-          <div class="first-name">
+        <div name="bureau" class="texte-titre">
+          <div name="prenom">
             Alf
           </div>
-          <div class="last-name">
+          <div name="famille">
             O'KENNEY
           </div>
         </div>
       </div>
-
-      <button id="Loupe" class="search-bar-button">
+      <button id="Loupe" class="bouton-bdr">
         <i class="material-icons md-30 md-light">
           search
         </i>
       </button>
-
-    </div>
-
-  </div>
-
-  <div id="ColonneGaucheOmbre" class="ombre-droite menu-slider-left"></div>
-  <div id="ColonneGauche" class="tiers-contenu menu-slider-left">
-  </div>
-
-  <div id="ContenuOmbre"class="ombre-gauche menu-slider-right"></div>
-  <div id="Contenu" class="tiers-contenu menu-slider-right">
-    <div id="ColonneContenu"class="content-column">
-      {% block content_column %}{% endblock %}
-    </div>
-    <div id="ColonneDriote"></div>
     </div>
   </div>
 
-  <div id="Footer" class="tiers-contenu">
-    {% block footer %} {% endblock %}
-  </div>
-
-
-  <div id="Recherche" class="title-bar tiers-menu">
-
-    <div id="OptionsAvance" style="grid-area:1/1/2/2">
-      <div id="DateOption"></div>
-      <div id="AutreOption"></div>
-    </div>
-
-    <div id="RecipientBarre">
-      <div id="BarreDeRecherche">
-        
-        <button id="FaireRechercher" class="search-bar-button" >
-          <i class="material-icons md-30 md-dark md-inactive">
-            search
-          </i>
-        </button>
-        
-        <input type="text" class="entry-box open-sans" placeholder="Search OKenney.ca">
-        
-        <button id="SupprimerText" class="search-bar-button" style="display:none;">
-            <i class="material-icons md-30 md-dark">
-              cancel
-            </i>
-          </button>
-
+  <div id="Corps">
+    <div class="tiers-aplan">
+      <div id="ListeMenu">
+        <div class="option-de-menu">Honesty</div>
+        <div class="option-de-menu">Ideas</div>
+        <div class="option-de-menu">Philosophy</div>
+        <div class="option-de-menu">Politics</div>
+        <div class="option-de-menu">Projects</div>
       </div>
     </div>
-        
-  </div>
-  
-  <div id="Menu" class="tiers-menu">
-    <div id="OptionsMenus">
-      <div class="option-de-menu">Biography</div>
-      <div class="option-de-menu">Politics</div>
-      <div class="option-de-menu">Philosophy</div>
-      <div class="option-de-menu">Projects</div>
+    <div id="ColonneGauche" class="tiers-contenu glisseur-gauche">
+    </div>
+    <div id="OmbreCG" class="glisseur-gauche ombre-d"></div>
+    <div id="OmbreCont" class="glisseur-droite ombre-g"></div>
+    <div id="Contenu" class="tiers-contenu glisseur-droite">
+      <div name="prim">
+        {% block content_column %}{% endblock %}
+      </div>
     </div>
   </div>
 

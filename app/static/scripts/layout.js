@@ -1,174 +1,186 @@
-$( function () {
-    var $header = $('#HeaderContainer');
-    var $loupe = $('#Loupe');
-    var $menuHB = $('#MenuBoutonHB');
-    var $menuDT = $('#MenuBoutonDT');
-    var $searchBar = $('#BarreDeRecherche');
-    var $searchInputText = $('#BarreDeRecherche .entry-box');
-    var $doSearch = $('#FaireRechercher');
-    var $clearSearch = $('#SupprimerText');
-    var searchVisible = false;
-    var menuVisible = false;
-    var mobileSlideSpeed = 500;
-    var desktopSlideSpeed = 400;
-    var mobileRemaining = 60;
-    var desktopSlide = 60;
-
-
-    function amMobile() {
-        return $(window).width() <= 640;
+var largeurPetiteMax = 800;
+var largeurGrandeMin = 1001;
+var vitesseMobile = 350;
+var vitesseBureau = 300;
+var resteMobile = 60;
+var mobile;
+var bureauGrand;
+var glisse = {
+    duree: undefined,
+    corps: {
+        gauche: undefined,
+        contenu: undefined,
+    },
+    enTete: {
+        haut: '60px',
+        droite: undefined,
     }
+}
+
+$( function () {
+    var bodyStyles = window.getComputedStyle(document.body);
+    var $enTete = $('#EnTete .glisseur');
+    var $loupe = $('#Loupe');
+    var $menuHamburger = $('#BoutonsMenus div[name="hamburger"]');
+    var $menuBureau = $('#BoutonsMenus div[name="bureau"]');
+    var $glisseGauche = $('.glisseur-gauche');
+    var $glisseDroite = $('.glisseur-droite');
+    var $searchBar = $('#BarreDeRecherche');
+    var $entreeRecherche = $('#BarreDeRecherche input');
+    var $faireRechercher = $('#FaireRechercher');
+    var $supprimerText = $('#SupprimerText');
+    var rechercheVisible = false;
+    var menuVisible = false;
 
     /* Controle de Boutons de Barre de Recherche */
-    function showSearchButtons() {
-        $($doSearch.find('i')).removeClass('md-inactive');
-        $clearSearch.show();
+    function montrerBoutonsRecherches() {
+        $($faireRechercher.find('i')).removeClass('md-inactive');
+        $supprimerText.show();
     }
-    function hideSearchButtons() {
-        $($doSearch.find('i')).addClass('md-inactive');
-        $clearSearch.hide();
+    function cacherBoutonsRecherches() {
+        $($faireRechercher.find('i')).addClass('md-inactive');
+        $supprimerText.hide();
     }
-    function toggleSearchButtons() {
-        $($doSearch.find('i')).toggleClass('md-inactive');
-        $clearSearch.toggle();
+    function basculerBoutonsRecherches() {
+        $($faireRechercher.find('i')).toggleClass('md-inactive');
+        $supprimerText.toggle();
     }
-    $clearSearch.click( function() {
-        $searchInputText[0].value = '';
-        hideSearchButtons();
-        $searchInputText.focus();
+    $supprimerText.click( function() {
+        $entreeRecherche[0].value = '';
+        cacherBoutonsRecherches();
+        $entreeRecherche.focus();
     });
-    $searchInputText.keyup(function(e) {
-        if ($clearSearch.is($searchInputText[0].value == '' ? ':visible' : ':hidden' )) {
-            toggleSearchButtons();
+    $entreeRecherche.keyup(function(e) {
+        if ($supprimerText.is($entreeRecherche[0].value == '' ? ':visible' : ':hidden' )) {
+            basculerBoutonsRecherches();
         }
     })
 
     /* Menu */
-    $menuHB.click(function () {
-        $(this).toggleClass('open');
-        toggleMenu();
+    $menuHamburger.click(function () {
+        basculerMenu(!menuVisible);
     });
-    $menuDT.click(function() {
-        toggleMenu();
+    $menuBureau.click(function() {
+        basculerMenu(!menuVisible);
     });
-    function hideMenu() {
-        $menuHB.removeClass('open');
-        if (menuVisible) {
-            if (amMobile()) {
-                $('.menu-slider-right').animate(
-                    { left: '-=200px' },
-                    {
-                        easing: 'swing',
-                        duration: mobileSlideSpeed,
-                    },
-                );
-            }
-            else {
-                $('.menu-slider-right').animate(
-                    { left: '-=160px'},
-                    {
-                        easing: 'swing',
-                        duration: desktopSlideSpeed,
-                    },
-                );
-                $('.menu-slider-left').animate(
-                    { left: '+=80px'},
-                    {
-                        easing: 'swing',
-                        duration: desktopSlideSpeed,
-                    },
-                );
-            }
-        }
-        menuVisible = false;
-    }
-    function toggleMenu() {
-        console.log(menuVisible)
-        if (menuVisible) {
-            console.log('hiding');
-            hideMenu();
-        }
-        else {
-            if (amMobile()) {
-                $('.menu-slider-right').animate(
-                    { left: '+=200px' },
-                    {
-                        easing: 'swing',
-                        duration: mobileSlideSpeed,
-                    },
-                );
-            }
-            else {
-                $('.menu-slider-right').animate(
-                    { left: '+=160px' },
-                    {
-                        easing: 'swing',
-                        duration: desktopSlideSpeed,
-                    },
-                );
-                $('.menu-slider-left').animate(
-                    { left: '-=80px' },
-                    {
-                        easing: 'swing',
-                        duration: desktopSlideSpeed,
-                    },
-                );
-            }
-            menuVisible = true;
-        }
-    }
+    function basculerMenu(ouvrir) {
+        if ((ouvrir == true && menuVisible) || (ouvrir == false && !menuVisible))
+            return;
+        menuVisible = ouvrir == true || ( ouvrir === undefined && !menuVisible );
 
+        if (mobile){
+            if (menuVisible)
+                $menuHamburger.addClass('open');
+            else
+                $menuHamburger.removeClass('open');
+        }
+
+        $glisseDroite.animate(
+            { left: menuVisible ? '+=' + glisse.corps.contenu : '0px' },
+            {
+                easing: 'swing',
+                duration: glisse.duree,
+            },
+            );
+        if (bureauGrand) {
+            $glisseGauche.animate(
+                { left: menuVisible ? '-=' + glisse.corps.gauche : '0px' },
+                {
+                    easing: 'swing',
+                    duration: glisse.duree,
+                },
+            );
+        }
+    }
+    
     /* En-tete glisseur */
-    /* TODO:
-    clean up toggle search to call hide search */
-    function toggleSearch() {
-        if (amMobile()) {
-            var distance = $(window).width() - mobileRemaining;
-            $header.animate(
-                {'left': (searchVisible ? '-' : '+') + '=' + distance + 'px' },
-                mobileSlideSpeed,
+    $loupe.click(function(e) {
+        basculerRecherche(!rechercheVisible);
+    });
+    function basculerRecherche(ouvrir) {
+        if ((ouvrir == true && rechercheVisible) || (ouvrir == false && !rechercheVisible))
+            return;
+        rechercheVisible = ouvrir == true || (ouvrir === undefined && !rechercheVisible);
+
+        if (rechercheVisible)
+            $entreeRecherche.focus();
+        
+        if (mobile) {
+            $enTete.animate(
+                { left: rechercheVisible ? '+=' + glisse.enTete.droite : '0px' },
+                {
+                    easing: 'swing',
+                    duration: glisse.duree,
+                }
             );
         }
         else {
-            $header.animate(
-                { 'top': (searchVisible ? '+' : '-') + '=' + desktopSlide + 'px' },
-                desktopSlideSpeed,
+            $enTete.animate(
+                { top: rechercheVisible ? '-=' + glisse.enTete.haut : '0px' },
+                {
+                    easing: 'swing',
+                    duration: glisse.duree,
+                }
             );
             $loupe.toggleClass('open');
         }
-        searchVisible = !searchVisible;
-        if (searchVisible)
-            $searchInputText.focus();
     }
-    function hideSearch() {
-        if (searchVisible){
-            if (amMobile()) {
-                var distance = $(window).width() - mobileRemaining;
-                $header.animate(
-                    { 'left': '-=' + distance + 'px' },
-                    mobileSlideSpeed,
-                );
-            }
-            else {
-                $header.animate(
-                    { 'top': '+=' + desktopSlide + 'px' },
-                    desktopSlideSpeed,
-                );
-            }
-            searchVisible = false;
-            $loupe.removeClass('open')
+
+    function cacherTout(){
+        basculerRecherche(false);
+        basculerMenu(false);
+    }
+
+    function resetTout() {
+        $enTete.css({top:'0px', left:'0px'});
+        $glisseGauche.css('left', '0px');
+        $glisseDroite.css('left', '0px');
+        rechercheVisible = menuVisible = false;
+        $loupe.removeClass('open');
+        $menuHamburger.removeClass('open');
+    }
+
+    function calculerVariables() {
+        var largeur = $(window).width();
+        glisse.duree = largeur <= largeurPetiteMax ? vitesseMobile : vitesseBureau;
+        if (largeur <= largeurPetiteMax){
+            // mobile
+            if (!mobile)
+                resetTout()
+            mobile = true;
+            bureauGrand = false;
+            glisse.corps.contenu = '200px';
+            glisse.enTete.droite = $(window).width() - resteMobile;
+        }
+        else if (largeur >= largeurGrandeMin) {
+            // bureau grand
+            if (!bureauGrand)
+                resetTout();
+            mobile = false;
+            bureauGrand = true;
+            glisse.corps.gauche = '80px';
+            glisse.corps.contenu = '120px';
+        }
+        else {
+            // bureau petit
+            if (mobile || bureauGrand)
+                resetTout();
+            mobile = false;
+            bureauGrand = false;
+            glisse.corps.contenu = '200px';
         }
     }
-    $loupe.click( toggleSearch );    
+    $(window).resize(calculerVariables);
+
     /* Cacher En-tete avec clique sur Corps */
     $(document).mouseup(function(e) {
         $.each(['Contenu', 'ColonneGauche','footer'], function (i, element) {
             if ($(e.target).closest('#' + element).length == 1) {
-                hideSearch();
-                hideMenu();
+                cacherTout();
                 e.stopPropagation();
                 return false;
             }
         });
     });
+    calculerVariables();
 });
