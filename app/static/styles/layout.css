@@ -241,6 +241,41 @@ body {
   font-size: 24px;
   font-family: 'Josefin Sans';
 }
+#LiensExterieurs {
+  padding-top: 1em;
+  height:3em;
+  display:grid;
+  align-items: stretch;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap:0.5em;
+}
+#LiensExterieurs a {
+  display: grid;
+  place-items: center;
+}
+#LiensExterieurs a[name="courriel"] {
+  justify-self: start;
+  color: var(--okenney-orange-strong);
+  text-decoration: none;
+}
+#LiensExterieurs a[name="twitter"] {
+  justify-self: stretch;
+}
+.ok-twitter-bg {
+  fill: none;
+}
+.ok-twitter-path {
+  fill: var(--okenney-orange-strong);
+}
+.ok-twitter-path:hover {
+  fill: #1da1f2;
+}
+#OmbreCG {
+  z-index: 9;
+}
+#OmbreCont {
+  z-index:9;
+}
 #Contenu div[name="prim"] {
   max-width: 800px;
   font-family: 'Nunito Sans', sans-serif;
