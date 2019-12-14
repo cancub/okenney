@@ -42,5 +42,9 @@ api.add_resource(ImageMeta, '/api/image', '/api/image/<string:filename>')
 db.create_all()
 
 @app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/en/')
 def main():
     return render_template('index.html')
