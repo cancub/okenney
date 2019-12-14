@@ -5,6 +5,22 @@ from flask_restful import Resource, Api
 # Import SQLAlchemy
 from flask_sqlalchemy import SQLAlchemy
 
+import logging
+
+# create logger with 'spam_application'
+logger = logging.getLogger('okenney')
+logger.setLevel(logging.DEBUG)
+# create file handler which logs even debug messages
+fh = logging.FileHandler('/tmp/okenney.log')
+fh.setLevel(logging.DEBUG)
+# create formatter and add it to the handlers
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+# add the handlers to the logger
+logger.addHandler(fh)
+
+logger.info('Starting up')
+
 # Define the WSGI application object
 app = Flask(__name__)
 api = Api(app)
@@ -42,5 +58,15 @@ api.add_resource(ImageMeta, '/api/image', '/api/image/<string:filename>')
 db.create_all()
 
 @app.route('/')
+def index():
+    logger.info('index')
+    return render_template('index.html')
+
+@app.route('/articles/<path:subpath>')
+def article(subpath):
+    logger.info(subpath)
+    return render_template('articles/{}'.format(subpath))
+
+@app.route('/en/')
 def main():
     return render_template('index.html')

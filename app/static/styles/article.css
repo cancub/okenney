@@ -1,0 +1,21 @@
+figure {
+  width:100%;
+  display: inline-block;
+  margin: 20px 0; /* adjust as needed */
+}
+figure img {
+  width:100%;
+  vertical-align: top;
+}
+figure figcaption {
+  font-size: 18px;
+  text-align: center;
+}
+
+.quote {
+  font-family: 'Josefin Sans';
+  font-size: 36px;
+  font-weight: 600;
+  line-height: 1.1em;
+  text-align: center;
+}
