@@ -55,11 +55,11 @@ $( function () {
         cacherBoutonsRecherches();
         $entreeRecherche.focus();
     });
-    $entreeRecherche.keyup(function(e) {
+    $entreeRecherche.on('keyup change paste cut', function(e) {
         if ($supprimerText.is($entreeRecherche[0].value == '' ? ':visible' : ':hidden' )) {
             basculerBoutonsRecherches();
         }
-    })
+    });
 
     /* Menu */
     $menuHamburger.click(function () {
