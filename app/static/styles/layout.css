@@ -231,8 +231,11 @@ body {
 #Corps .tiers-aplan {
   grid-area: 1/1/last-line/end;
 }
+#BarreACote {
+  width:200px;
+}
 #ListeMenu {
-  width:10em;
+  margin-left: 24px;
 }
 .option-de-menu {
   cursor: pointer;
@@ -242,7 +245,7 @@ body {
   font-family: 'Josefin Sans';
 }
 #LiensExterieurs {
-  padding-top: 1em;
+  padding: 1em 1em 1em 1em;
   height:6em;
   display:grid;
   align-items: stretch;
@@ -328,9 +331,6 @@ body {
   #Corps {
     height: calc(100vh - var(--barre-petite));
   }
-  #ListeMenu {
-    margin-left:1em;
-  }
   #Contenu {
     overflow-y:scroll;
   }
@@ -360,14 +360,14 @@ body {
   #Contenu div[name="droite"] {
     display: none;
   }
+  #BarreACote {
+    margin-left:-2px;
+  }
 }
 
 @media (min-width: 801px) and (max-width: 1000px) {
   /* CORPS */
   /* --------> TIERS ARRIERE-PLAN */
-  #ListeMenu {
-    margin-left:2em;
-  }
 }
 
 @media (min-width: 801px) {
@@ -433,8 +433,8 @@ body {
     grid-template-columns: var(--side-width) 1fr;
     grid-template-areas: "gauche contenu";
   }
-  #ListeMenu {
-    margin-left:5em;
+  #BarreACote {
+    margin-left:50px;
   }
   #ColonneGauche {
     grid-area:gauche;
