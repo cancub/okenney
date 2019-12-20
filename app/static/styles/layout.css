@@ -243,7 +243,7 @@ body {
 }
 #LiensExterieurs {
   padding-top: 1em;
-  height:3em;
+  height:6em;
   display:grid;
   align-items: stretch;
   grid-template-columns: repeat(3, 1fr);
@@ -253,13 +253,13 @@ body {
   display: grid;
   place-items: center;
 }
-#LiensExterieurs a[name="courriel"] {
-  justify-self: start;
-  color: var(--okenney-orange-strong);
+#LiensExterieurs a {
   text-decoration: none;
+  color: var(--okenney-orange-strong);
+  justify-self: center;
 }
 #LiensExterieurs a[name="twitter"] {
-  justify-self: stretch;
+  width: 100%;
 }
 .ok-twitter-bg {
   fill: none;
@@ -269,6 +269,18 @@ body {
 }
 .ok-twitter-path:hover {
   fill: #1da1f2;
+}
+#LiensExterieurs a[name="agenda"] {
+  display: grid;
+}
+#LiensExterieurs a[name="agenda"] * {
+  grid-area: 1/1/last-line/end;
+}
+#NumeroDuJour {
+  margin-top: 11px;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: 'Josefin Sans';
 }
 #OmbreCG {
   z-index: 9;

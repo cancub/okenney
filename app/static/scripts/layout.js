@@ -32,6 +32,11 @@ $( function () {
     var rechercheVisible = false;
     var menuVisible = false;
 
+    function reglerJour() {
+        var dateObj = new Date();
+        $('#NumeroDuJour').text(dateObj.getDate());
+    }
+
     /* Controle de Boutons de Barre de Recherche */
     function montrerBoutonsRecherches() {
         $($faireRechercher.find('i')).removeClass('md-inactive');
@@ -182,5 +187,6 @@ $( function () {
             }
         });
     });
+    reglerJour();
     calculerVariables();
 });
