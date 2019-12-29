@@ -1,9 +1,7 @@
 # Import flask and template operators
 from flask import Flask, render_template
 from flask_restful import Resource, Api
-
-# Import SQLAlchemy
-from flask_sqlalchemy import SQLAlchemy
+import mysql.connector as mariadb
 
 # Define the WSGI application object
 app = Flask(__name__)
@@ -12,9 +10,8 @@ api = Api(app)
 # Configurations
 app.config.from_object('config')
 
-# Define the database object which is imported
-# by modules and controllers
-db = SQLAlchemy(app)
+mariadb_connection = mariadb.connect(user='root', password='Na2zircgg3zh', database='okenney')
+cursor = mariadb_connection.cursor()
 
 # Sample HTTP error handling
 @app.errorhandler(404)
@@ -37,14 +34,13 @@ api.add_resource(ImageMeta, '/api/image', '/api/image/<string:filename>')
 # app.register_blueprint(xyz_module)
 # ..
 
-# Build the database:
-# This will create the database file using SQLAlchemy
-db.create_all()
-
 @app.route('/')
 def index():
-    return render_template('index.html')
+    # find the most recent article
+    cursor.execute('SELECT fpath FROM main ORDER BY datetime DESC LIMIT 1')
+    return render_template(cursor.next()[0])
 
-@app.route('/en/')
-def main():
-    return render_template('index.html')
+@app.route('/articles/<name>')
+def article(name):
+    # use mysql to find location
+    return render_template()
