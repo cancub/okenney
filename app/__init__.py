@@ -15,6 +15,15 @@ app.config.from_object('config')
 # by modules and controllers
 db = SQLAlchemy(app)
 
+class Article(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(128), unique=True, nullable=False)
+    filepath = db.Column(db.String(128), unique=True, nullable=False)
+    dtime = db.Column(db.DateTime, unique=False, nullable=False)
+
+    def __repr__(self):
+        return '<Article %r>' % self.title
+
 # Sample HTTP error handling
 @app.errorhandler(404)
 def not_found(error):
@@ -22,8 +31,6 @@ def not_found(error):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
-
-@app.route('/en/')
-def main():
-    return render_template('index.html')
+    return render_template(
+        Article.query.order_by(Article.dtime).first().filepath
+    )
