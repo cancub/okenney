@@ -177,17 +177,6 @@ $( function () {
     }
     $(window).resize(calculerVariables);
 
-    $('#Dialog').dialog({
-        autoOpen: true,
-        modal: true,
-        minWidth: 400,
-        buttons: {
-            OK: function() {
-                $( this ).dialog( "close" );
-            }
-        }
-    });
-
     /* Cacher En-tete avec clique sur Corps */
     $(document).mouseup(function(e) {
         $.each(['Contenu', 'ColonneGauche','footer'], function (i, element) {
