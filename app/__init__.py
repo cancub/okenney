@@ -1,12 +1,12 @@
+import os
+
 # Import flask and template operators
-from flask import Flask, render_template
-from flask_restful import Resource, Api
+from flask import Flask, render_template, url_for
 
 from flask_sqlalchemy import SQLAlchemy
 
 # Define the WSGI application object
 app = Flask(__name__)
-api = Api(app)
 
 # Configurations
 app.config.from_object('config')
@@ -31,6 +31,24 @@ def not_found(error):
 
 @app.route('/')
 def index():
+    latest_articles = []
+    for a in Article.query.order_by(Article.dtime):
+        image_path = 'static/images/{}'.format(
+            a.filepath.split('articles/')[-1].replace('.html','.png')
+        )
+
+        desc_path = a.filepath.replace('.html', '-desc.html')
+
+        latest_articles.append({
+            'title': a.title,
+            'filepath': a.filepath,
+            'image': image_path,
+            'desc': desc_path,
+        })
+
     return render_template(
-        Article.query.order_by(Article.dtime).first().filepath
+        'index.html',
+        latest=latest_articles,
+        total_count=len(latest_articles),
+        preload_count=min(len(latest_articles), 5)
     )
