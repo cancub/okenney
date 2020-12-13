@@ -46,18 +46,12 @@
         </div>
       </div>
     </div>
-    <div class="tiers-nom glisseur ombre-b ombre-g">
-      <div id="BoutonsMenus">
-        <div name="hamburger">
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-        <div name="bureau">
-          <span>MENU</span>
-        </div>
-      </div>
+    <div class="tiers-nom glisseur ombre-b ombre-g ferme">
+      <button id="Loupe" class="bouton-bdr">
+        <i class="material-icons md-30 md-light">
+          search
+        </i>
+      </button>
       <a id="Nom" href="https://www.okenney.ca">
         <div name="mobile" class="texte-titre">
           A O' K
@@ -70,12 +64,7 @@
             O'KENNEY
           </div>
         </div>
-      </div>
-      <button id="Loupe" class="bouton-bdr">
-        <i class="material-icons md-30 md-light">
-          search
-        </i>
-      </button>
+      </a>
     </div>
   </div>
 
@@ -112,12 +101,12 @@
         </div>
       </div>
     </div>
-    <div id="ColonneGauche" class="tiers-contenu glisseur-gauche">
+    <div id="ColonneGauche" class="tiers-contenu glisseur-gauche ferme">
     </div>
     <div id="OmbreCG" class="glisseur-gauche ombre-d"></div>
     <div id="OmbreCont" class="glisseur-droite ombre-g"></div>
     <div id="Contenu" class="tiers-contenu glisseur-droite">
-      <div name="prim">
+      <div id="Principal">
         {% block content_column %}{% endblock %}
       </div>
     </div>

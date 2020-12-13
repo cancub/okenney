@@ -1,10 +1,10 @@
-var largeurPetiteMax = 800;
-var largeurGrandeMin = 1001;
+var largeurMobileMax = 700;
+var largeurTabletteMax = 1001;
 var vitesseMobile = 350;
 var vitesseBureau = 300;
 var resteMobile = 60;
 var mobile;
-var bureauGrand;
+var bureau;
 var glisse = {
     duree: undefined,
     corps: {
@@ -21,15 +21,12 @@ $( function () {
     var bodyStyles = window.getComputedStyle(document.body);
     var $enTete = $('#EnTete .glisseur');
     var $loupe = $('#Loupe');
-    var $menuHamburger = $('#BoutonsMenus div[name="hamburger"]');
-    var $menuBureau = $('#BoutonsMenus div[name="bureau"]');
     var $glisseGauche = $('.glisseur-gauche');
     var $glisseDroite = $('.glisseur-droite');
-    var $searchBar = $('#BarreDeRecherche');
+    var $colonneGauche = $('#ColonneGauche');
     var $entreeRecherche = $('#BarreDeRecherche input');
     var $faireRechercher = $('#FaireRechercher');
     var $supprimerText = $('#SupprimerText');
-    var rechercheVisible = false;
     var menuVisible = false;
 
     function reglerJour() {
@@ -62,23 +59,39 @@ $( function () {
     });
 
     /* Menu */
-    $menuHamburger.click(function () {
+    $loupe.click(function() {
         basculerMenu(!menuVisible);
     });
-    $menuBureau.click(function() {
-        basculerMenu(!menuVisible);
+    $('.ferme').click(function() {
+        if (!mobile)
+            basculerMenu(!menuVisible);
     });
     function basculerMenu(ouvrir) {
         if ((ouvrir == true && menuVisible) || (ouvrir == false && !menuVisible))
             return;
         menuVisible = ouvrir == true || ( ouvrir === undefined && !menuVisible );
 
+        var movement_tete;
         if (mobile){
-            if (menuVisible)
-                $menuHamburger.addClass('open');
-            else
-                $menuHamburger.removeClass('open');
+            $loupe.toggleClass('open');
+            movement_tete = {
+                left: menuVisible ? '+=' + glisse.enTete.droite : '0px'
+            };
         }
+        else {
+            $colonneGauche.toggleClass('ferme');
+            $enTete.toggleClass('ferme');
+            movement_tete = {
+                top: menuVisible ? '-=' + glisse.enTete.haut : '0px'
+            };
+        }
+
+        $enTete.animate(
+            movement_tete,
+            {easing: 'swing',
+                duration: glisse.duree,
+            }
+        );
 
         $glisseDroite.animate(
             { left: menuVisible ? '+=' + glisse.corps.contenu : '0px' },
@@ -87,7 +100,7 @@ $( function () {
                 duration: glisse.duree,
             },
             );
-        if (bureauGrand) {
+        if (bureau) {
             $glisseGauche.animate(
                 { left: menuVisible ? '-=' + glisse.corps.gauche : '0px' },
                 {
@@ -97,44 +110,6 @@ $( function () {
             );
         }
     }
-    
-    /* En-tete glisseur */
-    $loupe.click(function(e) {
-        basculerRecherche(!rechercheVisible);
-    });
-    function basculerRecherche(ouvrir) {
-        if ((ouvrir == true && rechercheVisible) || (ouvrir == false && !rechercheVisible))
-            return;
-        rechercheVisible = ouvrir == true || (ouvrir === undefined && !rechercheVisible);
-
-        if (rechercheVisible)
-            $entreeRecherche.focus();
-        
-        if (mobile) {
-            $enTete.animate(
-                { left: rechercheVisible ? '+=' + glisse.enTete.droite : '0px' },
-                {
-                    easing: 'swing',
-                    duration: glisse.duree,
-                }
-            );
-        }
-        else {
-            $enTete.animate(
-                { top: rechercheVisible ? '-=' + glisse.enTete.haut : '0px' },
-                {
-                    easing: 'swing',
-                    duration: glisse.duree,
-                }
-            );
-            $loupe.toggleClass('open');
-        }
-    }
-
-    function cacherTout(){
-        basculerRecherche(false);
-        basculerMenu(false);
-    }
 
     function resetTout() {
         $enTete.css({top:'0px', left:'0px'});
@@ -142,50 +117,49 @@ $( function () {
         $glisseDroite.css('left', '0px');
         rechercheVisible = menuVisible = false;
         $loupe.removeClass('open');
-        $menuHamburger.removeClass('open');
+        $colonneGauche.addClass('ferme');
+        $enTete.addClass('ferme');
     }
 
     function calculerVariables() {
         var largeur = $(window).width();
-        glisse.duree = largeur <= largeurPetiteMax ? vitesseMobile : vitesseBureau;
-        if (largeur <= largeurPetiteMax){
+        glisse.duree = largeur <= largeurMobileMax ? vitesseMobile : vitesseBureau;
+        if (largeur <= largeurMobileMax){
             // mobile
             if (!mobile)
                 resetTout()
             mobile = true;
-            bureauGrand = false;
+            bureau = false;
             glisse.corps.contenu = '200px';
             glisse.enTete.droite = $(window).width() - resteMobile;
         }
-        else if (largeur >= largeurGrandeMin) {
-            // bureau grand
-            if (!bureauGrand)
+        else if (largeur <= largeurTabletteMax){
+            // tablette
+            if (mobile || bureau)
                 resetTout();
             mobile = false;
-            bureauGrand = true;
-            glisse.corps.gauche = '80px';
-            glisse.corps.contenu = '120px';
+            bureau = false;
+            glisse.corps.contenu = '200px';
         }
         else {
-            // bureau petit
-            if (mobile || bureauGrand)
+            // bureau
+            if (!bureau)
                 resetTout();
             mobile = false;
-            bureauGrand = false;
-            glisse.corps.contenu = '200px';
+            bureau = true;
+            glisse.corps.gauche = '80px';
+            glisse.corps.contenu = '120px';
         }
     }
     $(window).resize(calculerVariables);
 
     /* Cacher En-tete avec clique sur Corps */
     $(document).mouseup(function(e) {
-        $.each(['Contenu', 'ColonneGauche','footer'], function (i, element) {
-            if ($(e.target).closest('#' + element).length == 1) {
-                cacherTout();
-                e.stopPropagation();
-                return false;
-            }
-        });
+        if ($(e.target).closest('#Contenu').length == 1) {
+            basculerMenu(false);
+            e.stopPropagation();
+            return false;
+        }
     });
     reglerJour();
     calculerVariables();
