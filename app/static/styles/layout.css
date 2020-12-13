@@ -13,10 +13,6 @@ p {
   font-family: 'Open Sans', sans-serif;
 }
 
-img {
-  width: 100%;
-}
-
 /* Rules for sizing the icon. */
 .material-icons.md-18 { font-size: 18px; }
 .material-icons.md-24 { font-size: 24px; }
@@ -119,6 +115,7 @@ img {
   border-style: solid;
   outline: none;
 }
+/* EN TETE */
 #EnTete .tiers-contenu {
   grid-area: entete;
 }
@@ -207,6 +204,9 @@ img {
 }
 .texte-titre {
   color: white;
+}
+#Nom {
+  text-decoration: none;
 }
 #Nom div[name="mobile"] {
   font-size: 30px;
