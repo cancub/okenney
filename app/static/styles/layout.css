@@ -1,411 +1,92 @@
-* {
+*, ::before, ::after {
   box-sizing: border-box;
+}
+:root {
+  --taille-en-tete: 50px;
+  --ombre-Y: 5px;
+  --ombre-X-contenu: 10px;
+
+  --glissage-contenu: 200px;
+  --temps-transition: 0.3s;
 }
 
 body {
-  margin: 0;
-  overflow: hidden;
-  --barre-petite: 50px;
-  --barre-moyenne: 70px;
-  --barr-grande: 100px;
+  position: relative;
+  width: 100%;
+  margin: auto;
+}
+header {
+  position: fixed;
+  width: 100%;
+  height: var(--taille-en-tete);
+  z-index: 30;
+}
+header div {
+  position: absolute;
+}
+header div.prem {
+  width: 100%;
+  height: 100%;
+  left: 0px;
+  z-index: 30;
+  background-color: var(--okenney-orange);
+  transition: all var(--temps-transition);
+  box-shadow:
+    20px 6px 2px -6px rgba(0, 0, 0, 0.35),
+    0px 2px 2px 1px rgba(0, 0, 0, 0.3);
+}
+header div.prem.ouvert {
+  left: calc(80px - 100vw);
+  box-shadow:
+    20px 6px 2px -6px rgba(0, 0, 0, 0.35),
+    26px 26px 2px -23px rgba(0, 0, 0, 0.3);
+}
+header div.arr {
+  width: 100%;
+  height: 100%;
+  background-color: var(--okenney-purple-grey);
+}
+footer {
+  position: relative;
+  width:100%;
+  height: 40px;
+  z-index: 10;
+  background-color: white;
 }
 
-p {
-  font-family: 'Open Sans', sans-serif;
+.resize-animation-stopper * {
+  animation: none !important;
+  transition: none !important;
 }
 
-/* Rules for sizing the icon. */
-.material-icons.md-18 { font-size: 18px; }
-.material-icons.md-24 { font-size: 24px; }
-.material-icons.md-30 { font-size: 30px; }
-.material-icons.md-36 { font-size: 36px; }
-.material-icons.md-48 { font-size: 48px; }
-
-/* Rules for using icons as black on a light background. */
-.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
-.material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.15); }
-
-/* Rules for using icons as white on a dark background. */
-.material-icons.md-light { color: rgba(255, 255, 255, 1); }
-.material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
-
-.ombre-hg {
-  box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 8px 4px 0 rgba(0,0,0,0.12),0 2px 4px -1px rgba(0,0,0,0.2);
-  -webkit-box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 8px 4px 0 rgba(0,0,0,0.12),0 2px 4px -1px rgba(0,0,0,0.2);
-}
-.ombre-b {
-  box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 8px 4px 0 rgba(0,0,0,0.12),0 2px 4px -1px rgba(0,0,0,0.2);
-  -webkit-box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 8px 4px 0 rgba(0,0,0,0.12),0 2px 4px -1px rgba(0,0,0,0.2);
-}
-.ombre-g {
-  box-shadow: -4px 0px 5px 0 rgba(0,0,0,0.14), -8px 0 4px 0 rgba(0,0,0,0.12), -2px 0 4px -1px rgba(0,0,0,0.2);
-  -webkit-box-shadow: -4px 0px 5px 0 rgba(0,0,0,0.14), -8px 0 4px 0 rgba(0,0,0,0.12), -2px 0 4px -1px rgba(0,0,0,0.2);
-}
-.ombre-gg {
-  box-shadow: -4px 0px 5px 0 rgba(0,0,0,0.14), -8px 0 4px 0 rgba(0,0,0,0.12), -2px 0 4px -1px rgba(0,0,0,0.2);
-  -webkit-box-shadow: -4px 0px 5px 0 rgba(0,0,0,0.14), -8px 0 4px 0 rgba(0,0,0,0.12), -2px 0 4px -1px rgba(0,0,0,0.2);
-}
-.ombre-d {
-  box-shadow: 4px 0px 5px 0 rgba(0,0,0,0.14), 8px 0 4px 0 rgba(0,0,0,0.12), 2px 0 4px -1px rgba(0,0,0,0.2);
-  -webkit-box-shadow: 4px 0px 5px 0 rgba(0,0,0,0.14), 8px 0 4px 0 rgba(0,0,0,0.12), 2px 0 4px -1px rgba(0,0,0,0.2);
-}
-
-.tiers-aplan {
-  z-index:0;
-  height:100%;
+#ArrPlan {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
   background-color: var(--okenney-purple-grey);
 }
 
-.tiers-contenu {
-  z-index:10;
-  height:100%;
-  background-color: white;
-}
-
-.tiers-nom {
-  z-index:20;
-  background-color: var(--okenney-orange);
-}
-
-.glisseur,
-.glisseur-gauche,
-.glisseur-droite {
+#Contenu {
   position: relative;
-}
-/* EN-TÊTE */
-.bouton-bdr {
-  background: none;
-  border: none;
-  cursor: pointer;
-  outline:none;
-  padding: 5px;
-  border-radius: 25px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-#EnTete {
-  overflow:hidden;
-  display: grid;
-  grid-template-areas: "entete";
-}
-/* ------> TIERS ARRIÈRE-PLAN */
-#EnTete .tiers-aplan {
-  grid-area: entete;
-}
-#RecipientBarre {
-  height:100%;
-  width:100%;
-  display: flex;
-}
-#BarreDeRecherche {
-  height: 2.5em;
-  margin-left: 0.5em;
+  left: 0px;
+  padding-top: calc(var(--taille-en-tete) + 10px);
   background-color: white;
-  border-radius: 5px;
-  display: grid;
-  grid-template-columns: 3em 1fr 2.5em;
-  grid-template-rows: 1fr;
+  transition: left var(--temps-transition);
 }
-#BarreDeRecherche input {
-  box-sizing: border-box;
-  height:100%;
-  width:100%;
-  font-size: 1.1em;
-  border-color: transparent;
-  border-style: solid;
-  outline: none;
+#Contenu::before {
+  position: fixed;
+  height: 100%;
+  width: 20px;
+  top: 54px;
+  right: 0;
+  content: "";
+  z-index: 10;
+  box-shadow: 11px 3px 2px 1px rgba(0, 0, 0, 0.3);
+  transition: right var(--temps-transition)
 }
-/* EN TETE */
-#EnTete .tiers-contenu {
-  grid-area: entete;
+#Contenu.ouvert {
+  left: calc(-1*var(--glissage-contenu));
 }
-#EnTete .tiers-nom {
-  grid-area: entete;
-  display: flex;
-  justify-content: space-between;
-}
-.texte-titre {
-  color: white;
-}
-#Nom {
-  text-decoration: none;
-}
-#Nom div[name="mobile"] {
-  font-size: 30px;
-  font-family: 'Josefin Sans';
-  font-weight: bold;
-  margin-top: 6px;
-  margin-right: 14px;
-}
-#Nom div[name="bureau"] {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-}
-#Nom div[name="prenom"] {
-  font-family: 'Bree Serif';
-  font-size: 24px;
-  padding-left:29px;
-}
-#Nom div[name="famille"] {
-  font-family: 'Josefin Sans';
-  font-weight: bold;
-  font-size: 45px;
-}
-#Loupe {
-  margin-right:1em;
-  align-self: flex-end;
-  -webkit-transition: .3s ease-in-out;
-  -moz-transition: .3s ease-in-out;
-  -o-transition: .3s ease-in-out;
-  transition: .3s ease-in-out;
-  -webkit-transform: rotate(0deg);
-  -moz-transform: rotate(0deg);
-  -o-transform: rotate(0deg);
-  transform: rotate(0deg);
-}
-#Loupe.open {
-  -webkit-transition: .3s ease-in-out;
-  -moz-transition: .3s ease-in-out;
-  -o-transition: .3s ease-in-out;
-  transition: .3s ease-in-out;
-  -webkit-transform: rotate(-90deg);
-  -moz-transform: rotate(-90deg);
-  -o-transform: rotate(-90deg);
-  transform: rotate(-90deg);
-}
-
-/* CORPS */
-#Corps {
-  display: grid;
-  overflow-x:hidden;
-}
-#Corps .tiers-aplan {
-  grid-area: 1/1/last-line/end;
-}
-#BarreACote {
-  width:200px;
-}
-#ListeMenu {
-  margin-left: 24px;
-}
-.option-de-menu {
-  cursor: pointer;
-  padding-top: 1em;
-  color: white;
-  font-size: 24px;
-  font-family: 'Josefin Sans';
-}
-#LiensExterieurs {
-  padding: 1em 1em 1em 1em;
-  height:6em;
-  display:grid;
-  align-items: stretch;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap:0.5em;
-}
-#LiensExterieurs a {
-  display: grid;
-  place-items: center;
-}
-#LiensExterieurs a {
-  text-decoration: none;
-  color: var(--okenney-orange-strong);
-  justify-self: center;
-}
-#LiensExterieurs a[name="twitter"] {
-  width: 100%;
-}
-.ok-twitter-bg {
-  fill: none;
-}
-.ok-twitter-path {
-  fill: var(--okenney-orange-strong);
-}
-.ok-twitter-path:hover {
-  fill: #1da1f2;
-}
-#LiensExterieurs a[name="agenda"] {
-  display: grid;
-}
-#LiensExterieurs a[name="agenda"] * {
-  grid-area: 1/1/last-line/end;
-}
-#NumeroDuJour {
-  margin-top: 11px;
-  font-size: 16px;
-  font-weight: bold;
-  font-family: 'Josefin Sans';
-}
-#OmbreCG {
-  z-index: 9;
-}
-#OmbreCont {
-  z-index:9;
-}
-#Principal {
-  margin-top: 10px;
-  width: 100%;
-  font-family: 'Nunito Sans', sans-serif;
-  font-size: 20px;
-  line-height: 1.5em;
-}
-
-
-/* MOBILE UNIQUEMENT*/
-@media (max-width: 700px) {
-  /* EN-TÊTE */
-  #EnTete {
-    height: var(--barre-petite);
-  }
-  /* ------> TIERS ARRIÈRE-PLAN */
-  #RecipientBarre {
-    justify-content: flex-start;
-    align-items: center;
-  }
-  #BarreDeRecherche {
-    width: calc(100vw - 60px - 1em);
-  }
-  /* -------> TIERS NOM */
-  #Nom {
-    align-self: center;
-  }
-  #Nom div[name="bureau"] {
-    display: none;
-  }
-
-  /* CORPS */
-  #Corps {
-    height: calc(100vh - var(--barre-petite));
-  }
-  #Contenu {
-    overflow-y:scroll;
-  }
-}
-
-/* MOBILE ET TABLETTE */
-@media (max-width: 1000px) {
-  /* CORPS */
-  #ColonneGauche{
-    display: none;
-  }
-  #OmbreCG{
-    display: none;
-  }
-  #OmbreCont{
-    grid-area:1/1/last-line/end;
-  }
-  #Contenu {
-    grid-area:1/1/last-line/end;
-    display: grid;
-  }
-  #Principal {
-    grid-area:1/1/last-line/end;
-    justify-self: center;
-  }
-  #Contenu div[name="droite"] {
-    display: none;
-  }
-  #BarreACote {
-    margin-left:-2px;
-  }
-}
-
-/* TABLETTE UNIQUEMENT */
-@media (min-width: 701px) and (max-width: 1000px) {
-  /* CORPS */
-  /* --------> TIERS ARRIERE-PLAN */
-  /* EN-TÊTE */
-  #EnTete {
-    height: var(--barre-moyenne);
-  }
-  #Nom div[name="prenom"] {
-    display: none;
-  }
-  #Nom div[name="famille"] {
-    padding-top:12px;
-  }
-}
-
-/* TABLETTE ET BUREAU */
-@media (min-width: 701px) {
-  body {
-    overflow-y:scroll;
-  }
-  /* EN-TÊTE */
-  #Loupe {
-    display: none;
-  }
-  #Nom {
-    height:100%;
-    margin:auto;
-  }
-  /* ------> TIERS ARRIÈRE-PLAN */
-  #RecipientBarre {
-    justify-content: center;
-    align-items: flex-end;
-  }
-  #BarreDeRecherche {
-    width: 100%;
-    margin-right: 0.5em;
-    margin-bottom: 10px;
-  }
-  /* -------> TIERS NOM */
-  #Nom {
-    align-self: flex-start;
-  }
-  #Nom div[name="mobile"] {
-    display: None;
-  }
-  /* CORP */
-  #Principal {
-    padding:0 2em;
-  }
-}
-
-/* BUREAU UNIQUEMENT */
-@media (min-width: 1001px) {
-  .ferme:hover {
-    opacity:0.6;
-  }
-
-  /* EN-TÊTE */
-  #EnTete {
-    height: var(--barr-grande);
-  }
-
-  /* CORPS */
-  #Corps {
-    --side-width: 8em;
-    grid-template-columns: var(--side-width) 1fr;
-    grid-template-areas: "gauche contenu";
-  }
-  #BarreACote {
-    margin-left:50px;
-  }
-  #ColonneGauche {
-    grid-area:gauche;
-  }
-  #OmbreCG {
-    grid-area: gauche;
-  }
-  #OmbreCont {
-    grid-area:contenu;
-  }
-  #Contenu {
-    grid-area:contenu;
-    display: grid;
-    grid-template-columns: 1fr var(--side-width);
-    grid-template-areas: "prim droite";
-    justify-items: center;
-  }
-  #Principal {
-    grid-area: prim;
-    padding:0 1em;
-  }
-  #Contenu div[name="droite"] {
-    grid-area: droite;
-  }
+#Contenu.ouvert::before {
+  right: var(--glissage-contenu);
 }
