@@ -1,5 +1,6 @@
 $( function () {
     var $glisseurs = $('.glisser');
+    var $loupe = $('#Loupe');
     var $entreeRecherche = $('#BarreDeRecherche input');
     var $faireRechercher = $('#FaireRechercher');
     var $supprimerText = $('#SupprimerText');
@@ -28,8 +29,11 @@ $( function () {
         }
     });
 
-    $glisseurs.click(function() {
-        $glisseurs.toggleClass('ouvert ferme');
+    $('#Contenu').add($loupe).click(function(event) {
+        if ($(this).attr('id') != 'Contenu' || $(this).hasClass('ouvert')) {
+            $glisseurs.add($loupe).toggleClass('ouvert ferme');
+            event.stopPropagation();
+        }
     })
 
     let resizeTimer;

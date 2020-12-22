@@ -1,63 +1,98 @@
 :root {
-    --unselected: white;
-    --unselected-shadow: #bfbfbf;
-    --okenney-orange-faintest: #ffd2b3;
-    --okenney-orange-light: #ffa366;
-    --okenney-orange: #ff751a;
-    --okenney-orange-strong: #cc5200;
-    --okenney-purple: #650ef0;
-    --okenney-purple-dark: #2F2441;
-    --okenney-purple-grey: #584f67;
-    --okenney-purple-light: #C6A3FF;
+  --unselected: white;
+  --unselected-shadow: #bfbfbf;
+  --okenney-orange-faintest: #ffd2b3;
+  --okenney-orange-light: #ffa366;
+  --okenney-orange: #ff751a;
+  --okenney-orange-strong: #cc5200;
+  --okenney-purple: #650ef0;
+  --okenney-purple-dark: #2F2441;
+  --okenney-purple-grey: #584f67;
+  --okenney-purple-light: #C6A3FF;
 
-    --button-border-radius: 10px;
+  --button-border-radius: 10px;
 }
 
 .border-br {
-    border-bottom-right-radius: var(--button-border-radius);
+  border-bottom-right-radius: var(--button-border-radius);
 }
 .border-bl {
-    border-bottom-left-radius: var(--button-border-radius);
+  border-bottom-left-radius: var(--button-border-radius);
 }
 .border-tr {
-    border-top-right-radius: var(--button-border-radius);
+  border-top-right-radius: var(--button-border-radius);
 }
 .border-tl {
-    border-top-left-radius: var(--button-border-radius);
+  border-top-left-radius: var(--button-border-radius);
 }
 .rounded-b {
-    border-bottom-right-radius: var(--button-border-radius);
-    border-bottom-left-radius: var(--button-border-radius);
+  border-bottom-right-radius: var(--button-border-radius);
+  border-bottom-left-radius: var(--button-border-radius);
 }
 .rounded-t {
-    border-top-right-radius: var(--button-border-radius);
-    border-top-left-radius: var(--button-border-radius);
+  border-top-right-radius: var(--button-border-radius);
+  border-top-left-radius: var(--button-border-radius);
 }
 .rounded-l {
-    border-top-left-radius: var(--button-border-radius);
-    border-bottom-left-radius: var(--button-border-radius);
+  border-top-left-radius: var(--button-border-radius);
+  border-bottom-left-radius: var(--button-border-radius);
 }
 .rounded-r {
-    border-top-right-radius: var(--button-border-radius);
-    border-bottom-right-radius: var(--button-border-radius);
+  border-top-right-radius: var(--button-border-radius);
+  border-bottom-right-radius: var(--button-border-radius);
 }
 .rounded-all { 
-    border-bottom-right-radius: var(--button-border-radius);
-    border-bottom-left-radius: var(--button-border-radius);
-    border-top-right-radius: var(--button-border-radius);
-    border-top-left-radius: var(--button-border-radius);
+  border-bottom-right-radius: var(--button-border-radius);
+  border-bottom-left-radius: var(--button-border-radius);
+  border-top-right-radius: var(--button-border-radius);
+  border-top-left-radius: var(--button-border-radius);
 }
 
 .okenney-button,
 .toggle-button-unselected {
-    background: var(--unselected);
-    outline: none;
+  background: var(--unselected);
+  outline: none;
 }
 .okenney-button:active,
 .toggle-button-selected {
-    background: var(--okenney-orange-light);
-    -webkit-box-shadow: inset 0px 0px 10px var(--okenney-orange-strong);
-    -moz-box-shadow: inset 0px 0px 10px var(--okenney-orange-strong);
-    box-shadow: inset 0px 0px 10px var(--okenney-orange-strong);
-    outline: none;
+  background: var(--okenney-orange-light);
+  -webkit-box-shadow: inset 0px 0px 10px var(--okenney-orange-strong);
+  -moz-box-shadow: inset 0px 0px 10px var(--okenney-orange-strong);
+  box-shadow: inset 0px 0px 10px var(--okenney-orange-strong);
+  outline: none;
+}
+
+.en-tete {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#Nom {
+  margin-left: 0.4em;
+}
+#Nom g {
+  filter: url(#shadowNom);
+}
+
+#Loupe {
+  margin-right: 0.4em;
+}
+#Loupe.ferme path {
+  display: none;
+}
+#Loupe line {
+  stroke-linecap: round;
+}
+#Loupe circle {
+  fill: var(--okenney-orange);
+}
+#Loupe.ouvert circle {
+  filter: url(#shadow);
+}
+#Loupe.ouvert line {
+  filter: url(#shadow90);
+}
+#Loupe.ouvert line {
+  transform: rotate(-90deg) translate(-50px);
 }

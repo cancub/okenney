@@ -1,3 +1,4 @@
+{% import 'identity.html' as ident -%}
 {% import 'aplan.html' as aplan -%}
 <!doctype html>
 <html>
@@ -10,9 +11,9 @@
 {% endblock %}
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="/styles/identity.css">
   <link rel="stylesheet" href="/styles/layout.css">
-  {{ aplan.css()}}
+  {{ ident.css() }}
+  {{ aplan.css() }}
   <!-- Overall Style -->
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Bree+Serif|Josefin+Sans|Poppins:500|Nunito+Sans&display=swap" rel="stylesheet">
@@ -27,7 +28,9 @@
 
 <body>
   <header>
-    <div class="glisser prem ferme"></div>
+    <div class="glisser prem ferme">
+      {{ ident.entete() }}
+    </div>
     <div class="arr"></div>
   </header>
 

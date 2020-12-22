@@ -36,10 +36,13 @@ header div.prem {
     0px 2px 2px 1px rgba(0, 0, 0, 0.3);
 }
 header div.prem.ouvert {
-  left: calc(80px - 100vw);
+  left: calc(67px - 100vw);
   box-shadow:
     20px 6px 2px -6px rgba(0, 0, 0, 0.35),
     26px 26px 2px -23px rgba(0, 0, 0, 0.3);
+}
+header div.prem * {
+  position: relative;
 }
 header div.arr {
   width: 100%;
