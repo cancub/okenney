@@ -73,6 +73,10 @@ body {
   align-items: center;
 }
 
+.en-tete svg {
+  cursor: pointer;
+}
+
 .ok-logo {
   margin-left: 0.4em;
 }
