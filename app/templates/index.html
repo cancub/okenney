@@ -5,6 +5,20 @@
 <link rel="stylesheet" href="/styles/index.css">
 {% endblock %}
 
+{% macro article_preview(details) -%}
+  <div class="article-preview">
+    <div class="crop">
+      <img src="{{ details['image'] }}" />
+    </div>
+    <div>
+      <h2 class="titre">{{ details['title'] }}</h2>
+      <div class="description">
+        {% include details['desc'] %}
+      </div>
+    </div>
+  </div>
+{%- endmacro %}
+
 {% block content_column %}
 <div id="MetadataPlusRecent" style="display:none">
 {# Provide the data on the remainder of the files #}
@@ -16,28 +30,12 @@
 {% endfor %}
 </div>
 <div id="ALUne">
-  <div class="article-preview">
-    <div class="crop">
-      <span class="titre">{{ latest[0]['title'] }}</span>
-      <img src="{{ latest[0]['image'] }}" />
-    </div>
-    <div class="description">
-      {% include latest[0]['desc'] %}
-    </div>
-  </div>
+  {{ article_preview(latest[0]) }}
   <!-- <div id="BarreLaterale"></div> -->
 </div>
 <div id="QueueDArticles">
 {% for i in range(1, preload_count) %}
-  <div class="article-preview">
-    <div class="crop">
-      <span class="titre">{{ latest[i]['title'] }}</span>
-      <img src="{{ latest[i]['image'] }}"/>
-    </div>
-    <div class="description">
-      {% include latest[i]['desc'] %}
-    </div>
-  </div>
+  {{ article_preview(latest[i]) }}
 {% endfor %}
 </div>
 {% endblock %}
