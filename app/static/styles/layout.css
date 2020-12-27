@@ -84,30 +84,44 @@ footer {
   background-color: var(--okenney-purple-grey);
 }
 
-#Contenu {
-  position: relative;
-  left: 0px;
-  padding-top: calc(var(--taille-en-tete) + 10px);
-  background-color: white;
-  transition: left var(--temps-transition);
-}
-#Contenu::before {
+.ombre-contenu {
   position: fixed;
+  width: 100%;
+  height: calc(100vh - var(--taille-en-tete));
+  z-index: 15;
+  top: var(--taille-en-tete);
+}
+.ombre-contenu::before {
+  position: absolute;
   height: 100%;
   width: 20px;
-  top: 54px;
   right: 0;
   content: "";
   z-index: 10;
-  box-shadow: 11px 3px 2px 1px rgba(0, 0, 0, 0.3);
-  transition: right var(--temps-transition)
+  box-shadow: 11px 9px 2px 1px rgba(0, 0, 0, 0.3);
 }
-#Contenu.ouvert {
-  left: calc(-1*var(--glissage-contenu));
+
+.recip-contenu {
+  position: relative;
+  z-index: 20;
+  padding-top: calc(var(--taille-en-tete) + 10px);
+  background-color: white;
+}
+.recip-contenu.ouvert {
   animation: colorRotate 20s linear infinite;
 }
 
-#Contenu div[name="bloqueur"] {
+.ombre-contenu,
+.recip-contenu {
+  left: 0px;
+  transition: left var(--temps-transition);
+}
+.ombre-contenu.ouvert,
+.recip-contenu.ouvert {
+  left: calc(-1*var(--glissage-contenu));
+}
+
+.recip-contenu .bloqueur {
   position: absolute;
   height:100%;
   width:100%;
@@ -115,7 +129,7 @@ footer {
   opacity: 0.5;
   background-color: gray;
 }
-#Contenu.ferme div[name="bloqueur"] {
+.recip-contenu.ferme .bloqueur {
   display: none;
 }
 
