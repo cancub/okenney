@@ -13,6 +13,11 @@
   --button-border-radius: 10px;
 }
 
+body {
+  font-family: Verdana, sans-serif;
+  line-height: 1.5;
+}
+
 .border-br {
   border-bottom-right-radius: var(--button-border-radius);
 }
@@ -68,11 +73,8 @@
   align-items: center;
 }
 
-#Nom {
+.ok-logo {
   margin-left: 0.4em;
-}
-#Nom g {
-  filter: url(#shadowNom);
 }
 
 #Loupe {
