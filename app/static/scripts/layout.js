@@ -46,6 +46,6 @@ $( function () {
     });
 
     /* Menu */
-    // var dateObj = new Date();
-    // $('#NumeroDuJour').text(dateObj.getDate());
+    var dateObj = new Date();
+    $('#NumeroDuJour').text(dateObj.getDate());
 });

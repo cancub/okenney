@@ -1,0 +1,92 @@
+.bouton-bdr {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline:none;
+  padding: 5px;
+  border-radius: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#BarreDeRecherche {
+  position: absolute;
+  width: calc(100vw - var(--espace-commut-ouvert) - 2em);
+  height: 70%;
+  right: 0.7em;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: white;
+  border-radius: 5px;
+
+  display: grid;
+  grid-template-columns: 3em 1fr 2.5em;
+  grid-template-rows: 1fr;
+}
+#BarreDeRecherche input {
+  box-sizing: border-box;
+  height:100%;
+  width:100%;
+  font-size: 1.1em;
+  border-color: transparent;
+  border-style: solid;
+  outline: none;
+}
+
+
+#BarreACote {
+  margin-top: var(--taille-en-tete);
+  margin-left:auto;
+  width:200px;
+}
+#ListeMenu {
+  margin-left: 24px;
+}
+#ListeMenu div {
+  cursor: pointer;
+  padding-top: 1em;
+  color: white;
+  font-size: 24px;
+  font-family: 'Josefin Sans';
+}
+#LiensExterieurs {
+  padding: 1em 1em 1em 1em;
+  height:6em;
+  display:grid;
+  align-items: stretch;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap:0.5em;
+}
+#LiensExterieurs a {
+  display: grid;
+  place-items: center;
+}
+#LiensExterieurs a {
+  text-decoration: none;
+  color: var(--okenney-orange-strong);
+  justify-self: center;
+}
+#LiensExterieurs a[name="twitter"] {
+  width: 100%;
+}
+.ok-twitter-bg {
+  fill: none;
+}
+.ok-twitter-path {
+  fill: var(--okenney-orange-strong);
+}
+.ok-twitter-path:hover {
+  fill: #1da1f2;
+}
+#LiensExterieurs a[name="agenda"] {
+  display: grid;
+}
+#LiensExterieurs a[name="agenda"] * {
+  grid-area: 1/1/last-line/end;
+}
+#NumeroDuJour {
+  margin-top: 11px;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: 'Josefin Sans';
+}

@@ -5,9 +5,9 @@
   --taille-en-tete: 50px;
   --ombre-Y: 5px;
   --ombre-X-contenu: 10px;
-
   --glissage-contenu: 200px;
   --temps-transition: 0.3s;
+  --espace-commut-ouvert: 67px;
 }
 
 body {
@@ -21,7 +21,7 @@ header {
   height: var(--taille-en-tete);
   z-index: 30;
 }
-header div {
+header div.recip {
   position: absolute;
 }
 header div.prem {
@@ -36,7 +36,7 @@ header div.prem {
     0px 2px 2px 1px rgba(0, 0, 0, 0.3);
 }
 header div.prem.ouvert {
-  left: calc(67px - 100vw);
+  left: calc(var(--espace-commut-ouvert) - 100vw);
   box-shadow:
     20px 6px 2px -6px rgba(0, 0, 0, 0.35),
     26px 26px 2px -23px rgba(0, 0, 0, 0.3);
