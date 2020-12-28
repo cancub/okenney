@@ -72,33 +72,31 @@ body {
   justify-content: space-between;
   align-items: center;
 }
-
-.en-tete svg {
-  cursor: pointer;
-}
-
 .ok-logo {
   margin-left: 0.8em;
+  display: block;
+  margin-top:auto;
+  margin-bottom:auto;
 }
-
-#Loupe {
+.en-tete-loupe {
+  cursor: pointer;
   margin-right: 0.4em;
 }
-#Loupe.ferme path {
+.en-tete-loupe.ferme path {
   display: none;
 }
-#Loupe line {
+.en-tete-loupe line {
   stroke-linecap: round;
 }
-#Loupe circle {
+.en-tete-loupe circle {
   fill: var(--okenney-orange);
 }
-#Loupe.ouvert circle {
+.en-tete-loupe.ouvert circle {
   filter: url(#shadow);
 }
-#Loupe.ouvert line {
+.en-tete-loupe.ouvert line {
   filter: url(#shadow90);
 }
-#Loupe.ouvert line {
+.en-tete-loupe.ouvert line {
   transform: rotate(-90deg) translate(-50px);
 }

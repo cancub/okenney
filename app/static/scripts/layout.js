@@ -1,6 +1,6 @@
 $( function () {
     var $glisseurs = $('.glisser');
-    var $loupe = $('#Loupe');
+    var $loupe = $('.en-tete-loupe');
     var $entreeRecherche = $('#BarreDeRecherche input');
     var $faireRechercher = $('#FaireRechercher');
     var $supprimerText = $('#SupprimerText');
