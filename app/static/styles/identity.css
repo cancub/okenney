@@ -6,7 +6,7 @@
   --okenney-orange: #ff751a;
   --okenney-orange-strong: #cc5200;
   --okenney-purple: #650ef0;
-  --okenney-purple-dark: #2F2441;
+  --okenney-purple-dark: #3a265a;
   --okenney-purple-grey: #584f67;
   --okenney-purple-light: #C6A3FF;
 
@@ -14,7 +14,7 @@
 }
 
 body {
-  font-family: Verdana, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;;
   line-height: 1.5;
 }
 
