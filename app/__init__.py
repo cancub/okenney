@@ -40,7 +40,7 @@ def index():
         desc_path = a.filepath.replace('.html', '-desc.html')
 
         latest_articles.append({
-            'title': a.title,
+            'title': a.title.title().replace('Test', 'TEST'),
             'filepath': a.filepath,
             'image': image_path,
             'desc': desc_path,
