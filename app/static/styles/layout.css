@@ -103,6 +103,7 @@ footer {
 
 .recip-contenu {
   position: relative;
+  min-height:100vh;
   z-index: 20;
   padding-top: calc(var(--taille-en-tete) + 10px);
   background-color: white;
