@@ -141,3 +141,8 @@ def index():
         total_count=len(latest_articles),
         preload_count=min(len(latest_articles), 5)
     )
+
+# Everything else.
+@app.route('/<path:subpath>')
+def other(subpath):
+    return flask.render_template(subpath)
