@@ -46,7 +46,7 @@ body {
   border-top-right-radius: var(--button-border-radius);
   border-bottom-right-radius: var(--button-border-radius);
 }
-.rounded-all { 
+.rounded-all {
   border-bottom-right-radius: var(--button-border-radius);
   border-bottom-left-radius: var(--button-border-radius);
   border-top-right-radius: var(--button-border-radius);

@@ -1,22 +1,25 @@
 {% extends "layout.html" %}
+{% import 'macros/misc.html' as widgets with context -%}
 
 {% block head %}
 <script src="/scripts/index.js"></script>
+{{ widgets.css() }}
 <link rel="stylesheet" href="/styles/index.css">
+{{ widgets.js() }}
 {% endblock %}
 
 {% macro article_preview(details) -%}
-  <a class="article-preview" href="{{ details['filepath'] }}">
-    <div class="image-recip">
-      <img src="{{ details['image'] }}" />
+<a class="article-preview" href="{{ details['filepath'] }}">
+  <div class="image-recip">
+    <img src="{{ details['image'] }}" />
+  </div>
+  <div class="article-preview-text">
+    <h2 class="article-preview-titre">{{ details['title'] }}</h2>
+    <div class="article-preview-description">
+      {% include details['desc'] %}
     </div>
-    <div class="article-preview-text">
-      <h2 class="article-preview-titre">{{ details['title'] }}</h2>
-      <div class="article-preview-description">
-        {% include details['desc'] %}
-      </div>
-    </div>
-  </a>
+  </div>
+</a>
 {%- endmacro %}
 
 {% block content_column %}
@@ -32,6 +35,9 @@
 <div class="article-a-lune">
   {{ article_preview(latest[0]) }}
   <!-- <div id="BarreLaterale"></div> -->
+</div>
+<div class="acceuil-stats">
+  {{ widgets.vices(100, 100) }}
 </div>
 <div class="articles-plus-vieux">
 {% for i in range(1, preload_count) %}

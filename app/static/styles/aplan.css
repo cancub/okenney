@@ -34,16 +34,18 @@
 }
 
 
-#BarreACote {
+.aplan-barre-a-cote {
   margin-top: var(--taille-en-tete);
   margin-left:auto;
   width:200px;
 }
-#ListeMenu {
+.aplan-liste-menu {
   margin-left: 24px;
+  display: flex;
+  flex-direction: column;
 }
-#ListeMenu div {
-  cursor: pointer;
+.aplan-liste-menu a {
+  text-decoration: none;
   padding-top: 0.3em;
   color: white;
   font-size: 20px;
