@@ -1,0 +1,387 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<link type="text/css" rel="stylesheet" href="/libs/jsgrid.min.css" />
+<link type="text/css" rel="stylesheet" href="/libs/jsgrid-theme.min.css" />
+<link type="text/css" rel="stylesheet" href="/libs/jquery-ui.min.css" />
+<link type="text/css" rel="stylesheet" href="/libs/jquery-ui.structure.min.css" />
+<link type="text/css" rel="stylesheet" href="/libs/jquery-ui.theme.min.css" />
+<script type="text/javascript" src="/libs/jsgrid.min.js"></script>
+<script type="text/javascript" src="/libs/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/libs/jquery.validate.js"></script>
+<link rel="stylesheet" href="/styles/control.css">
+{% endblock %}
+
+{% block content_column %}
+
+<div id="jsGrid"></div>
+
+<script>
+    var categories = {{categories|tojson}};
+    var products = {{products|tojson}};
+    var units = {{units|tojson}};
+
+    var $grid = $('#jsGrid');
+
+    [categories, products, units].forEach(arr => {
+        arr.unshift({id: 0, name:''})
+    });
+
+    // Allow for a new element to be added.
+    products.push({id: products.length, name: "other"});
+
+    function removeProductsByID(delIDs) {
+        // We need the products array to be the same object so that the
+        // reference doesn't change.
+        products = products.filter(prod => {
+            return !delIDs.includes(prod.id)
+        });
+        $grid.jsGrid("fieldOption", "product", "items", products);
+        // var i = delIDs.length;
+        // while (i--) {
+        //     if (delIDs.includes(products[i].id))
+        //         products.splice(i, 1);
+        // }
+    }
+
+    function appendProduct(product) {
+        products.splice(-1, 0, product);
+        $grid.jsGrid("fieldOption", "product", "items", products);
+    }
+
+    function tagOptions(items, options) {
+        for (var i = 0; i < items.length; i++) {
+            var cat = items[i].category;
+            if (cat != null)
+                $(options[i]).addClass('consom-depend consom-' + cat);
+        }
+    }
+
+    function updateConsomOptions (cat, reset=false) {
+        // Remove the previous class.
+        $grid.removeClass(function (index, className) {
+            return (className.match(/(^|\s)consom-\S+/g) || []).join(' ');
+        });
+
+        // Add the new class.
+        $grid.addClass('consom-' + cat);
+
+        $('.consom-product input').hide();
+        
+        if (reset) {
+            // Locate the other select inputs.
+            var dependents = $grid.find('.consom-depend-recip select');
+            // Switch them back to the default.
+            $.each(dependents, function (i, d) {
+                $(d).val('');
+            });
+
+            // Reset the quantity input to the default as well.
+            $($grid.find('.consom-quantity input')).val('');
+        }
+    }
+
+    function resetInsertRow () {
+        var $iRow = $grid.find('.jsgrid-insert-row');
+
+        var dependents = $grid.find('.consom-depend-recip select');
+        var $quant = $($grid.find('.consom-quantity input'));
+
+        // Reset each of the selects.
+        $.each($iRow.find('select'), function(i, sel) {
+            $(sel).val('');
+        });
+
+        // Also reset the quantity input.
+        $quant.val('');
+    }
+
+    var CatSelect = function (config) {
+        jsGrid.Field.call(this, config);
+    };
+    
+    CatSelect.prototype = new jsGrid.SelectField({
+
+        editTemplate: function (value) {
+            $res = jsGrid.SelectField.prototype.editTemplate.call(this, value);
+            $($res.find('option')[0]).hide();
+
+            $res.change(e => {
+                updateConsomOptions($(e.target).val(), true);
+            });
+
+            return $res;
+        },
+
+        _collectCat: function (type) {
+            var recip = $grid.find(
+                '.jsgrid-' + type + '-row .' + this.css.replace(' ', '.')
+            );            
+            // Get the current value of the select input.
+            return $(recip.find('select')).val();
+        },
+
+        editValue: function () {
+            return this._collectCat('edit');
+        },
+
+        insertValue: function () {
+            return this._collectCat('insert');
+        },
+
+    });
+
+    jsGrid.fields.catSelect = CatSelect;
+
+    var ProdSelect = function (config) {
+        jsGrid.Field.call(this, config);
+    };
+    
+    ProdSelect.prototype = new jsGrid.SelectField({
+
+        editTemplate: function (value) {
+            var $sel = jsGrid
+                .SelectField
+                .prototype
+                .editTemplate
+                .call(this, value);
+
+            // Make sure that each of these options is tagged with the
+            // category.
+            tagOptions(this.items, $sel.find('option'));
+
+            // And in this case we want to allow the addition of new
+            // elements, so add the (initially) hidden input which it
+            // reveals.
+            var $input = $('<input>').hide();
+
+            var $recip = $('<div/>')
+                .append($sel)
+                .append($input);
+
+            $sel.change(e => {
+                // Selecting "other" reveals the input.
+                $input.toggle($(e.target).val() == "other");
+                // No matter what, we clear the input.
+                $input.val('');
+            })
+
+            return $recip;
+        },
+
+        insertTemplate: function () {
+            var $sel = jsGrid
+                .SelectField
+                .prototype
+                .insertTemplate
+                .call(this);
+
+            // Make sure that each of these options is tagged with the
+            // category.
+            tagOptions(this.items, $sel.find('option'));
+
+            // And in this case we want to allow the addition of new
+            // elements, so add an "other" option and the (initially)
+            // hidden input which it reveals.
+            var $input = $('<input>').hide();
+
+            var $recip = $('<div/>')
+                .append($sel)
+                .append($input);
+
+            $sel.change(e => {
+                // Selecting "other" reveals the input.
+                $input.toggle($(e.target).val() == "other");
+                // No matter what, we clear the input.
+                $input.val('');
+            })
+
+            return $recip;
+        },
+
+        _collectProduct: function(type) {
+            var recip = $grid.find(
+                '.jsgrid-' + type + '-row .' + this.css.replace(' ', '.')
+            );
+            // Get the current value of the select input.
+            var val = $(recip.find('select')).val();
+            if (val != 'other')
+                return val;
+
+            // Collect the value in the "other" input.
+            return $(recip.find('input')).val();
+        },
+
+        editValue: function() {
+            return this._collectProduct('edit');
+        },
+
+        insertValue: function() {
+            return this._collectProduct('insert');
+        },
+
+        validate: {
+            validator: "required",
+            message: "A product is required",
+        }
+
+    });
+
+    jsGrid.fields.prodSelect = ProdSelect;
+
+    // Validation
+    // disable save button if any field is empty
+
+    $grid.jsGrid({
+        width: "100%",
+        height: "400px",
+
+        autoload: true,
+        inserting: true,
+        editing: true,
+        sorting: true,
+        paging: true,
+
+        controller: {
+            loadData: function (filter) {
+                return $.ajax({
+                    type: "GET",
+                    url: "{{CONSUMPTION_API}}",
+                    data: filter
+                });
+            },
+
+            insertItem: function (item) {
+                return $.ajax({
+                    type: "POST",
+                    url: "{{CONSUMPTION_API}}",
+                    data: item
+                }).done(function(data, textStatus, jqXHR) {
+                    // If the product is new, add the product to the list of
+                    // options.
+                    if (data.new_product !== null)
+                        appendProduct(data.new_product)
+                });
+            },
+
+            updateItem: function (item) {
+                return $.ajax({
+                    type: "PUT",
+                    url: "{{CONSUMPTION_API}}",
+                    data: item
+                }).done(function (data, textStatus, jqXHR) {
+                    // Remove the non-existent products after this.
+                    removeProductsByID(data.del_product_ids);
+                    // If the product is new, add the product to the list of
+                    // options.
+                    if (data.new_product !== null)
+                        appendProduct(data.new_product)
+                });
+            },
+
+            deleteItem: function (item) {
+                return $.ajax({
+                    type: "DELETE",
+                    url: "{{CONSUMPTION_API}}",
+                    data: item
+                }).done(function (data, textStatus, jqXHR) {
+                    // Remove the non-existent products after this.
+                    removeProductsByID(data.del_product_ids);
+                });
+            },
+        },
+
+        fields: [
+            {
+                name: "category",
+                type: "catSelect",
+                css: "consom-cat-select",
+                items: categories,
+                valueField: "name",
+                textField: "name",
+                title: 'cat',
+                validate: {
+                    validator: "required",
+                    message: "A category is required",
+                },
+            },
+            { 
+                name: "product",
+                type: "prodSelect",
+                css: "consom-depend-recip consom-product",
+                items: products,
+                valueField: "name",
+                textField: "name",
+                title: 'prod',
+            },
+            { 
+                name: "unit",
+                type: "select",
+                css: "consom-depend-recip consom-unit",
+                items: units,
+                valueField: "name",
+                textField: "name",
+                title: 'unit',
+                validate: {
+                    validator: "required",
+                    message: "A unit is required",
+                },
+
+                editTemplate: function (value) {
+                    var $res = jsGrid
+                        .SelectField
+                        .prototype
+                        .editTemplate
+                        .call(this, value);
+                    // Make sure that each of these options is tagged with the
+                    // category.
+                    tagOptions(this.items, $res.find('option'));
+
+                    return $res;
+                },
+
+                insertTemplate: function () {
+                    var $res = jsGrid
+                        .SelectField
+                        .prototype
+                        .insertTemplate
+                        .call(this);
+                    // Make sure that each of these options is tagged with the
+                    // category.
+                    tagOptions(this.items, $res.find('option'));
+
+                    return $res;
+                },
+            },
+            {
+                name: "quantity",
+                type: "text",
+                css: "consom-quantity",
+                title: '#',
+                validate: {
+                    validator: "required",
+                    message: "A qu is required",
+                },
+            },
+            { type: "control" }
+        ],
+
+        onItemEditing: function (args) {
+            updateConsomOptions(args.item.category);
+        },
+
+        onDataLoaded: function (grid, data) {
+            // Set up the insert row to also have selects reset when a new
+            // category is selected.
+            var $sel = $(
+                $grid.find('.jsgrid-insert-row .consom-cat-select select')
+            );
+            $sel.change( e => {
+                updateConsomOptions($(e.target).val(), true)
+            });
+        }
+    });
+
+</script>
+
+{% endblock %}
