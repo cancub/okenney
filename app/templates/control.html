@@ -37,11 +37,6 @@
             return !delIDs.includes(prod.id)
         });
         $grid.jsGrid("fieldOption", "product", "items", products);
-        // var i = delIDs.length;
-        // while (i--) {
-        //     if (delIDs.includes(products[i].id))
-        //         products.splice(i, 1);
-        // }
     }
 
     function appendProduct(product) {
@@ -229,26 +224,86 @@
 
     jsGrid.fields.prodSelect = ProdSelect;
 
+
+    var MyDateField = function(config) {
+        jsGrid.Field.call(this, config);
+    };
+     
+    MyDateField.prototype = new jsGrid.Field({
+     
+        css: "date-field",
+        align: "center",
+        width: "75px",
+     
+        sorter: function(date1, date2) {
+            return new Date(date1) - new Date(date2);
+        },
+     
+        itemTemplate: function(value) {
+            return new Date(value).toDateString();
+        },
+     
+        insertTemplate: function(value) {
+            return this._insertPicker = $("<input>").datepicker({defaultDate: new Date()});
+        },
+     
+        editTemplate: function(value) {
+            return this._editPicker = $("<input>")
+                .datepicker()
+                .datepicker("setDate", new Date(value));
+        },
+     
+        insertValue: function() {
+            return this._insertPicker
+                .datepicker("getDate")
+                .toISOString();
+        },
+     
+        editValue: function() {
+            return this._editPicker
+                .datepicker("getDate")
+                .toISOString();
+        }
+    });
+     
+    jsGrid.fields.date = MyDateField;
+
+
+
     // Validation
     // disable save button if any field is empty
 
     $grid.jsGrid({
         width: "100%",
-        height: "400px",
+        height: "80vh",
 
         autoload: true,
         inserting: true,
         editing: true,
         sorting: true,
         paging: true,
+        pageSize: 10,
 
         controller: {
             loadData: function (filter) {
-                return $.ajax({
+                var d = $.Deferred();
+
+                // server-side filtering
+                $.ajax({
                     type: "GET",
-                    url: "{{CONSUMPTION_API}}",
-                    data: filter
-                });
+                    url: "{{CONSUMPTION_API}}?raw=true",
+                    data: filter,
+                    dataType: "json"
+                }).done(function (result) {
+                    // client-side filtering
+                    result.sort(function (e1, e2) {
+                        return new Date(e1.datetime) - new Date(e2.datetime);
+                    });
+
+                    d.resolve(result);
+                })
+
+                return d.promise();
             },
 
             insertItem: function (item) {
@@ -296,6 +351,7 @@
                 name: "category",
                 type: "catSelect",
                 css: "consom-cat-select",
+                width: "50px",
                 items: categories,
                 valueField: "name",
                 textField: "name",
@@ -356,12 +412,19 @@
             {
                 name: "quantity",
                 type: "text",
+                width: "40px",
                 css: "consom-quantity",
+                align: "center",
                 title: '#',
                 validate: {
                     validator: "required",
                     message: "A qu is required",
                 },
+            },
+            {
+                name: "datetime",
+                type: "date",
+
             },
             { type: "control" }
         ],
@@ -381,6 +444,8 @@
             });
         }
     });
+
+    $("#jsGrid").jsGrid("sort", "datetime");
 
 </script>
 

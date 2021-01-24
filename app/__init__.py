@@ -129,7 +129,19 @@ class ConsumptionAPI(Resource):
         return del_ids
 
     def _strptime(self, datetime_string):
-        return _datetime.strptime(datetime_string, '%Y-%m-%d %H:%M:%S.%f')
+        formats = [
+            '%Y-%m-%dT%H:%M:%S.000Z',
+            '%Y-%m-%d %H:%M:%S.%f',
+            '%Y-%m-%d %H:%M:%S',
+            '%Y-%m-%d %H:%M',
+            '%Y-%m-%d',
+        ]
+        for f in formats:
+            try:
+                return _datetime.strptime(datetime_string, f)
+            except ValueError:
+                pass
+        raise ValueError
 
     def get(self):
         try:
@@ -238,9 +250,17 @@ class ConsumptionAPI(Resource):
 
     def post(self):
         try:
-            dtime = self._strptime(flask.request.form['datetime'])
+            dtime = flask.request.form['datetime']
         except KeyError:
             dtime = _datetime.now()
+        else:
+            if dtime.strip() == '':
+                dtime = _datetime.now()
+            else:
+                try:
+                    dtime = self._strptime(dtime)
+                except ValueError:
+                    dtime = _datetime.now()
 
         cat_name = flask.request.form['category']
         product_name = flask.request.form['product']
@@ -278,7 +298,7 @@ def index():
     latest_articles = []
     for a in Article.query.order_by(Article.dtime):
         image_path = 'static/images/{}'.format(
-            a.filepath.split('articles/')[-1].replace('.html','.png')
+            a.filepath.split('articles/')[-1].replace('.html', '.png')
         )
 
         desc_path = a.filepath.replace('.html', '-desc.html')
