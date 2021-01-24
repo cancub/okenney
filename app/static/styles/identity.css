@@ -100,3 +100,8 @@ body {
 .en-tete-loupe.ouvert line {
   transform: rotate(-90deg) translate(-50px);
 }
+
+.bas-de-page {
+  margin-top: 3em;
+  text-align: center;
+}
