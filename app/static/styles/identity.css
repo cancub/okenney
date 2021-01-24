@@ -5,10 +5,15 @@
   --okenney-orange-light: #ffa366;
   --okenney-orange: #ff751a;
   --okenney-orange-strong: #cc5200;
-  --okenney-purple: #650ef0;
-  --okenney-purple-dark: #3a265a;
-  --okenney-purple-grey: #584f67;
   --okenney-purple-light: #C6A3FF;
+  --okenney-purple: #650ef0;
+  --okenney-purple-faded: #650ef063;
+  --okenney-purple-dark: #3a265a;
+  --okenney-purple-dark-faded: #3a265a6e;
+  --okenney-purple-grey: #584f67;
+  --okenney-blue-light: #A0C7CF;
+  --okenney-blue: #5C9EAD;
+  --okenney-dark-blue: #37636D;
 
   --button-border-radius: 10px;
 }
