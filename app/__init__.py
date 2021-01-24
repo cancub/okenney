@@ -3,6 +3,7 @@ from datetime import datetime as _datetime
 from datetime import date as _date
 from datetime import timedelta as _timedelta
 import os
+import re
 
 # Import flask and template operators
 import flask
@@ -97,10 +98,6 @@ class Category(db.Model):
         return f'<Category {self.name}>'
 
 class ConsumptionAPI(Resource):
-    default_quantity_units = {
-        'cigarettes': None,
-        'alcohol': 'ml'
-    }
 
     def _consom_par_id(self, cons_id):
         return Consumption.query.filter_by(id=cons_id).first_or_404(
@@ -144,65 +141,8 @@ class ConsumptionAPI(Resource):
         raise ValueError
 
     def get(self):
-        try:
-            cat = flask.request.args['category']
-        except KeyError:
+        if flask.request.args.get('raw'):
             return flask.jsonify(Consumption.query.all())
-
-        # Determine how the data should be collected.
-        x_unit = flask.request.args.get('x_unit', 'days')
-        if x_unit not in ('days', 'weeks', 'months'):
-            abort(400, msg=f'Unrecognized time unit {x_unit}')
-
-        # Determine what quantity unit the front-end is expecting. If none is
-        # specified
-        y_unit = flask.request.args.get(
-            'y_unit',
-            self.default_quantity_units[cat]
-        )
-
-        data = {}
-
-        # Get the set of data corresponding to this category and collect it
-        # based on the unit of time.
-        # TODO: allow for time units other than days.
-        now = _datetime.now().date()
-        first_date = now
-        for r in Consumption.query.filter_by(category=cat):
-            date = r.datetime.date()
-
-            # Is this the earliest date?
-            if date < first_date:
-                first_date = date
-
-            # TODO: format the quantity to match what was requested as the
-            #       y_unit.
-
-            # Add the data to the output.
-            try:
-                data[str(date)] += float(r.quantity)
-            except KeyError:
-                data[str(date)] = float(r.quantity)
-
-        # Add today if it is missing.
-        if now not in data:
-            data[str(now)] = 0
-
-        # Make sure there are at least 10 days represented.
-        if first_date > now - _timedelta(days=10):
-            first_date = now - _timedelta(days=10)
-            data[str(first_date)] = 0
-
-        # Fill in the other dates between the first date and today.
-        for days in range((now - first_date).days):
-            candidate_date = str(now - _timedelta(days=days))
-            if candidate_date not in data:
-                data[candidate_date] = 0
-
-        # Our D3 functions require iterables.
-        return flask.jsonify(
-            [{'date': k, 'value': v} for k,v in data.items()]
-        )
 
     def delete(self):
         db.session.delete(
@@ -288,13 +228,82 @@ class ConsumptionAPI(Resource):
 CONSUMPTION_PATH = '/consumption-data'
 api.add_resource(ConsumptionAPI, CONSUMPTION_PATH)
 
-# Sample HTTP error handling
-@app.errorhandler(404)
-def not_found(error):
-    return flask.render_template('404.html'), 404
+_default_quantity_units = {
+    'beer': 'mL',
+    'wine': 'mL',
+    'spirit': 'fl oz',
+    'cannabis': 'toke',
+    'chips': 'g',
+    'cigarette': 'cigarette',
+    'coffee': 'mL',
+}
 
-@app.route('/')
-def index():
+def _translate_quantity(consom):
+    # Figure out what unit we'd like the output to be in.
+    target_unit = _default_quantity_units[consom.category]
+
+    if consom.unit.startswith(target_unit):
+        return consom.quantity
+
+    target_unit_quant = float(
+        re.search(rf'\(([\d\.]+) {target_unit}\)', consom.unit).group(1)
+    )
+    return target_unit_quant * float(consom.quantity)
+
+def get_chart_data():
+    '''
+    Build a day-by-day breakdown of consumption for each category.
+    '''
+    categories = [c.name for c in Category.query.all()]
+    data = {c: {} for c in categories}
+
+    # Keep track of the earliest date we've seen.
+    now = _datetime.now().date()
+    min_date = now
+
+    # Also keep track of the maximum value we've seen for each category.
+    maximums = {c: 0.1 for c in categories}
+
+    # Collect all of the data
+    for c in Consumption.query.all():
+        category = c.category
+        date = c.datetime.date()
+        quantity = _translate_quantity(c)
+
+        min_date = min(min_date, date)
+
+        try:
+            data[category][str(date)] += quantity
+        except KeyError:
+            data[category][str(date)] = quantity
+
+        maximums[category] = max(maximums[category], data[category][str(date)])
+
+    # Now walk through the data and fill in the blanks with zeros.
+    dates = [
+        str(min_date + _timedelta(days=d))
+            for d in range((now-min_date).days + 1)
+    ]
+    for date in dates:
+        for cat, cat_data in data.items():
+            if str(date) not in cat_data:
+                cat_data[str(date)] = 0
+
+    # Finally, reformat the data so that it is a list of dicts.
+    data_list = []
+    for cat, cat_data in data.items():
+        for date, value in cat_data.items():
+            data_list.append({'category': cat, 'date': date, 'value': value})
+
+    return {
+        'data': data_list,
+        'categories': categories,
+        'dates': dates,
+        'maximums': maximums,
+        'units': _default_quantity_units,
+    }
+
+def get_latest_articles():
     latest_articles = []
     for a in Article.query.order_by(Article.dtime):
         image_path = 'static/images/{}'.format(
@@ -310,12 +319,24 @@ def index():
             'desc': desc_path,
         })
 
+    return latest_articles
+
+# Sample HTTP error handling
+@app.errorhandler(404)
+def not_found(error):
+    return flask.render_template('404.html'), 404
+
+@app.route('/')
+def index():
+
+    latest_articles = get_latest_articles()
+    article_count = len(latest_articles)
 
     context = {
         'latest': latest_articles,
-        'total_count': len(latest_articles),
-        'preload_count': min(len(latest_articles), 5),
-        'CONSUMPTION_API': CONSUMPTION_PATH
+        'total_count': article_count,
+        'preload_count': min(article_count, 5),
+        'consumption_data': get_chart_data(),
     }
 
     return flask.render_template('index.html', **context)
@@ -367,13 +388,6 @@ def control():
         products = Product.query.all(),
         units = Unit.query.all(),
         CONSUMPTION_API = CONSUMPTION_PATH
-    )
-
-@app.route('/chart')
-def chart():
-    return flask.render_template(
-        'chart.html',
-        CONSUMPTION_API= CONSUMPTION_PATH
     )
 
 # Everything else.
