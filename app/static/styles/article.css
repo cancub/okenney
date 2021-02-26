@@ -1,4 +1,42 @@
-.recip-article {
+.article-en-tete {
+  padding-top: 2em;
+  margin-bottom: 2em;
+}
+
+.article-recip-grostitre {
+  margin: 1em;
+}
+
+.article-recip-gt-titre {
+  font-size: 2.2em;
+  font-weight: bold;
+  line-height: 1.1;
+}
+.article-recip-gt-soustitre {
+  margin-top: 1em;
+  font-size: 20px;
+}
+
+.article-recip-texte {
   margin: 0 1em;
   font-size: 20px;
+}
+
+.image-w-caption img {
+  width:100%;
+}
+.image-w-caption span {
+  color: grey;
+  line-height: 1;
+  padding: 0 1em;
+}
+
+@media (min-width: 40em) {
+  .image-w-caption {
+    margin-left: 1em;
+    margin-right: 1em;
+  }
+  .image-w-caption span {
+    padding: 0;
+  }
 }

@@ -2,13 +2,29 @@
 
 {% block head %}
 <link rel="stylesheet" href="/styles/article.css">
-{% block entete_article %}
-{% endblock %}
+  {% block entete_article %}
+  {% endblock %}
 {% endblock %}
 
 {% block content_column %}
-<div class='recip-article'>
-    {% block ecriture %}
-    {% endblock %}
+<div class="article">
+  <div class="article-en-tete">
+    <div class="article-recip-grostitre">
+      <div class="article-recip-gt-titre">
+        {% block article_titre %} {% endblock %}
+      </div>
+      <div class="article-recip-gt-soustitre">
+        {% block article_soustitre %} {% endblock %}
+      </div>
+    </div>
+    {% block article_image %} {% endblock %}
+  </div>
+  <div class="article-recip-texte">
+    {% block article_texte %} {% endblock %}
+  </div>
 </div>
+{% endblock %}
+
+{% block toc %}
+<!-- https://www.joshwcomeau.com/css/rules-of-margin-collapse/ -->
 {% endblock %}
