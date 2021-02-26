@@ -1,0 +1,310 @@
+{% macro css() -%}
+{%- endmacro%}
+
+{% macro image_et_caption(url, caption=None) %}
+<div class="image-w-caption">
+  <img src="/static/images/{{url}}">
+  <span>{{caption}}</span>
+</div>
+
+{% endmacro %}
+
+<!-- button for hiding and showing pretentious thoughts -->
+{% macro pretentieux() -%}
+<style>
+  .recip {
+    /* margin: 0 1em; */
+  }
+
+  .bouton-recip {
+    height: 2em;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 0.5fr 15em 0.5fr;
+    grid-template-areas: 'left center right';
+  }
+
+  .bouton-recip .ombre {
+    grid-area: center;
+    position: relative;
+    width: 15em;
+    height: 1em;
+    top: 100%;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    box-shadow: 2px 4px 6px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  .bouton-recip .bouton {
+    grid-area: center;
+    position: relative;
+    z-index: 20;
+    top: 50%;
+    height: 100%;
+    width: 15em;
+    background-color: rgb(165, 121, 121);
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    cursor: pointer;
+    display: grid;
+    place-content: center;
+  }
+
+  .bouton-recip .bouton:active {
+    box-shadow: inset 2px 4px 2px 1px rgba(0, 0, 0, 0.25);
+  }
+
+  .bouton-recip::before,
+  .bouton-recip::after {
+    display: block;
+    content: "";
+    height: 100%;
+    width: 100%;
+    background: white;
+    z-index: 10;
+  }
+
+  .bouton-recip::before {
+    grid-area: left;
+  }
+
+  .bouton-recip::after {
+    grid-area: right;
+  }
+
+  .longue-recip {
+    margin: 0 -0.5em;
+    overflow-y: hidden;
+  }
+
+  .longue-recip .ombre {
+    transition: box-shadow 0.5s ease-in-out;
+  }
+
+  .longue-recip.ouvert .ombre {
+    box-shadow: none;
+  }
+
+  .long-recip:not(.ouvert) .bouton span {
+
+  }
+
+  .top-recip {
+    position: absolute;
+    margin: 0 auto;
+    height: 1em;
+    display: grid;
+  }
+
+  .longue {
+    height: 1em;
+    box-shadow: inset 2px 4px 6px 4px rgba(0, 0, 0, 0.25);
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+  }
+
+  .bas-recip {
+    position: relative;
+    height: 1em;
+    top: -1em;
+    display: grid;
+    grid-template-columns: 0.5fr 15em 0.5fr;
+    grid-template-areas: 'left center right';
+  }
+
+  .bas-recip::after {
+    position: relative;
+    display: block;
+    content: " ";
+    width: 100%;
+    height: 100%;
+    grid-area: 1 / 1 / 2/ last-line;
+    top: 1em;
+    background: white;
+  }
+
+  .bas-recip .blocker {
+    background-color: white;
+    box-shadow: 2px 4px 6px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  .bas-recip .blocker-l {
+    grid-area: left;
+  }
+
+  .bas-recip .blocker-r {
+    grid-area: right;
+  }
+
+  .arrondi-gache-mil,
+  .arrondi-droit-mil,
+  .arrondi-gauche-haut,
+  .arrondi-droit-haut {
+    position: relative;
+    width: 5px;
+    height: 5px;
+    border: 1px solid white;
+  }
+
+  .arrondi-gauche-haut,
+  .arrondi-droit-haut {
+    align-self: start;
+    top: -5px;
+  }
+
+  .arrondi-gache-mil,
+  .arrondi-droit-mil {
+    align-self: end;
+  }
+
+  .arrondi-gauche-haut,
+  .arrondi-gache-mil {
+    grid-area: left;
+    box-shadow: -2px 2px 0 white;
+    border-bottom-left-radius: 5px;
+    border-width: 0 0 1px 1px;
+  }
+
+  .arrondi-droit-haut,
+  .arrondi-droit-mil {
+    grid-area: right;
+    box-shadow: 2px 2px 0 white;
+    border-bottom-right-radius: 5px;
+    border-width: 0 1px 1px 0;
+  }
+
+  .arrondi-gauche-haut,
+  .arrondi-droit-mil {
+    justify-self: left;
+  }
+
+  .arrondi-gache-mil,
+  .arrondi-droit-haut {
+    justify-self: right;
+  }
+
+  .arrondi-gache-mil {
+    right: -5px;
+  }
+
+  .arrondi-droit-mil {
+    left: -5px;
+  }
+
+  .longue .reveal {
+    margin: 0 0.5em;
+    /* background: white; */
+    -webkit-transform: scale(0.98);
+    -moz-transform: scale(0.98);
+    -ms-transform: scale(0.98);
+    transform: scale(0.98);
+    transition: transform 0.5s ease-in-out;
+  }
+
+  .longue-recip.ouvert .reveal {
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
+
+  .longue p:first-of-type {
+    margin-top: 0;
+    padding-top: 2em;
+  }
+
+  .longue p:last-of-type {
+    margin-bottom: 0;
+    padding-bottom: 1.5em;
+  }
+
+  .courte-recip p:first-of-type {
+    margin-top: 0;
+  }
+</style>
+
+<div class="recip">
+  <div class="longue-recip">
+    <div class="bouton-recip">
+      <div class="ombre"></div>
+      <div class="bouton">
+        <span>ENABLE PRETENSION</span>
+        <span style="display:none;">DISABLE PRETENSION</span>
+      </div>
+    </div>
+    <div class="longue ombre">
+      <div class="reveal">
+        {{ caller(true) }}
+        <div style="text-align: center;">tl;dr</div>
+      </div>
+    </div>
+    <div class="bas-recip">
+      <div class="blocker blocker-l ombre"></div>
+      <div class="arrondi-gauche-haut"></div>
+      <div class="arrondi-gache-mil"></div>
+      <div class="arrondi-droit-mil"></div>
+      <div class="arrondi-droit-haut"></div>
+      <div class="blocker blocker-r ombre"></div>
+    </div>
+  </div>
+  <div class="courte-recip">
+    {{ caller(false) }}
+  </div>
+</div>
+<script>
+  $(function () {
+    var $ARecip = $('.longue-recip');
+    var $A = $('.longue');
+    var $spansBoutons = $('.recip .bouton span');
+    var height = $('.longue .reveal').height();
+    var duration = height * 0.6;
+    $('.recip .bouton').click(e => {
+      if ($A.hasClass('transition'))
+        return;
+
+      // Prevent clicks until we're done moving.
+      $A.addClass('transition');
+
+      $spansBoutons.toggle();
+
+      if (!$ARecip.hasClass('ouvert')) {
+        // We're opening, so we first want to reveal the "descended"
+        // text.
+        $A.animate(
+          { height: height },
+          {
+            duration: duration,
+            done: function () {
+              // Once we're done sliding, we can "raise" the text
+              // by transition to no shadow.
+              $ARecip.addClass('ouvert');
+              // Wait for the open animation to finish, then
+              // allow clicks again.
+              $A.delay(duration).removeClass('transition');
+            },
+          }
+        );
+      }
+      else {
+        // We're closing, so we first want to "descend" the text by
+        // adding the shadow. Wait for it to descent and then close the
+        // text.
+        $ARecip.removeClass('ouvert');
+        $A.delay(duration)
+          .animate(
+            { height: '1em' },
+            {
+              duration: duration,
+              done: function () {
+                // Finally, we allow clicks again.
+                $A.removeClass('transition');
+              },
+            }
+          );
+      }
+    });
+  });
+</script>
+{%- endmacro %}
