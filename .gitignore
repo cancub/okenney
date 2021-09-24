@@ -1,6 +1,8 @@
 # okenney
 okenneyenv/
 
+app/static/images/
+
 .editorconfig
 
 app.db
