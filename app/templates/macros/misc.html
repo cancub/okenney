@@ -524,3 +524,168 @@
 <!-- Appels que j'ai fait a ma famille -->
 {% macro appels() -%}
 {%- endmacro %}
+
+{% macro under_construction(titre, message) %}
+<style>
+  .construction-cadre {
+    margin: 0 auto;
+    display: grid;
+    grid-template-areas: "area";
+  }
+
+  .construction-interior-recip {
+    overflow: hidden;
+    grid-area: area;
+    box-shadow: none;
+    transition: box-shadow 0.2s ease-in-out 0.45s;
+  }
+
+  .construction-interior {
+    scale: 1;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+    transition: transform 0.2s ease-in-out 0.45s;
+  }
+
+  .construction-cadre:hover .construction-interior-recip {
+    box-shadow: inset 2px 4px 4px 2px rgba(0, 0, 0, 0.25);
+    transition: box-shadow 0.2s ease-in-out;
+  }
+
+  .construction-cadre:hover .construction-interior {
+    -webkit-transform: scale(0.98);
+    -moz-transform: scale(0.98);
+    -ms-transform: scale(0.98);
+    transform: scale(0.98);
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .construction-interior img {
+    height: 90%;
+  }
+
+  .construction-volet-recip {
+    grid-area: area;
+    z-index: 100;
+    overflow: hidden;
+  }
+
+  .construction-volet {
+    position: relative;
+    height: 100%;
+    top: -110%;
+    transition: top 0.4s linear;
+    display: grid;
+    grid-template-areas: "area";
+
+  }
+
+  .construction-cadre:hover .construction-volet {
+    top: 0;
+    transition: top 0.4s linear 0.25s;
+  }
+
+  .construction-recip-lamelles {
+    grid-area: area;
+    width: 100%;
+    /* count = round_up( (h - 0.1h) / (0.02h + 0.05h) ) */
+    display: grid;
+    background-color: rgb(148, 148, 148);
+  }
+
+  .construction-recip-lamelles::after {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    content: " ";
+    box-shadow: inset 0px 1px 1px 2px rgba(0, 0, 0, 0.25);
+  }
+
+  .construction-lamelle {
+    margin-bottom: 4px;
+    background-color: rgb(148, 148, 148);
+    box-shadow:
+      0px 1px 1px 0 rgba(0, 0, 0, 0.25),
+      inset 0px 1px 1px 0 rgba(255, 253, 253, 0.25),
+      inset 0px -1px 1px 0 rgba(110, 109, 109, 0.25);
+  }
+
+  .construction-lamelle:last-of-type {
+    margin-bottom: 0;
+    box-shadow:
+      2px 4px 3px 2px rgba(0, 0, 0, 0.25),
+      inset 0px 1px 1px 0 rgba(255, 253, 253, 0.25);
+  }
+
+  .construction-recip-psm {
+    grid-area: area;
+    place-self: center;
+    position: relative;
+    min-width: 20%;
+    /* make these three values random */
+    top: -15px;
+    left: -10px;
+    padding: 2px;
+    transform: rotateZ(-2deg);
+    opacity: 0.9;
+    box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.35);
+    background-color: white;
+  }
+
+  .construction-panneau-sur-mesure {
+    padding: 3px;
+    border: 3px solid black;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+  }
+
+  .construction-psm-en-tete {
+    padding: 5px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    background-color: var(--okenney-dark-blue);
+    color: white;
+    font-size: 1.3em;
+  }
+
+  .construction-psm-corps {
+    padding: 5px;
+  }
+</style>
+<div class="construction-cadre">
+  <div class="construction-interior-recip rounded-all">
+    <div class="construction-interior">
+      {{ caller() }}
+    </div>
+  </div>
+  <div class="construction-volet-recip rounded-all">
+    <div class="construction-volet">
+      <div class="construction-recip-lamelles">
+        {% for i in range(10) %}
+        <div class="construction-lamelle"></div>
+        {%- endfor %}
+      </div>
+      <div class="construction-recip-psm rounded-all">
+        <div class="construction-panneau-sur-mesure rounded-all">
+          <div class="construction-psm-en-tete rounded-all">
+            {{ titre }}
+          </div>
+          <div class="construction-psm-corps">
+            {{ message }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{%- endmacro %}
