@@ -139,3 +139,9 @@ footer {
     filter: hue-rotate(360deg);
   }
 }
+
+@media (min-width: 40em) {
+  .tailleur-contenu {
+    margin: 0 1em;
+  }
+}
