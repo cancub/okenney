@@ -1,7 +1,18 @@
 .article-preview {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 1em;
   text-decoration: none;
 }
+.article-preview .image-recip {
+  height: 6em;
+}
+.article-preview .image-recip img {
+  height: 100%;
+}
 .article-preview-text {
+  flex: 1;
+  align-self: center;
   color: #222;
 }
 .article-preview-titre,
@@ -9,7 +20,7 @@
   margin: .5rem 1rem;
 }
 .article-preview-titre {
-  font-size: 1.8rem;
+  font-size: 1rem;
   line-height: 1.05;
   letter-spacing: -1px;
   font-weight: bold;
@@ -18,24 +29,45 @@
   text-decoration: underline solid #717171;
 }
 .article-preview-description {
+  display: none;
   font-size: 1em;
 }
 .article-preview-description p {
   margin:0;
 }
 
-.article-a-lune {
+.principale {
   border-bottom: 2px dotted var(--okenney-purple-dark);
   margin-left: auto;
   margin-right: auto;
   padding-bottom: 1em;
 }
-.article-a-lune .article-preview {
-  margin-bottom: 1em;
+.principale .article-preview {
+  display: block;
+  padding-bottom: 0;
 }
-.article-a-lune .article-preview img {
+.principale .article-preview-titre {
+  font-size: 1.8em;
+}
+.principale .article-preview-titre,
+.principale .article-preview-description {
+  margin: .5rem 1rem;
+}
+.principale .article-preview-description {
+  display: block;
+}
+.principale .article-preview .image-recip {
+  height: auto;
+}
+.principale .article-preview img {
   width:100%;
+  height:auto;
 }
+
+.articles-a-lune .deux-prochaine {
+  padding-top: 1em;
+}
+
 
 .acceuil-stats {
   display: none;
@@ -46,27 +78,11 @@
   height: 10em;
 }
 
+
 .articles-plus-vieux {
   width:100%;
-  padding-top: 1em;
   display: flex;
   flex-direction: column;
-}
-.articles-plus-vieux .image-recip {
-  height: 6em;
-}
-.articles-plus-vieux .image-recip img {
-  height: 100%;
-}
-.articles-plus-vieux .article-preview-text {
-  flex: 1;
-}
-.articles-plus-vieux .article-preview {
-  display: flex;
-  justify-content: space-between;
-}
-.articles-plus-vieux .article-preview {
-  padding-bottom: 1em;
 }
 .articles-plus-vieux .article-preview:last-of-type {
   padding-bottom: 0;
@@ -74,15 +90,10 @@
 .articles-plus-vieux .article-preview-text {
   align-self: center;
 }
-.articles-plus-vieux .article-preview-description {
-  display: none;
-}
-.articles-plus-vieux .article-preview-titre {
-  font-size: 1rem;
-}
+
 
 @media (min-width: 40em) {
-  .article-a-lune {
+  .principale {
     margin: 0;
     padding-bottom: 1em;
   }
