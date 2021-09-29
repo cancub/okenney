@@ -2,6 +2,7 @@
 okenneyenv/
 
 app/static/images/
+secret_key
 
 .editorconfig
 

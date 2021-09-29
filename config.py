@@ -26,4 +26,5 @@ CSRF_ENABLED     = True
 CSRF_SESSION_KEY = "secret"
 
 # Secret key for signing cookies
-SECRET_KEY = "secret"
+with open('{}/secret_key'.format(BASE_DIR), 'r') as secret_key:
+    SECRET_KEY = secret_key.read().strip()
