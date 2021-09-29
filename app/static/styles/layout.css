@@ -134,6 +134,10 @@ footer {
   display: none;
 }
 
+.tailleur-contenu {
+  max-width: 64em;
+}
+
 @keyframes colorRotate {
   100% {
     filter: hue-rotate(360deg);
@@ -143,5 +147,11 @@ footer {
 @media (min-width: 40em) {
   .tailleur-contenu {
     margin: 0 1em;
+  }
+}
+
+@media (min-width: 64em) {
+  .tailleur-contenu {
+    margin: 0 auto;
   }
 }
