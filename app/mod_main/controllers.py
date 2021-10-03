@@ -33,33 +33,37 @@ def about(subpath=None):
 
     return flask.render_template(f'about/{subpath}', **context)
 
+def default_renderer(func):
+    def wrapper(*args, **kwargs):
+        subpath = func(*args, **kwargs)
+        if subpath is None:
+            subpath = 'index.html'
+        return flask.render_template(f'{func.__name__}/{subpath}')
+    return wrapper
+
+@default_renderer
 @mod_main.route('/ideas/')
 @mod_main.route('/ideas/<path:subpath>')
 def ideas(subpath=None):
-    if subpath is None:
-        subpath = 'index.html'
-    return flask.render_template(f'ideas/{subpath}')
+    return subpath
 
+@default_renderer
 @mod_main.route('/philosophy/')
 @mod_main.route('/philosophy/<path:subpath>')
 def philosophy(subpath=None):
-    if subpath is None:
-        subpath = 'index.html'
-    return flask.render_template(f'philosophy/{subpath}')
+    return subpath
 
+@default_renderer
 @mod_main.route('/politics/')
 @mod_main.route('/politics/<path:subpath>')
 def politics(subpath=None):
-    if subpath is None:
-        subpath = 'index.html'
-    return flask.render_template(f'politics/{subpath}')
+    return subpath
 
+@default_renderer
 @mod_main.route('/projects/')
 @mod_main.route('/projects/<path:subpath>')
 def projects(subpath=None):
-    if subpath is None:
-        subpath = 'index.html'
-    return flask.render_template(f'projects/{subpath}')
+    return subpath
 
 # Everything else.
 @mod_main.route('/<path:subpath>')
