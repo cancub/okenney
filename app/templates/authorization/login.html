@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block content_column %}
+<div">
+  <h3>Login</h3>
+  <div>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="notification is-danger">
+      {{ messages[0] }}
+    </div>
+  {% endif %}
+{% endwith %}
+    <form method="POST" action="/login">
+      <div class="field">
+        <div class="control">
+          <input class="input" type="email" name="email" placeholder="Your Email" autofocus="">
+        </div>
+      </div>
+      <div class="field">
+        <div class="control">
+          <input class="input" type="password" name="password" placeholder="Your Password">
+        </div>
+      </div>
+      <button class="button">Login</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

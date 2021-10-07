@@ -1,7 +1,7 @@
 import json
 
-# Import flask and template operators
 import flask
+import flask_login
 import flask_sqlalchemy
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from werkzeug.routing import Rule
@@ -19,6 +19,9 @@ db = flask_sqlalchemy.SQLAlchemy(app)
 # Register blueprints
 from app.mod_main.controllers import mod_main as main_module
 app.register_blueprint(main_module)
+
+from app.mod_auth.controllers import mod_auth as auth_module
+app.register_blueprint(auth_module)
 
 from app.mod_self_statistics.controllers import mod_self_stats as stat_module
 app.register_blueprint(stat_module)
@@ -65,3 +68,17 @@ class OKJSONEncoder(flask.json.JSONEncoder):
         return flask.json.JSONEncoder.default(self, obj)
 
 app.json_encoder = OKJSONEncoder
+
+# ================================== Logins ===================================
+
+from app.mod_auth.models import User as _User
+
+login_manager = flask_login.LoginManager()
+login_manager.login_view = 'auth.login'
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    # Since the user_id is just the primary key of our user table, use it in
+    # the query for the user.
+    return _User.query.get(int(user_id))
