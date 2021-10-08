@@ -32,21 +32,28 @@
        descpath="{{ latest[i]['desc'] }}"></div>
 {% endfor %}
 </div>
-<div class="articles-a-lune">
-  <div class="principale">
-    {{ article_preview(latest[0]) }}
+<div class="refaconneur">
+  <div class="articles-a-lune">
+    <div class="principale">
+      {{ article_preview(latest[0]) }}
+    </div>
+    <div class="deux-prochaine">
+      {% for i in range(1, 3) %}
+        {{ article_preview(latest[i]) }}
+      {% endfor %}
+    </div>
   </div>
-  <div class="deux-prochaine">
-    {% for i in range(1, 3) %}
-      {{ article_preview(latest[i]) }}
-    {% endfor %}
+  <div class="acceuil-stats">
+    {{ widgets.batir_graphiques('vices', 250) }}
   </div>
-</div>
-<div class="acceuil-stats">
-  {{ widgets.batir_graphiques('vices', 250) }}
+  <div class="deuxieme-page">
+  {% for i in range(3, 6) %}
+    {{ article_preview(latest[i]) }}
+  {% endfor %}
+  </div>
 </div>
 <div class="articles-plus-vieux">
-{% for i in range(3, preload_count) %}
+{% for i in range(6, preload_count) %}
   {{ article_preview(latest[i]) }}
 {% endfor %}
 </div>
