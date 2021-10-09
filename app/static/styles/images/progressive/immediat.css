@@ -1,0 +1,22 @@
+.progim-image-progressive {
+    position: relative;
+    overflow: hidden;
+}
+
+.progim-image-progressive div {
+    width: 100%;
+    padding-top: 100%;
+    background-size: cover!important;
+    background-position: center bottom!important;
+}
+
+.progim-image-progressive .progim-image-en-chargant {
+    filter: blur(5px);
+}
+
+.progim-image-progressive .progim-couverture {
+    position: absolute;
+    top: 0;
+    opacity: 0;
+    transition: opacity 200ms ease-in;
+}

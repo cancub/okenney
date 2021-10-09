@@ -1,0 +1,18 @@
+{% macro css() -%}
+<script src="styles/images/progressive/immediat.css"></script>
+{%- endmacro %}
+
+{% macro js() -%}
+<script src="scripts/images/progressive/immediat.js"></script>
+{%- endmacro %}
+
+<!-- En générale, l'image petite est de 300x185, 60dpi, 8bpc RBG -->
+{% macro image_progressive(chemin) -%}
+<div class="progim-image-progressive">
+    <div class="progim-image-en-chargant"
+        style="background: url('{{chemin}}-pt.png')"
+        data-image="{{chemin}}-gd.png">
+    </div>
+    <div class="progim-couverture"></div>
+</div>
+{%- endmacro %}
