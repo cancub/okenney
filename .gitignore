@@ -1,6 +1,7 @@
 # okenney
 okenneyenv/
 
+app/templates/articles/test
 app/static/images/
 secret_key
 
