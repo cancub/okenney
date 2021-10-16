@@ -29,5 +29,14 @@
   margin: 0.5em 1em;
 }
 
+.article-recip-image {
+  display: grid;
+  grid-template-areas: "img";
+}
+.article-recip-image img {
+  width: 100%;
+  grid-area: img;
+}
+
 @media (min-width: 40em) {
 }

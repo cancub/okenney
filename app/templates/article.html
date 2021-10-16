@@ -1,4 +1,6 @@
 {% extends "layout.html" %}
+{% import 'macros/images/progressive/immediat.html' as images -%}
+
 {% macro image_et_legende(legende=None) %}
 <div class="image-et-legende">
   {{ caller() }}
@@ -11,6 +13,8 @@
 {% block head %}
 <link rel="stylesheet" href="/styles/article.css">
 <script async src='https://pol.is/embed.js'></script>
+{{ images.css() }}
+{{ images.js() }}
   {% block entete_article %}
   {% endblock %}
 {% endblock %}
@@ -26,9 +30,12 @@
         {% block article_soustitre %} {% endblock %}
       </div>
     </div>
-    {% block article_image %}
-    <img src="{{image_dir}}/principal-pt.png" />
-    {% endblock %}
+      {% call image_et_legende(legende_image()) -%}
+        {% block article_image %}
+          {{ images.image_progressive(image_dir, 'article-recip-image')}}
+        {% endblock %}
+      {% endcall %}
+    </div>
   </div>
   <div class="article-recip-texte">
     {% block article_texte %} {% endblock %}
