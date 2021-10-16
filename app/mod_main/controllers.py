@@ -1,5 +1,7 @@
+import os
 import flask
 
+from . import ARTICLE_CATEGORIES
 import app.mod_articles as _articles
 import app.mod_self_statistics as _self_stats
 
@@ -19,58 +21,19 @@ def index():
 
     return flask.render_template('index.html', **context)
 
-@mod_main.route('/about/')
-@mod_main.route('/about/<path:subpath>')
-def about(subpath=None):
-    context = {
-        'CONSUMPTION_API': '/api' + _self_stats.SELF_STATISTICS_PATH,
-    }
+@mod_main.route('/articles/<category>/')
+@mod_main.route('/articles/<category>/<path:subpath>')
+def other(category, subpath='index.html'):
+    if category not in ARTICLE_CATEGORIES:
+        return flask.render_template('404.html'), 404
 
-    if subpath is None:
-        subpath = 'index.html'
-    elif subpath == 'vices.html':
-        context['consumption_data'] = _self_stats.get_chart_data()
+    context = {}
 
-    return flask.render_template(f'about/{subpath}', **context)
+    if category == 'about' and subpath in ('index.html', 'vices.html'):
+        context.update({
+            'consumption_data': _self_stats.get_chart_data(),
+            'CONSUMPTION_API': '/api' + _self_stats.SELF_STATISTICS_PATH,
+        })
 
-def default_renderer(func):
-    def wrapper(*args, **kwargs):
-        subpath = func(*args, **kwargs)
-        if subpath is None:
-            subpath = 'index.html'
-        return flask.render_template(f'{func.__name__}/{subpath}')
-    return wrapper
 
-@default_renderer
-@mod_main.route('/ideas/')
-@mod_main.route('/ideas/<path:subpath>')
-def ideas(subpath=None):
-    return subpath
-
-@default_renderer
-@mod_main.route('/philosophy/')
-@mod_main.route('/philosophy/<path:subpath>')
-def philosophy(subpath=None):
-    return subpath
-
-@default_renderer
-@mod_main.route('/politics/')
-@mod_main.route('/politics/<path:subpath>')
-def politics(subpath=None):
-    return subpath
-
-@default_renderer
-@mod_main.route('/projects/')
-@mod_main.route('/projects/<path:subpath>')
-def projects(subpath=None):
-    return subpath
-
-# Everything else.
-@mod_main.route('/<path:subpath>')
-def other(subpath):
-    return flask.render_template(subpath)
-
-# Errors.
-@mod_main.errorhandler(404)
-def not_found(error):
-    return flask.render_template('404.html'), 404
+    return flask.render_template(f'/articles/{category}/{subpath}', **context)

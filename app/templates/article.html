@@ -18,7 +18,9 @@
         {% block article_soustitre %} {% endblock %}
       </div>
     </div>
-    {% block article_image %} {% endblock %}
+    {% block article_image %}
+    <img src="{{image_dir}}/principal-pt.png" />
+    {% endblock %}
   </div>
   <div class="article-recip-texte">
     {% block article_texte %} {% endblock %}
