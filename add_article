@@ -36,8 +36,15 @@ def build_filename(path):
 
     # Remove articles ,conjunctions, non-letter characters and convert spaces to
     # dash
+    letter_neg_lookbehind = '(?<!\w)'
+    letter_neg_lookahead = '(?!\w)'
     title = re.sub(
-        '[tH]he |[oO]f |[aA]nd |a |^[Aa] |[$-/:-?{-~!"^_`\[\]]', '',
+        ('{0}[tT]he{1}|{0}[oO]f{1}|{0}[aA]nd{1}|{0}a{1}|{0}[Aa]{1}|'
+         '[$-/:-?{{-~!"^_`\[\]]').format(
+            letter_neg_lookbehind,
+            letter_neg_lookahead,
+        ),
+        '',
         title
     )
 
