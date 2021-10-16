@@ -6,8 +6,8 @@
 {%- endmacro %}
 
 <!-- En générale, l'image petite est de 100w, 60dpi, 8bpc RBG -->
-{% macro image_progressive(chemin, classe_div) -%}
+{% macro image_progressive(chemin_base, classe_div) -%}
 <div class="progim {{classe_div}} ">
-  <img src="{{chemin}}-pt.png"/>
+  <img src="{{chemin_base}}/principal-pt.png"/>
 </div>
 {%- endmacro %}

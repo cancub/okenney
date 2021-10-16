@@ -11,15 +11,23 @@
 {% endblock %}
 
 {% macro article_preview(details) -%}
-<a class="article-preview" href="{{ details['filepath'] }}">
-  {{ images.image_progressive(details['image'], 'image-recip')}}
+
+{% set subpath = details.category + '/' + details.name %}
+{% set article_path = 'articles/' + subpath + '.html' %}
+{% set image_path = 'static/images/' + details.category + '/' + details.name %}
+
+{% from article_path import titre, titre_fr, description, description_fr %}
+
+<a class="article-preview" href="{{article_path}}">
+  {{ images.image_progressive(image_path, 'image-recip')}}
   <div class="article-preview-text">
-    <h2 class="article-preview-titre">{{ details['title'] }}</h2>
+    <h2 class="article-preview-titre">{{ titre() }}</h2>
     <div class="article-preview-description">
-      {% include details['desc'] %}
+      {{ description() }}
     </div>
   </div>
 </a>
+
 {%- endmacro %}
 
 {% block content_column %}

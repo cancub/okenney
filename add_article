@@ -1,0 +1,144 @@
+#! /usr/bin/env python
+
+import copy
+import cv2
+import datetime
+import os
+import re
+import sys
+
+from app import db
+from app.mod_articles.models import Article
+from app.mod_articles import IMAGES_DIR, ARTICLES_DIR
+
+'''
+TODO:
+- Use relational database for categories
+- use argparse
+'''
+
+CATEGORIES = ['about', 'ideas', 'politics', 'philosophy', 'projects']
+BIG_IMAGE_HEIGHT = 1000
+SMALL_IMAGE_SCALE = 1/8
+IMAGE_NAME = 'principal'
+IMAGE_BIG_NAME = IMAGE_NAME + '-gd.png'
+IMAGE_SMALL_NAME = IMAGE_NAME + '-pt.png'
+
+def build_filename(path):
+    # Get the contents of the file.
+    with open(path, 'r') as F:
+        contents = F.read()
+
+    # Retrieve the title, using what we know about how the file must be
+    # structured.
+    p = re.compile(r'{%\s*macro titre\(\)\s*%}\s*(.*)\s*{%\s*endmacro\s*%}')
+    title = p.search(contents).groups(0)[0].lower()
+
+    # Remove articles ,conjunctions, non-letter characters and convert spaces to
+    # dash
+    title = re.sub(
+        '[tH]he |[oO]f |[aA]nd |a |^[Aa] |[$-/:-?{-~!"^_`\[\]]', '',
+        title
+    )
+
+    # Remove the spaces from the end.
+    title = title.rstrip()
+
+    # Locate the individual words remaining
+    p = re.compile(r'\w+')
+    title_words = p.findall(title)
+
+    # Crop it down to the first 5 words or whatever number of words there are,
+    # whichever is smaller
+    title_length = min(5, len(title_words))
+
+    return '-'.join(title_words[:title_length])
+
+def build_images(path):
+    image_big = cv2.imread(path)
+
+    # Scale width to 1000, keeping aspect ratio
+    scale = BIG_IMAGE_HEIGHT/image_big.shape[1]
+    image_big = cv2.resize(image_big, (0, 0), fx=scale, fy=scale)
+
+    # Find a new height by rounding down the current height to the nearest
+    # multiple of 50.
+    to_crop = (image_big.shape[0] % 50) / 2
+
+    # No need to crop if we're already at the right width.
+    if to_crop > 0:
+        if int(to_crop) != to_crop:
+            # We're dealing with a fraction. Round down for the top and round
+            # up for the bottom.
+            top_crop = int(to_crop)
+            bottom_crop = top_crop + 1
+        else:
+            top_crop = bottom_crop = to_crop
+
+        # Crop and center to this aspect ratio.
+        image_big = image_big[top_crop:-bottom_crop, :, :]
+
+    # Make a copy and scale it down.
+    image_small = cv2.resize(
+        copy.copy(image_big),
+        (0, 0),
+        fx=SMALL_IMAGE_SCALE,
+        fy=SMALL_IMAGE_SCALE,
+    )
+
+    return image_big, image_small
+
+def build_paths(category, title):
+    # make the directories that the files will be stored in an all intermediary
+    # directories.
+    images_dir = os.path.join(IMAGES_DIR, category, title)
+    article_dir = os.path.join(ARTICLES_DIR, category)
+    for directory in (images_dir, article_dir):
+        try:
+            os.makedirs(directory)
+        except FileExistsError:
+            pass
+
+    return os.path.join(article_dir, title + '.html'), images_dir
+
+
+text_path = os.path.abspath(sys.argv[1])
+image_path = sys.argv[2]
+category = sys.argv[3]
+
+if not os.path.exists(text_path):
+    raise Exception('No text file exists at {}'.format(text_path))
+
+if category not in CATEGORIES:
+    raise Exception('Unknown category "{}"'.format(category))
+
+if not os.path.exists(image_path):
+    raise Exception('No image file exists at {}'.format(image_path))
+
+# Locate the title within the file.
+title = build_filename(text_path)
+
+# Load the images
+image_big, image_small = build_images(image_path)
+
+now = datetime.datetime.now()
+
+# Build the directory for both images and templates.
+article_path, images_dir = build_paths(category, title)
+
+# Store the article in the specified directory under the title.
+if os.path.exists(article_path):
+    raise FileExistsError('We already wrote an article with that name')
+os.rename(text_path, article_path)
+
+# Store the large and small image files in the images directory.
+cv2.imwrite(os.path.join(images_dir, IMAGE_BIG_NAME), image_big)
+cv2.imwrite(os.path.join(images_dir, IMAGE_SMALL_NAME), image_small)
+
+# Store this information in the database
+db.session.add(Article(name=title, category=category, dtime=now))
+db.session.commit()
+
+# Print out the path the images dir into which we need to dump all of the
+# images for the article.
+print(images_dir)
