@@ -35,5 +35,10 @@ def other(category, subpath='index.html'):
             'CONSUMPTION_API': '/api' + _self_stats.SELF_STATISTICS_PATH,
         })
 
+    if subpath != 'index.html':
+        # We're rendeing a specific article, so we need to let it know where it
+        # can find its images.
+        base_name = os.path.splitext(subpath)[0]
+        context['image_dir'] = f'/static/images/{category}/{base_name}'
 
     return flask.render_template(f'/articles/{category}/{subpath}', **context)
