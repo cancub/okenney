@@ -68,19 +68,23 @@ def build_images(path):
     scale = BIG_IMAGE_HEIGHT/image_big.shape[1]
     image_big = cv2.resize(image_big, (0, 0), fx=scale, fy=scale)
 
+    # TODO:
+    # Use a standard aspect ratio, be smart about which direction we crop.
     # Find a new height by rounding down the current height to the nearest
     # multiple of 50.
     to_crop = (image_big.shape[0] % 50) / 2
 
     # No need to crop if we're already at the right width.
     if to_crop > 0:
-        if int(to_crop) != to_crop:
+        int_crop = int(to_crop)
+        if int_crop != to_crop:
             # We're dealing with a fraction. Round down for the top and round
             # up for the bottom.
-            top_crop = int(to_crop)
+
+            top_crop = int_crop
             bottom_crop = top_crop + 1
         else:
-            top_crop = bottom_crop = to_crop
+            top_crop = bottom_crop = int_crop
 
         # Crop and center to this aspect ratio.
         image_big = image_big[top_crop:-bottom_crop, :, :]
