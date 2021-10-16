@@ -12,7 +12,7 @@ ARTICLES_DIR = os.path.join(ROOT_DIR, ARTICLES_PROJECT_PATH)
 
 def get_latest_articles():
     latest_articles = []
-    for a in _Article.query.order_by(_Article.dtime):
+    for a in _Article.query.order_by(_Article.dtime.desc()):
         latest_articles.append({'name': a.name, 'category': a.category})
 
     return latest_articles
