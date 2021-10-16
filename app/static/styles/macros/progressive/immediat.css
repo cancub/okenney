@@ -1,0 +1,7 @@
+.progim {
+    overflow: hidden;
+}
+
+.progim-pt {
+    filter:blur(4px);
+}

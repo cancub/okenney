@@ -1,4 +1,5 @@
 {% macro css() -%}
+<link rel="stylesheet" href="styles/macros/progressive/immediat.css">
 {%- endmacro %}
 
 {% macro js() -%}
@@ -8,6 +9,6 @@
 <!-- En générale, l'image petite est de 100w, 60dpi, 8bpc RBG -->
 {% macro image_progressive(chemin_base, classe_div) -%}
 <div class="progim {{classe_div}} ">
-  <img src="{{chemin_base}}/principal-pt.png"/>
+  <img src="{{chemin_base}}/principal-pt.png" class="progim-pt"/>
 </div>
 {%- endmacro %}
