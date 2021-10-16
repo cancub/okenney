@@ -180,6 +180,14 @@
 }
 
 @media (min-width: 64em) {
+  .principale .article-preview-text {
+    margin: 1em;
+    padding: 0;
+  }
+  .principale .article-preview-titre {
+    padding-bottom: 0.5em;
+  }
+
   .acceuil-stats{
     grid-area: milieu;
   }
