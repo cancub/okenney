@@ -22,21 +22,12 @@
   font-size: 20px;
 }
 
-.image-w-caption img {
-  width:100%;
-}
-.image-w-caption span {
+.imleg-legende {
   color: grey;
   line-height: 1;
-  padding: 0 1em;
+  font-size: 0.8em;
+  margin: 0.5em 1em;
 }
 
 @media (min-width: 40em) {
-  .image-w-caption {
-    margin-left: 1em;
-    margin-right: 1em;
-  }
-  .image-w-caption span {
-    padding: 0;
-  }
 }

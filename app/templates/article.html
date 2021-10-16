@@ -1,4 +1,12 @@
 {% extends "layout.html" %}
+{% macro image_et_legende(legende=None) %}
+<div class="image-et-legende">
+  {{ caller() }}
+  <div class="imleg-legende">
+    {{legende}}
+  </div>
+</div>
+{% endmacro %}
 
 {% block head %}
 <link rel="stylesheet" href="/styles/article.css">

@@ -1,14 +1,6 @@
 {% macro css() -%}
 {%- endmacro%}
 
-{% macro image_et_caption(url, caption=None) %}
-<div class="image-w-caption">
-  <img src="/static/images/{{url}}">
-  <span>{{caption}}</span>
-</div>
-
-{% endmacro %}
-
 <!-- button for hiding and showing pretentious thoughts -->
 {% macro pretentieux() -%}
 <style>
