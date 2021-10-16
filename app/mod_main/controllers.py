@@ -16,6 +16,7 @@ def index():
         'latest': latest_articles,
         'total_count': article_count,
         'preload_count': min(article_count, 5),
+        'image_dir': f'/{_articles.IMAGES_PROJECT_PATH}',
         'consumption_data': _self_stats.get_chart_data(),
     }
 
@@ -39,6 +40,8 @@ def other(category, subpath='index.html'):
         # We're rendeing a specific article, so we need to let it know where it
         # can find its images.
         base_name = os.path.splitext(subpath)[0]
-        context['image_dir'] = f'/static/images/{category}/{base_name}'
+        context['image_dir'] = (
+            f'/{_articles.IMAGES_PROJECT_PATH}/{category}/{base_name}'
+        )
 
     return flask.render_template(f'/articles/{category}/{subpath}', **context)

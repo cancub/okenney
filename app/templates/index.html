@@ -14,7 +14,7 @@
 
 {% set subpath = details.category + '/' + details.name %}
 {% set article_path = 'articles/' + subpath + '.html' %}
-{% set image_path = 'static/images/' + details.category + '/' + details.name %}
+{% set image_path = image_dir + '/' + details.category + '/' + details.name %}
 
 {% from article_path import titre, titre_fr, description, description_fr %}
 
