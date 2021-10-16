@@ -24,7 +24,7 @@
 }
 .article-preview-titre {
   font-size: 1rem;
-  line-height: 1.05;
+  line-height: 1.25;
   letter-spacing: -1px;
 }
 .article-preview-titre:hover {
@@ -61,7 +61,7 @@
   padding-bottom: 0;
 }
 .principale .article-preview-titre {
-  font-size: 1.8em;
+  font-size: 1.3em;
 }
 .principale .article-preview-description {
   display: block;
@@ -130,7 +130,7 @@
     border-bottom: none;
   }
   .principale .article-preview-titre {
-    font-size: 2em;
+    font-size: 1.5em;
     font-weight: bold;
   }
 
