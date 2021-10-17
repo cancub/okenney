@@ -18,8 +18,9 @@ TODO:
 '''
 
 CATEGORIES = ['about', 'ideas', 'politics', 'philosophy', 'projects']
-BIG_IMAGE_HEIGHT = 1000
-SMALL_IMAGE_SCALE = 1/8
+BIG_IMAGE_HEIGHT = 600
+BIG_IMAGE_WIDTH = 1000
+SMALL_IMAGE_SCALE = 0.15
 IMAGE_NAME = 'principal'
 IMAGE_BIG_NAME = IMAGE_NAME + '-gd.png'
 IMAGE_SMALL_NAME = IMAGE_NAME + '-pt.png'
@@ -61,33 +62,74 @@ def build_filename(path):
 
     return '-'.join(title_words[:title_length])
 
+def get_crop_dims(actual_dim, desired_dim):
+    to_crop = (actual_dim - desired_dim) / 2
+
+    # No need to crop if we're already at the right dimension.
+    if to_crop == 0:
+        return 0, actual_dim
+
+    int_crop = int(to_crop)
+    if int_crop == to_crop:
+        # We're dealing with a whole number, which means we can crop the same
+        # amount from each side.
+        crop_high = crop_low = int_crop
+    else:
+        # We're dealing with a fraction. Round down for the high and round
+        # up for the low.
+        crop_high = int_crop
+        crop_low = int_crop + 1
+
+    return crop_low, actual_dim - crop_high
+
 def build_images(path):
     image_big = cv2.imread(path)
 
-    # Scale width to 1000, keeping aspect ratio
-    scale = BIG_IMAGE_HEIGHT/image_big.shape[1]
-    image_big = cv2.resize(image_big, (0, 0), fx=scale, fy=scale)
+    height, width, _ = image_big.shape
 
-    # TODO:
-    # Use a standard aspect ratio, be smart about which direction we crop.
-    # Find a new height by rounding down the current height to the nearest
-    # multiple of 50.
-    to_crop = (image_big.shape[0] % 50) / 2
+    # Scale dimension closest to the desired aspect ratio of 1000 x 600
+    height_scale = BIG_IMAGE_HEIGHT / height
+    width_scale = BIG_IMAGE_WIDTH / width
 
-    # No need to crop if we're already at the right width.
-    if to_crop > 0:
-        int_crop = int(to_crop)
-        if int_crop != to_crop:
-            # We're dealing with a fraction. Round down for the top and round
-            # up for the bottom.
+    if width_scale < height_scale:
+        # The height is closer than the width to its respective dimension in
+        # the desired aspect ratio. So it's better to scale the height to
+        # the desired height and crop the width.
+        dx = int(width * height_scale)
+        dy = BIG_IMAGE_HEIGHT
+    else:
+        # The opposite is true.
+        dx = BIG_IMAGE_WIDTH
+        dy = int(height * width_scale)
 
-            top_crop = int_crop
-            bottom_crop = top_crop + 1
-        else:
-            top_crop = bottom_crop = int_crop
+    # Scale the image
+    image_big = cv2.resize(image_big, (dx, dy))
 
-        # Crop and center to this aspect ratio.
-        image_big = image_big[top_crop:-bottom_crop, :, :]
+    # Prepare for the crop. Only one of these dimentions witll be changed.
+    height_crop_low = 0
+    height_crop_high = image_big.shape[0]
+    width_crop_low = 0
+    width_crop_high = image_big.shape[1]
+
+    if dy == BIG_IMAGE_HEIGHT:
+        # We scaled to the height, so we need to crop to the width.
+        width_crop_low, width_crop_high = get_crop_dims(
+            width_crop_high,
+            BIG_IMAGE_WIDTH,
+        )
+    else:
+        # We scaled to the width, so we need to crop to the height.
+        height_crop_low, height_crop_high = get_crop_dims(
+            height_crop_high,
+            BIG_IMAGE_WIDTH,
+        )
+
+    # Crop and center to this aspect ratio.
+    image_big = image_big[
+        height_crop_low:height_crop_high,
+        width_crop_low:width_crop_high,
+        :
+    ]
 
     # Make a copy and scale it down.
     image_small = cv2.resize(
