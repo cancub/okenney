@@ -1,14 +1,6 @@
 {% extends "layout.html" %}
 {% import 'macros/images/progressive/immediat.html' as images -%}
-
-{% macro image_et_legende(legende=None) %}
-<div class="image-et-legende">
-  {{ caller() }}
-  <div class="imleg-legende">
-    {{legende}}
-  </div>
-</div>
-{% endmacro %}
+{% import 'macros/article.html' as article -%}
 
 {% block head %}
 <link rel="stylesheet" href="/styles/article.css">
@@ -30,7 +22,7 @@
         {% block article_soustitre %} {% endblock %}
       </div>
     </div>
-      {% call image_et_legende(legende_image()) -%}
+      {% call article.image_et_legende(legende_image()) -%}
         {% block article_image %}
           {{ images.image_progressive(image_dir, 'article-recip-image')}}
         {% endblock %}

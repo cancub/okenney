@@ -1,7 +1,196 @@
+{% import 'macros/images/progressive/immediat.html' as images -%}
+
 {% macro css() -%}
+{{ images.css() }}
 {%- endmacro%}
 
-<!-- button for hiding and showing pretentious thoughts -->
+{% macro js() -%}
+{{ images.js() }}
+{%- endmacro%}
+
+{% macro image_et_legende(legende=None) %}
+<div class="image-et-legende">
+  {{ caller() }}
+  <div class="imleg-legende">
+    {{legende}}
+  </div>
+</div>
+{% endmacro %}
+
+{% macro article_preview(details, image_recip_class) -%}
+<a class="article-preview" href="{{ details.filepath }}">
+  {{ images.image_progressive(details.image_dir, image_recip_class)}}
+  <div class="article-preview-text">
+    <h2 class="article-preview-titre">{{ details.title }}</h2>
+    <div class="article-preview-description">
+      {{ details.description|safe}}
+    </div>
+  </div>
+</a>
+{%- endmacro %}
+
+{% macro article_preview_js_builder(preview_fn_name, image_recip_class) %}
+
+{% set prog_img_fn_name = 'progImg' %}
+{{ images.image_progressive_js_builder(prog_img_fn_name, image_recip_class) }}
+
+function {{preview_fn_name}}(details) {
+    // Build the article preview.
+    var $article = $(`
+      <a class="article-preview" href="${details.filepath}">
+        <div class="article-preview-text">
+          <h2 class="article-preview-titre">${details.title}</h2>
+          <div class="article-preview-description">
+            ${details.description}
+          </div>
+        </div>
+      </a>
+    `);
+
+    // Add in the progressively loaded image.
+    // NOTE:
+    // We might not need to progressively load here, but we do so just in case
+    // it's a slow connection and the user is spamming scroll.
+    $article.prepend( {{prog_img_fn_name}}(details.image_dir) );
+
+    return $article;
+}
+{% endmacro %}
+
+<!----------------------------- Infinite Scroll ------------------------------>
+
+{% macro token_name() %}infinite-scroll-token{% endmacro %}
+
+{% macro infinite_scroll_token() %}
+<div class="{{ token_name() }}"></div>
+{% endmacro %}
+
+{% macro
+    infinite_scroll(
+        articles_api_url,
+        batch_size,
+        storage_class,
+        append_class,
+        image_recip_class,
+        category=none,
+        end_datetime=none
+    )
+-%}
+<script>
+    $( function() {
+        var $token = $('.{{token_name()}}');
+        var $storageContainer = $('.{{storage_class}}');
+        var $toAppendContainer = $('.{{append_class}}');
+        var win = $(window);
+        var loading = false;
+        var fullyLoaded = false;
+        var requestData = {
+            batch_size: {{batch_size}},
+            {% if category is not none -%}
+            category: '{{category}}',
+            {% endif -%}
+            {% if end_datetime is not none -%}
+            end_datetime: '{{end_datetime}}',
+            {% endif -%}
+        };
+
+        function tokenOnScreen() {
+            var viewport = {
+                top: win.scrollTop(),
+                left: win.scrollLeft()
+            };
+            viewport.right = viewport.left + win.width();
+            viewport.bottom = viewport.top + win.height();
+
+            var bounds = $token.offset();
+            bounds.right = bounds.left + $token.outerWidth();
+            bounds.bottom = bounds.top + $token.outerHeight();
+
+            return (
+                !(viewport.right < bounds.left
+                    || viewport.left > bounds.right
+                    || viewport.bottom < bounds.top
+                    || viewport.top > bounds.bottom
+                )
+            );
+        };
+
+        function moveArticles() {
+            // Reach into the storage class and locate the stored articles.
+            $storageContainer.children().each(function() {
+                // Pop each of them into the appended article class.
+                $toAppendContainer.append($(this));
+            });
+        }
+
+        {% set builder_fn_name = 'buildArticlePreview' %}
+        {{ article_preview_js_builder(builder_fn_name, image_recip_class) }}
+
+        function storeArticles(data) {
+            data.forEach(function(item) {
+                // Build the article.
+                var $article = {{ builder_fn_name }}(item);
+
+                // Append it to the on-deck articles.
+                $storageContainer.append($article);
+            });
+
+            // Tell the progressive image facility to retrieve the bigger
+            // images.
+            win.trigger('progim');
+        }
+
+        function checkScrollLoading() {
+            if (!fullyLoaded && !loading && tokenOnScreen()) {
+                // Prevent this function from triggering again while we load
+                // more articles.
+                loading = true;
+
+                // Shift the older articles into view.
+                moveArticles();
+
+                // Request even older articles.
+                $.ajax({
+                    url: '{{ articles_api_url }}',
+                    data: requestData,
+                }).done(function(data) {
+                    if (data.length == 0) {
+                        // Remove the token so that we don't keep trying to
+                        // load articles that aren't there.
+                        $token.remove();
+
+                        // Just in case, add a software block as well to
+                        // signify that we have no new articles to load.
+                        fullyLoaded = true;
+
+                        return;
+                    }
+
+                    // Store the older articles in the storage bay.
+                    storeArticles(data);
+
+                    // Update the time so that the next reply only includes
+                    // article we've yet to display.
+                    requestData.end_datetime = data[data.length-1].dtime;
+
+                    // Allow further scrolling to trigger another load.
+                    loading = false;
+
+                    // The user may have already scrolled down while we were
+                    // collecting more articles, so immediately try again.
+                    checkScrollLoading();
+                });
+
+            }
+        }
+
+        $(window).scroll(checkScrollLoading);
+
+    });
+</script>
+{%- endmacro %}
+
+<!------------ button for hiding and showing pretentious thoughts ------------>
 {% macro pretentieux() -%}
 <style>
   .recip {

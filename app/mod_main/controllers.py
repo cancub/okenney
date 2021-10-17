@@ -1,7 +1,7 @@
 import os
 import flask
 
-from . import ARTICLE_CATEGORIES
+from . import ARTICLE_CATEGORIES, ARTICLE_BATCH_COUNT, ARTICLE_PRELOAD_COUNT
 import app.mod_articles as _articles
 import app.mod_self_statistics as _self_stats
 
@@ -15,8 +15,9 @@ def index():
     context = {
         'latest': latest_articles,
         'total_count': article_count,
-        'preload_count': min(article_count, 5),
-        'image_dir': f'/{_articles.IMAGES_PROJECT_PATH}',
+        'preload_count': min(article_count, ARTICLE_PRELOAD_COUNT),
+        'batch_size': ARTICLE_BATCH_COUNT,
+        'article_api_url': flask.url_for('RestRoot.articles'),
         'consumption_data': _self_stats.get_chart_data(),
     }
 
@@ -41,7 +42,7 @@ def other(category, subpath='index.html'):
         # can find its images.
         base_name = os.path.splitext(subpath)[0]
         context['image_dir'] = (
-            f'/{_articles.IMAGES_PROJECT_PATH}/{category}/{base_name}'
+            f'/{_articles.PROJECT_IMAGES_PATH}/{category}/{base_name}'
         )
 
     return flask.render_template(f'/articles/{category}/{subpath}', **context)
