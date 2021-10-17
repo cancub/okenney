@@ -8,8 +8,8 @@ import re
 import sys
 
 from app import db
+import app.mod_articles as _articles
 from app.mod_articles.models import Article
-from app.mod_articles import IMAGES_DIR, ARTICLES_DIR
 
 '''
 TODO:
@@ -26,14 +26,10 @@ IMAGE_BIG_NAME = IMAGE_NAME + '-gd.png'
 IMAGE_SMALL_NAME = IMAGE_NAME + '-pt.png'
 
 def build_filename(path):
-    # Get the contents of the file.
-    with open(path, 'r') as F:
-        contents = F.read()
+    title, _ = _articles.get_contents(path)
 
-    # Retrieve the title, using what we know about how the file must be
-    # structured.
-    p = re.compile(r'{%\s*macro titre\(\)\s*%}\s*(.*)\s*{%\s*endmacro\s*%}')
-    title = p.search(contents).groups(0)[0].lower()
+    # Make the title lower case to look nicer in the directory.
+    title = title.lower()
 
     # Remove articles ,conjunctions, non-letter characters and convert spaces to
     # dash
@@ -144,8 +140,12 @@ def build_images(path):
 def build_paths(category, title):
     # make the directories that the files will be stored in an all intermediary
     # directories.
-    images_dir = os.path.join(IMAGES_DIR, category, title)
-    article_dir = os.path.join(ARTICLES_DIR, category)
+    images_dir = _articles.article_images_dir_path(
+        category,
+        title,
+        remote=False,
+    )
+    article_dir = _articles.article_category_path(category, remote=False)
     for directory in (images_dir, article_dir):
         try:
             os.makedirs(directory)

@@ -1,27 +1,11 @@
 import datetime
-import functools
 
 import flask
 import flask_restful
-import flask_login
 
 from app import db as _db
 from app.mod_self_statistics import models as _models
-
-
-def admin_access_only(view):
-    """
-    Decorator to validate a session:
-      - User is logged in.
-      - Session is not timed out.
-    """
-    @functools.wraps(view)
-    @flask_login.login_required
-    def wrapped_view(*args, **kwargs):
-        if flask_login.current_user.name != 'admin':
-            flask.abort(401)
-        return view(*args, **kwargs)
-    return wrapped_view
+from app.restapi import admin_access_only
 
 class ConsumptionAPI(flask_restful.Resource):
 

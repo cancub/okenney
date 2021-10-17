@@ -6,9 +6,18 @@
 <script src="/scripts/images/progressive/immediat.js"></script>
 {%- endmacro %}
 
-<!-- En générale, l'image petite est de 100w, 60dpi, 8bpc RBG -->
 {% macro image_progressive(chemin_base, classe_div) -%}
 <div class="progim {{classe_div}} ">
   <img src="{{chemin_base}}/principal-pt.png" class="progim-pt"/>
 </div>
+{%- endmacro %}
+
+{% macro image_progressive_js_builder(fn_name, classe_div) -%}
+function {{fn_name}}(chemin_base) {
+    return $(`
+        <div class="progim {{classe_div}}">
+          <img src="${chemin_base}/principal-pt.png" class="progim-pt"/>
+        </div>
+    `);
+}
 {%- endmacro %}
