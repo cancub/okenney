@@ -3,6 +3,7 @@ okenneyenv/
 
 app/templates/articles/test
 app/static/images/
+WIP/
 secret_key
 
 .editorconfig
