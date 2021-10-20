@@ -69,8 +69,8 @@ function {{preview_fn_name}}(details) {
     infinite_scroll(
         articles_api_url,
         batch_size,
-        storage_class,
-        append_class,
+        storage_selector,
+        append_selector,
         image_recip_class,
         category=none,
         end_datetime=none
@@ -79,8 +79,8 @@ function {{preview_fn_name}}(details) {
 <script>
     $( function() {
         var $token = $('.{{token_name()}}');
-        var $storageContainer = $('.{{storage_class}}');
-        var $toAppendContainer = $('.{{append_class}}');
+        var $storageContainer = $('{{storage_selector}}');
+        var $toAppendContainer = $('{{append_selector}}');
         var win = $(window);
         var loading = false;
         var fullyLoaded = false;

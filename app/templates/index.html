@@ -13,8 +13,9 @@
 
 {% block content_column %}
 {% set ns = namespace(last_dtime=none) %}
-<div id="InfiniteScoll" style="display:none">
-  <div class="on-deck">
+{% set on_deck_id = 'on-deck' %}
+<div id="infinite-scoll" style="display:none">
+  <div id="{{on_deck_id}}">
     {# Provide the data on the remainder of the files #}
     {% for i in range(preload_count, preload_count + batch_size) %}
       {% if i < total_count %}
@@ -26,42 +27,42 @@
   {{ article.infinite_scroll(
         article_api_url,
         batch_size,
-        'on-deck',
-        'articles-plus-vieux',
+        '#' + on_deck_id,
+        '#les-plus-vieux',
         'image-recip',
         end_datetime=ns.last_dtime
       )
   }}
 </div>
-<div class="refaconneur">
-  <div class="articles-a-lune">
-    <div class="principale">
+<div id="refaconneur">
+  <div id="articles-a-lune">
+    <div id="principale">
       {{ article.article_preview(latest[0], 'image-recip') }}
     </div>
-    <div class="deux-prochaine">
+    <div id="deux-prochaine">
       {% for i in range(1, 3) %}
         {{ article.article_preview(latest[i], 'image-recip') }}
       {% endfor %}
     </div>
   </div>
-  <div class="acceuil-stats">
+  <div id="acceuil-stats">
     {{ widgets.batir_graphiques('vices', 250) }}
   </div>
-  <div class="deuxieme-page">
+  <div id="deuxieme-page" class="articles-plus-vieux">
   {% for i in range(3, 6) %}
     {{ article.article_preview(latest[i], 'image-recip') }}
   {% endfor %}
   </div>
 </div>
-<div class="articles-plus-vieux">
+<div id="les-plus-vieux" class="articles-plus-vieux">
 {% for i in range(6, preload_count) %}
   {{ article.article_preview(latest[i], 'image-recip') }}
 {% endfor %}
 </div>
-{{ article.infinite_scroll_token() }}
 {% endblock %}
 
 {% block bas_de_page %}
+{{ article.infinite_scroll_token() }}
 <div>
   Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a
     href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>

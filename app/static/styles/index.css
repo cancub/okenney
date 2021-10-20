@@ -38,7 +38,20 @@
   margin:0;
 }
 
-.refaconneur {
+.articles-plus-vieux {
+  width:100%;
+  display: flex;
+  flex-direction: column;
+}
+.articles-plus-vieux .article-preview:last-of-type {
+  padding-bottom: 0;
+}
+.articles-plus-vieux .article-preview-text {
+  align-self: center;
+}
+
+
+#refaconneur {
   display: grid;
   grid-template-areas:
     "haut"
@@ -46,65 +59,56 @@
     "bas";
 }
 
-.articles-a-lune{
+#articles-a-lune{
   grid-area: haut;
 }
 
-.principale {
+#principale {
   border-bottom: 2px dotted var(--okenney-purple-dark);
   margin-left: auto;
   margin-right: auto;
   padding-bottom: 1em;
 }
-.principale .article-preview {
+#principale .article-preview {
   display: block;
   padding-bottom: 0;
 }
-.principale .article-preview-titre {
+#principale .article-preview-titre {
   font-size: 1.3em;
 }
-.principale .article-preview-description {
+#principale .article-preview-description {
   display: block;
 }
-.principale .article-preview .image-recip {
+#principale .article-preview .image-recip {
   height: auto;
 }
-.principale .article-preview img {
+#principale .article-preview img {
   width:100%;
   height:auto;
 }
 
-.articles-a-lune .deux-prochaine {
+#deux-prochaine {
   padding-top: 1em;
 }
 
 
-.acceuil-stats {
+#acceuil-stats {
   grid-area: bas;
   padding: 1em;
   align-content: space-between;
 }
-.acceuil-stats .acceuil-recip-graphiques {
+#acceuil-stats .acceuil-recip-graphiques {
   height: 10em;
 }
 
 
-.deuxieme-page {
+#deuxieme-page {
   grid-area: milieu;
-  width:100%;
-  display: flex;
-  flex-direction: column;
-}
-.deuxieme-page .article-preview:last-of-type {
-  padding-bottom: 0;
-}
-.deuxieme-page .article-preview-text {
-  align-self: center;
 }
 
 
 @media (min-width: 40em) {
-  .articles-a-lune {
+  #articles-a-lune {
     display: grid;
     grid-template-areas:
       "principale deuxieme"
@@ -114,85 +118,83 @@
     padding-bottom: 2em;
   }
 
-  .articles-a-lune .article-preview-text {
+  #articles-a-lune .article-preview-text {
     padding-top: 1em;
   }
 
-  .articles-a-lune .article-preview-titre,
-  .articles-a-lune .article-preview-description {
+  #articles-a-lune .article-preview-titre,
+  #articles-a-lune .article-preview-description {
     margin: 0;
   }
 
-  .principale {
+  #principale {
     grid-area: principale;
     margin: 0;
     padding-bottom: 0;
     border-bottom: none;
   }
-  .principale .article-preview-titre {
+  #principale .article-preview-titre {
     font-size: 1.5em;
     font-weight: bold;
   }
 
-  .articles-a-lune .deux-prochaine {
+  #deux-prochaine {
     padding: 0;
   }
-  .articles-a-lune .deux-prochaine .article-preview {
+  #deux-prochaine .article-preview {
     display: block;
   }
-  .articles-a-lune .deux-prochaine .article-preview:first-of-type {
+  #deux-prochaine .article-preview:first-of-type {
     margin-bottom: 1em;
     border-bottom: 2px dotted var(--okenney-purple-dark);
   }
-  .articles-a-lune .deux-prochaine .article-preview-titre {
+  #deux-prochaine .article-preview-titre {
     font-size: 1.15em;
   }
-  .articles-a-lune .deux-prochaine .image-recip{
+  #deux-prochaine .image-recip{
     height: auto;
   }
-  .articles-a-lune .deux-prochaine img{
+  #deux-prochaine img{
     height: auto;
     width: 100%;
   }
 
-  .deuxieme-page .article-preview {
+  .articles-plus-vieux .article-preview {
     padding: 1em 0;
     border-bottom: 2px dotted var(--okenney-purple-dark);
   }
-  .deuxieme-page .article-preview:last-of-type {
+  .articles-plus-vieux .article-preview:last-of-type {
     border-bottom: none;
   }
-  .deuxieme-page .image-recip {
+  .articles-plus-vieux .image-recip,
+  .articles-plus-vieux .image-recip img {
     height: 12em;
   }
-  .deuxieme-page .image-recip img {
-    height: 12em;
-  }
-  .deuxieme-page .article-preview-text {
+  .articles-plus-vieux .article-preview-text {
     align-self: start;
   }
-  .deuxieme-page .article-preview-titre {
+  .articles-plus-vieux .article-preview-titre {
     font-size: 1.4rem;
   }
-  .deuxieme-page .article-preview-description {
+  .articles-plus-vieux .article-preview-description {
     display: inherit;
   }
 }
 
 @media (min-width: 64em) {
-  .principale .article-preview-text {
+  #principale .article-preview-text {
     margin: 1em;
     padding: 0;
   }
-  .principale .article-preview-titre {
+  #principale .article-preview-titre {
     padding-bottom: 0.5em;
   }
 
-  .acceuil-stats{
+  #acceuil-stats{
     grid-area: milieu;
   }
 
-  .deuxieme-page {
+  #deuxieme-page {
     grid-area: bas;
     border-top: 2px dotted var(--okenney-purple-dark);
   }
