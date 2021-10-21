@@ -107,6 +107,8 @@ body {
 }
 
 .bas-de-page {
+  font-size: 0.7em;
   margin-top: 3em;
+  padding-bottom: 1em;
   text-align: center;
 }
