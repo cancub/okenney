@@ -43,18 +43,18 @@
     </div>
   </header>
 
-  <div id="ArrPlan">
+  <div id="ArrierePlanRecip">
     {{ aplan.menu()}}
   </div>
 
-  <div class="ombre-contenu glisser ferme"></div>
-  <div class="recip-contenu glisser ferme">
-    <div class="tailleur-contenu">
+  <div id="OmbreContenu" class="glisser ferme"></div>
+  <div id="RecipContenu" class="glisser ferme">
+    <div id="TailleurContenu">
       {% block content_column %} {% endblock %}
 
-      <div class="bas-de-page">
+      <div id="BasDePage">
         {% block bas_de_page %} {% endblock %}
-        <div class="copyright">&#169; Alf O'Kenney 2020-2021</div>
+        <div id="copyright">&#169; Alf O'Kenney 2020-2021</div>
       </div>
     </div>
 

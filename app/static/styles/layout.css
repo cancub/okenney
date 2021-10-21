@@ -77,21 +77,21 @@ footer {
   transition: none !important;
 }
 
-#ArrPlan {
+#ArrierePlanRecip {
   position: fixed;
   width: 100%;
   height: 100vh;
   background-color: var(--okenney-purple-grey);
 }
 
-.ombre-contenu {
+#OmbreContenu {
   position: fixed;
   width: 100%;
   height: calc(100vh - var(--taille-en-tete));
   z-index: 15;
   top: var(--taille-en-tete);
 }
-.ombre-contenu::before {
+#OmbreContenu::before {
   position: absolute;
   height: 100%;
   width: 20px;
@@ -101,28 +101,28 @@ footer {
   box-shadow: 11px 9px 2px 1px rgba(0, 0, 0, 0.25);
 }
 
-.recip-contenu {
+#RecipContenu {
   position: relative;
   min-height:100vh;
   z-index: 20;
   padding-top: calc(var(--taille-en-tete));
   background-color: white;
 }
-.recip-contenu.ouvert {
+#RecipContenu.ouvert {
   animation: colorRotate 20s linear infinite;
 }
 
-.ombre-contenu,
-.recip-contenu {
+#OmbreContenu,
+#RecipContenu {
   left: 0px;
   transition: left var(--temps-transition);
 }
-.ombre-contenu.ouvert,
-.recip-contenu.ouvert {
+#OmbreContenu.ouvert,
+#RecipContenu.ouvert {
   left: calc(-1*var(--glissage-contenu));
 }
 
-.recip-contenu .bloqueur {
+#RecipContenu .bloqueur {
   position: absolute;
   height:100%;
   width:100%;
@@ -130,11 +130,11 @@ footer {
   opacity: 0.5;
   background-color: gray;
 }
-.recip-contenu.ferme .bloqueur {
+#RecipContenu.ferme .bloqueur {
   display: none;
 }
 
-.tailleur-contenu {
+#TailleurContenu {
   max-width: 64em;
 }
 
@@ -145,13 +145,13 @@ footer {
 }
 
 @media (min-width: 40em) {
-  .tailleur-contenu {
+  #TailleurContenu {
     margin: 0 1em;
   }
 }
 
 @media (min-width: 64em) {
-  .tailleur-contenu {
+  #TailleurContenu {
     margin: 0 auto;
   }
 }

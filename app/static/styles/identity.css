@@ -72,12 +72,12 @@ body {
   outline: none;
 }
 
-.en-tete {
+#EnTete {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.ok-logo {
+#OKLogo {
   margin-left: 0.8em;
   display: block;
   margin-top:auto;
@@ -106,7 +106,7 @@ body {
   transform: rotate(-90deg) translate(-50px);
 }
 
-.bas-de-page {
+#BasDePage {
   font-size: 0.7em;
   margin-top: 3em;
   padding-bottom: 1em;

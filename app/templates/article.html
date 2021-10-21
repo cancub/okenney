@@ -12,13 +12,13 @@
 {% endblock %}
 
 {% block content_column %}
-<div class="article">
-  <div class="article-en-tete">
-    <div class="article-recip-grostitre">
-      <div class="article-recip-gt-titre">
+<div id="Article">
+  <div id="EnTeteArticle">
+    <div id="RecipGrosTitreArticle">
+      <div id="TitreArticle">
         {% block article_titre %} {% endblock %}
       </div>
-      <div class="article-recip-gt-soustitre">
+      <div id="SoustitreArticle">
         {% block article_soustitre %} {% endblock %}
       </div>
     </div>
@@ -29,7 +29,7 @@
       {% endcall %}
     </div>
   </div>
-  <div class="article-recip-texte">
+  <div id="RecipTexteArticle">
     {% block article_texte %} {% endblock %}
   </div>
 </div>

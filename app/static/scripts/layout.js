@@ -29,11 +29,16 @@ $( function () {
         }
     });
 
-    $('.recip-contenu').add($loupe).click(function(event) {
-        if (!$(this).hasClass('recip-contenu') || $(this).hasClass('ouvert')) {
-            $glisseurs.add($loupe).toggleClass('ouvert ferme');
-            event.stopPropagation();
-        }
+    function glisserRecipient(event) {
+        $glisseurs.add($loupe).toggleClass('ouvert ferme');
+        event.stopPropagation();
+    }
+
+    $loupe.click(glisserRecipient);
+
+    $('#RecipContenu').click(function(event) {
+        if ($(this).hasClass('ouvert'))
+            glisserRecipient(event);
     })
 
     let resizeTimer;

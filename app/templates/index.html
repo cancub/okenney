@@ -13,8 +13,8 @@
 
 {% block content_column %}
 {% set ns = namespace(last_dtime=none) %}
-{% set on_deck_id = 'on-deck' %}
-<div id="infinite-scoll" style="display:none">
+{% set on_deck_id = 'ArticlesOnDeck' %}
+<div id="InfiniteScoll" style="display:none">
   <div id="{{on_deck_id}}">
     {# Provide the data on the remainder of the files #}
     {% for i in range(preload_count, preload_count + batch_size) %}
@@ -28,33 +28,33 @@
         article_api_url,
         batch_size,
         '#' + on_deck_id,
-        '#les-plus-vieux',
+        '#ArticlesLesPlusVieux',
         'image-recip',
         end_datetime=ns.last_dtime
       )
   }}
 </div>
-<div id="refaconneur">
-  <div id="articles-a-lune">
-    <div id="principale">
+<div id="Refaconneur">
+  <div id="ArticlesALune">
+    <div id="ArticlePrincipal">
       {{ article.article_preview(latest[0], 'image-recip') }}
     </div>
-    <div id="deux-prochaine">
+    <div id="DeuxProchainsArticles">
       {% for i in range(1, 3) %}
         {{ article.article_preview(latest[i], 'image-recip') }}
       {% endfor %}
     </div>
   </div>
-  <div id="acceuil-stats">
+  <div id="AcceuilStats">
     {{ widgets.batir_graphiques('vices', 250) }}
   </div>
-  <div id="deuxieme-page" class="articles-plus-vieux">
+  <div id="DeuxiemePageDarticles" class="articles-plus-vieux">
   {% for i in range(3, 6) %}
     {{ article.article_preview(latest[i], 'image-recip') }}
   {% endfor %}
   </div>
 </div>
-<div id="les-plus-vieux" class="articles-plus-vieux">
+<div id="ArticlesLesPlusVieux" class="articles-plus-vieux">
 {% for i in range(6, preload_count) %}
   {{ article.article_preview(latest[i], 'image-recip') }}
 {% endfor %}
