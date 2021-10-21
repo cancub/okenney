@@ -1,7 +1,7 @@
 .article-preview {
   display: grid;
   grid-template-columns: min-content 1fr;
-  padding-bottom: 1em;
+  margin-bottom: 1em;
   text-decoration: none;
   background-color: white;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 4px 6px -2.4px;
@@ -46,6 +46,7 @@
 }
 .articles-plus-vieux .article-preview:last-of-type {
   padding-bottom: 0;
+  margin-bottom: 0;
 }
 .articles-plus-vieux .article-preview-text {
   align-self: center;
@@ -67,7 +68,6 @@
 #ArticlePrincipal {
   margin-left: auto;
   margin-right: auto;
-  padding-bottom: 1em;
 }
 #ArticlePrincipal .article-preview {
   display: block;
@@ -78,6 +78,7 @@
 }
 #ArticlePrincipal .article-preview-description {
   display: block;
+  padding-bottom: 1em;
 }
 #ArticlePrincipal .article-preview .image-recip {
   height: auto;
@@ -86,11 +87,6 @@
   width:100%;
   height:auto;
 }
-
-#DeuxProchainsArticles {
-  padding-top: 1em;
-}
-
 
 #AcceuilStats {
   grid-area: bas;
@@ -155,6 +151,10 @@
   #DeuxProchainsArticles img{
     height: auto;
     width: 100%;
+  }
+
+  #DeuxiemePageDarticles {
+    margin-bottom: 1em;
   }
 
   .articles-plus-vieux .article-preview {
