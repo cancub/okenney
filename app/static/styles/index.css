@@ -3,6 +3,8 @@
   grid-template-columns: min-content 1fr;
   padding-bottom: 1em;
   text-decoration: none;
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 4px 6px -2.4px;
 }
 .article-preview .image-recip {
   height: 6em;

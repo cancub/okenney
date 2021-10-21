@@ -106,7 +106,7 @@ footer {
   min-height:100vh;
   z-index: 20;
   padding-top: calc(var(--taille-en-tete));
-  background-color: white;
+  background-color: #f4f4f4;
 }
 #RecipContenu.ouvert {
   animation: colorRotate 20s linear infinite;
