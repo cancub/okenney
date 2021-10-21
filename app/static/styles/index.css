@@ -1,7 +1,7 @@
 .article-preview {
   display: grid;
   grid-template-columns: min-content 1fr;
-  margin-bottom: 1em;
+  margin-bottom: 1.2em;
   text-decoration: none;
   background-color: white;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 4px 6px -2.4px;
@@ -45,7 +45,6 @@
   flex-direction: column;
 }
 .articles-plus-vieux .article-preview:last-of-type {
-  padding-bottom: 0;
   margin-bottom: 0;
 }
 .articles-plus-vieux .article-preview-text {
@@ -97,11 +96,9 @@
   height: 10em;
 }
 
-
 #DeuxiemePageDarticles {
   grid-area: milieu;
 }
-
 
 @media (min-width: 40em) {
   #ArticlesALune {
@@ -111,7 +108,16 @@
       "ArticlePrincipal troisieme";
     grid-template-columns: 60% 1fr;
     column-gap: 1.5em;
-    padding-bottom: 2em;
+    margin-top: 1em;
+    margin-bottom: 1.5em;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 4px 6px -2.4px;
+  }
+
+  #ArticlesALune .article-preview {
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+    box-shadow: none;
   }
 
   #ArticlesALune .article-preview-text {
@@ -128,7 +134,15 @@
     margin: 0;
     padding-bottom: 0;
   }
+  #ArticlePrincipal .article-preview {
+    margin-left: 0.5em;
+  }
+  #ArticlePrincipal .article-preview-text {
+    margin: 1em;
+    padding: 0;
+  }
   #ArticlePrincipal .article-preview-titre {
+    padding-bottom: 0.5em;
     font-size: 1.5em;
     font-weight: bold;
   }
@@ -137,10 +151,8 @@
     padding: 0;
   }
   #DeuxProchainsArticles .article-preview {
+    margin-right: 0.5em;
     display: block;
-  }
-  #DeuxProchainsArticles .article-preview:first-of-type {
-    margin-bottom: 1em;
   }
   #DeuxProchainsArticles .article-preview-titre {
     font-size: 1.15em;
@@ -176,12 +188,8 @@
 }
 
 @media (min-width: 64em) {
-  #ArticlePrincipal .article-preview-text {
-    margin: 1em;
-    padding: 0;
-  }
-  #ArticlePrincipal .article-preview-titre {
-    padding-bottom: 0.5em;
+  #ArticlesALune {
+    margin-bottom: 0;
   }
 
   #AcceuilStats{
@@ -190,6 +198,5 @@
 
   #DeuxiemePageDarticles {
     grid-area: bas;
-    border-top: 2px dotted var(--okenney-purple-dark);
   }
 }
