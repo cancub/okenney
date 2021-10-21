@@ -105,7 +105,7 @@ footer {
   position: relative;
   min-height:100vh;
   z-index: 20;
-  padding-top: calc(var(--taille-en-tete) + 10px);
+  padding-top: calc(var(--taille-en-tete));
   background-color: white;
 }
 .recip-contenu.ouvert {
