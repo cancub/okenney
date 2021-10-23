@@ -110,6 +110,7 @@
     background-color: white;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 4px 6px -2.4px;
     --taille-ecart: 0.7em;
+    --frontiere-a-lune: 2px dotted var(--okenney-purple-dark-faded);
   }
 
   #ArticlesALune .article-preview {
@@ -127,6 +128,7 @@
   }
 
   #ArticlePrincipal {
+    border-right: var(--frontiere-a-lune);
     margin: var(--taille-ecart) 0;
     padding-left: var(--taille-ecart);
     padding-right: var(--taille-ecart);
@@ -149,6 +151,7 @@
   }
   #DeuxProchainsArticles .article-preview:first-of-type {
     padding-bottom: var(--taille-ecart);
+    border-bottom: var(--frontiere-a-lune);
   }
   #DeuxProchainsArticles .article-preview:last-of-type {
     padding-top: var(--taille-ecart);
