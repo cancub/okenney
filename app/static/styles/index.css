@@ -103,9 +103,6 @@
 @media (min-width: 40em) {
   #ArticlesALune {
     display: grid;
-    grid-template-areas:
-      "ArticlePrincipal deuxieme"
-      "ArticlePrincipal troisieme";
     grid-template-columns: 60% 1fr;
     column-gap: 1.5em;
     margin-top: 1em;
@@ -130,7 +127,6 @@
   }
 
   #ArticlePrincipal {
-    grid-area: ArticlePrincipal;
     margin: 0;
     padding-bottom: 0;
   }
