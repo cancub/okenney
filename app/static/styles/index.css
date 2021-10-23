@@ -51,7 +51,6 @@
   align-self: center;
 }
 
-
 #Refaconneur {
   display: grid;
   grid-template-areas:
@@ -104,9 +103,8 @@
   #ArticlesALune {
     display: grid;
     grid-template-columns: 60% 1fr;
-    column-gap: 1.5em;
     margin-top: 1em;
-    margin-bottom: 1.5em;
+    margin-bottom: var(--ecart-articles);
     background-color: white;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 4px 6px -2.4px;
     --taille-ecart: 0.7em;
@@ -167,10 +165,6 @@
     width: 100%;
   }
 
-  #DeuxiemePageDarticles {
-    margin-bottom: 1em;
-  }
-
   .articles-plus-vieux .article-preview {
     padding: 1em 0;
   }
@@ -196,6 +190,10 @@
 
   #AcceuilStats{
     grid-area: milieu;
+  }
+
+  #DeuxiemePageDarticles {
+    margin-bottom: var(--ecart-articles);
   }
 
   #DeuxiemePageDarticles {
