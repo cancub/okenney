@@ -29,7 +29,7 @@ def other(category, subpath='index.html'):
     if category not in ARTICLE_CATEGORIES:
         return flask.render_template('404.html'), 404
 
-    context = {}
+    context = {'category': category}
 
     if category == 'about' and subpath in ('index.html', 'vices.html'):
         context.update({

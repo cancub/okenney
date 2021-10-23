@@ -6,7 +6,7 @@
 }
 
 #EnTeteArticle {
-  padding-top: 1em;
+  padding-top: 2em;
   margin-bottom: 2em;
 }
 
@@ -14,6 +14,16 @@
 #TexteArticle .section-article {
   margin-left: 1.3em;
   margin-right: 1.3em;
+}
+
+#Categorie {
+  text-decoration: none;
+}
+#Categorie div{
+  width: fit-content;
+  padding: 0.3em;
+  color: white;
+  background: var(--okenney-blue);
 }
 
 #RecipGrosTitreArticle {
@@ -59,7 +69,7 @@
   }
 
   #RecipGrosTitreArticle {
-    margin-top: 4em;
+    margin-top: 2em;
     margin-bottom: 4em;
   }
 
