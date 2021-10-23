@@ -1,3 +1,8 @@
+#Article {
+  background-color: white;
+  box-shadow: var(--ombre-article);
+}
+
 #EnTeteArticle {
   margin-bottom: 2em;
 }
