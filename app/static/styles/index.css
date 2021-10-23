@@ -109,11 +109,11 @@
     margin-bottom: 1.5em;
     background-color: white;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 4px 6px -2.4px;
+    --taille-ecart: 0.7em;
   }
 
   #ArticlesALune .article-preview {
-    margin-top: 0.5em;
-    margin-bottom: 1em;
+    margin-bottom: 0;
     box-shadow: none;
   }
 
@@ -127,11 +127,9 @@
   }
 
   #ArticlePrincipal {
-    margin: 0;
-    padding-bottom: 0;
-  }
-  #ArticlePrincipal .article-preview {
-    margin-left: 0.5em;
+    margin: var(--taille-ecart) 0;
+    padding-left: var(--taille-ecart);
+    padding-right: var(--taille-ecart);
   }
   #ArticlePrincipal .article-preview-text {
     margin: 1em;
@@ -144,11 +142,16 @@
   }
 
   #DeuxProchainsArticles {
-    padding: 0;
+    padding: var(--taille-ecart);
   }
   #DeuxProchainsArticles .article-preview {
-    margin-right: 0.5em;
     display: block;
+  }
+  #DeuxProchainsArticles .article-preview:first-of-type {
+    padding-bottom: var(--taille-ecart);
+  }
+  #DeuxProchainsArticles .article-preview:last-of-type {
+    padding-top: var(--taille-ecart);
   }
   #DeuxProchainsArticles .article-preview-titre {
     font-size: 1.15em;
