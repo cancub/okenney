@@ -44,7 +44,7 @@
 }
 
 .articles-plus-vieux {
-  width:100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -141,7 +141,6 @@
   }
   #ArticlePrincipal .article-preview-titre {
     padding-bottom: 0.5em;
-    font-size: 1.5em;
     font-weight: bold;
   }
 
@@ -174,15 +173,16 @@
   }
   .articles-plus-vieux .image-recip,
   .articles-plus-vieux .image-recip img {
-    height: 12em;
+    height: 10em;
   }
   .articles-plus-vieux .article-preview-text {
     align-self: start;
   }
   .articles-plus-vieux .article-preview-titre {
-    font-size: 1.4rem;
+    font-size: 16px;
   }
   .articles-plus-vieux .article-preview-description {
+    font-size: 15px;
     display: inherit;
   }
 }
@@ -190,6 +190,10 @@
 @media (min-width: 64em) {
   #ArticlesALune {
     margin-bottom: 0;
+  }
+
+  #ArticlePrincipal .article-preview-titre {
+    font-size: 1.5em;
   }
 
   #AcceuilStats{
@@ -202,5 +206,12 @@
 
   #DeuxiemePageDarticles {
     grid-area: bas;
+  }
+
+  .articles-plus-vieux .article-preview-titre {
+    font-size: 18px;
+  }
+  .articles-plus-vieux .article-preview-description {
+    font-size: 16px;
   }
 }
