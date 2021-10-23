@@ -4,7 +4,7 @@
   margin-bottom: 1.2em;
   text-decoration: none;
   background-color: white;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 4px 6px -2.4px;
+  box-shadow: var(--ombre-article-apercu);
 }
 .article-preview .image-recip {
   height: 6em;
@@ -110,7 +110,7 @@
     margin-top: 1em;
     margin-bottom: var(--ecart-articles);
     background-color: white;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 4px 6px -2.4px;
+    box-shadow: var(--ombre-article-apercu);
     --taille-ecart: 0.7em;
     --frontiere-a-lune: 2px dotted var(--okenney-purple-dark-faded);
   }
