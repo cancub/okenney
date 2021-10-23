@@ -28,15 +28,19 @@
   font-size: 1rem;
   line-height: 1.25;
 }
-.article-preview-titre:hover {
-  text-decoration: underline solid #717171;
-}
 .article-preview-description {
   display: none;
   font-size: 1em;
 }
 .article-preview-description p {
   margin:0;
+}
+
+.article-preview:hover .article-preview-titre {
+  color: var(--okenney-orange);
+}
+.article-preview:hover img {
+  filter: brightness(108%);
 }
 
 .articles-plus-vieux {
