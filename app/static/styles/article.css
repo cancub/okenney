@@ -22,17 +22,17 @@
 }
 
 #TitreArticle {
-  font-size: 1.5em;
-  font-weight: bold;
+  font-size: 1.8em;
   line-height: 1.3;
 }
 #SoustitreArticle {
   margin-top: 1em;
-  font-size: 20px;
 }
 
+#SoustitreArticle,
 #TexteArticle {
-  font-size: 16px;
+  font-size: 18px;
+  line-height: 1.6em;
 }
 
 .imleg-legende {
@@ -70,4 +70,22 @@
     width: calc(100% - 2 * var(--ecart-min));
     max-width: 42em;
   }
+
+  #TitreArticle {
+    font-size: 2em;
+  }
+
+}
+
+@media (min-width: 64em) {
+
+  #TitreArticle {
+    font-size: 2.4em;
+  }
+
+  #SoustitreArticle,
+  #TexteArticle {
+    font-size: 20px;
+  }
+
 }
