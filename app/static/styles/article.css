@@ -10,8 +10,8 @@
   margin-bottom: 2em;
 }
 
-#RecipGrosTitreArticle,
-#TexteArticle .section-article {
+.marge-article,
+#TexteArticle >:not(img) {
   margin-left: 1.3em;
   margin-right: 1.3em;
 }
@@ -73,12 +73,12 @@
     margin-bottom: 4em;
   }
 
-  #RecipGrosTitreArticle,
-  #TexteArticle .section-article {
+  .marge-article,
+  #TexteArticle >:not(img) {
     margin-left: auto;
     margin-right: auto;
     width: calc(100% - 2 * var(--ecart-min));
-    max-width: 42em;
+    max-width: 720px;
   }
 
   #TitreArticle {

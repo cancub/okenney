@@ -1,5 +1,6 @@
-import os
+import datetime
 import flask
+import os
 
 from . import ARTICLE_CATEGORIES, ARTICLE_BATCH_COUNT, ARTICLE_PRELOAD_COUNT
 import app.mod_articles as _articles
@@ -43,6 +44,22 @@ def other(category, subpath='index.html'):
         base_name = os.path.splitext(subpath)[0]
         context['image_dir'] = (
             f'/{_articles.PROJECT_IMAGES_PATH}/{category}/{base_name}'
+        )
+
+        # Collect the datetime for the article in question.
+        name = os.path.splitext(subpath)[0]
+        article_dtime = _articles.get_article(name).dtime
+
+        # If the article was published today, specify the time, otherwise use
+        # the date.
+        if datetime.datetime.now().date() == article_dtime.date():
+            formatter = '%H:%M'
+        else:
+            formatter = '%B %d, %Y'
+
+        context['datetime'] = datetime.datetime.strftime(
+            article_dtime,
+            formatter,
         )
 
     return flask.render_template(f'/articles/{category}/{subpath}', **context)

@@ -55,6 +55,9 @@ def get_contents(path):
 
     return title, description
 
+def get_article(subpath):
+    return _Article.query.filter_by(name=subpath).one()
+
 def get_latest_articles(
     category=None,
     end_datetime=None,

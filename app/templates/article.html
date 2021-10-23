@@ -21,7 +21,7 @@
     <div>{{category|title}}</div>
   </a>
   <div id="EnTeteArticle">
-    <div id="RecipGrosTitreArticle">
+    <div id="RecipGrosTitreArticle" class="marge-article">
       <div id="TitreArticle">
         {% block article_titre %} {% endblock %}
       </div>
@@ -34,6 +34,9 @@
           {{ images.image_progressive(image_dir, 'article-recip-image')}}
         {% endblock %}
       {% endcall %}
+  </div>
+  <div id="InfoArticle" class="marge-article">
+    <div id="MisEnLigne">{{datetime}}</div>
   </div>
   <div id="TexteArticle">
     {% block article_texte %} {% endblock %}
