@@ -2,6 +2,10 @@
 {% import 'macros/images/progressive/immediat.html' as images -%}
 {% import 'macros/article.html' as article -%}
 
+{% block title%}
+  {% block page_titre %}Alf O'Kenney{% endblock %}
+{% endblock %}
+
 {% block head %}
 <link rel="stylesheet" href="/styles/article.css">
 <script async src='https://pol.is/embed.js'></script>
