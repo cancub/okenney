@@ -2,7 +2,7 @@
 {%- endmacro %}
 
 {% macro js() -%}
-<script src="https://d3js.org/d3.v6.min.js"></script>
+<script src="/libs/d3.v6.min.js"></script>
 {%- endmacro %}
 
 {% macro batir_graphiques(nom, hauteur) -%}
@@ -389,26 +389,39 @@
     // create a tooltip
     var tooltip = d3.select(sel_donnees)
       .append("div")
-      .attr("class", "tooltip-graphique")
+      .attr("class", "tooltip-graphique");
+
+    // Store it as a jquery object for later use.
+    var $ttip = $('.tooltip-graphique');
 
     // Three function that change the tooltip when user hover / move / leave a cell
     function regler_position_tooltip() {
-      var $ttip = $('.tooltip-graphique');
+      var $grapiqueDonnees = $('.graphique-donnees');
+
+      var ecart = 5;
+
+      // Figure out what we're working with in terms of dimensions of the data
+      // box and the tooltip with the current data.
+      var hauteurTTip = $ttip.outerHeight()
+      var largerTTip = $ttip.outerWidth();
+      var largeurDonnees = $('.graphique-donnees').outerWidth();
 
       // Where does this pointer exist in the conatiner?
       var pos = d3.pointer(event, '.graphique-recip-{{nom}}');
 
-      // Get the X position based on whether we will overflow off the page.
-      var x_pos = pos[0];
-      if (x_pos + 20 + $ttip.outerWidth() > $(window).width())
-        x_pos -= $ttip.outerWidth() + 20;
-      else
-        x_pos += 20;
+      // Calculate the left position of the tooltip based on a simple line
+      // equation designed so that the tooltip at its current width never runs
+      // off the sides of the data box.
+      var m = (largeurDonnees - largerTTip - 2 * ecart) / largeurDonnees;
+      var x_pos = m * pos[0] + ecart;
 
-      // debugger;
+      // Calculate the top location of the tooltip based on the location of the
+      // mouse and the current height of the tooltip such that it does not
+      // overflow the data box. This just flips the tooltip above or below the
+      // mouse depending on the current dimensions.
       var y_pos = pos[1] - pos_recip.top;
-      if (y_pos - 20 - $ttip.outerHeight() > 0)
-        y_pos -= $ttip.outerHeight() + 20;
+      if (y_pos - 20 - hauteurTTip > 0)
+        y_pos -= hauteurTTip + 20;
       else
         y_pos += 20
 
@@ -472,15 +485,15 @@
 
     var pos = {left: largeur, x: 0 };
     var defiler = false; 
-    // Allow for click scrolling for the data
+    // Allow for click scrolling for the data.
     $(sel_donnees).mousedown(function(e) {
       if ('ontouchstart' in window)
         return;
       defiler = true;
       pos = {
-        // The current scroll 
+        // The current scroll.
         left: this.scrollLeft,
-        // Get the current mouse position
+        // Get the current mouse position.
         x: e.clientX,
       };
     });
@@ -492,7 +505,7 @@
     $(sel_donnees).mousemove(function(e) {
       if (!defiler)
         return;
-      // How far the mouse has been moved
+      // How far the mouse has been moved.
       const dx = e.clientX - pos.x;
       const dy = e.clientY - pos.y;
 
