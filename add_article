@@ -117,7 +117,7 @@ def build_images(path):
         # We scaled to the width, so we need to crop to the height.
         height_crop_low, height_crop_high = get_crop_dims(
             height_crop_high,
-            BIG_IMAGE_WIDTH,
+            BIG_IMAGE_HEIGHT,
         )
 
     # Crop and center to this aspect ratio.
