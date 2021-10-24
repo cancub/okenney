@@ -5,6 +5,7 @@ class Article(_db.Model):
     name = _db.Column(_db.String(128), unique=True, nullable=False)
     category = _db.Column(_db.String(128), unique=False, nullable=False)
     dtime = _db.Column(_db.DateTime, unique=False, nullable=False)
+    word_count = _db.Column(_db.Integer, unique=False, nullable=False)
 
     def __repr__(self):
         return f'<Article {self.name}>'

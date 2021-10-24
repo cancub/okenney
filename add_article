@@ -3,6 +3,7 @@
 import copy
 import cv2
 import datetime
+import html.parser as HTMLParser
 import os
 import re
 import sys
@@ -25,9 +26,15 @@ IMAGE_NAME = 'principal'
 IMAGE_BIG_NAME = IMAGE_NAME + '-gd.png'
 IMAGE_SMALL_NAME = IMAGE_NAME + '-pt.png'
 
-def build_filename(path):
-    title, _ = _articles.get_contents(path)
+class HTMLWordCounter(HTMLParser.HTMLParser):
+    def __init__(self):
+        super(HTMLWordCounter, self).__init__()
+        self.word_count = 0
+    def handle_data(self, data):
+        if self.get_starttag_text() != 'script':
+            self.word_count += len(data.split())
 
+def get_saved_title(title):
     # Make the title lower case to look nicer in the directory.
     title = title.lower()
 
@@ -57,6 +64,14 @@ def build_filename(path):
     title_length = min(5, len(title_words))
 
     return '-'.join(title_words[:title_length])
+
+def process_file_contents(path):
+    contents = _articles.process_file_contents(path)
+
+    counter = HTMLWordCounter()
+    counter.feed(contents['en']['text'])
+
+    return get_saved_title(contents['en']['title']), counter.word_count
 
 def get_crop_dims(actual_dim, desired_dim):
     to_crop = (actual_dim - desired_dim) / 2
@@ -168,8 +183,8 @@ if category not in CATEGORIES:
 if not os.path.exists(image_path):
     raise Exception('No image file exists at {}'.format(image_path))
 
-# Locate the title within the file.
-title = build_filename(text_path)
+# Locate the title within the file and collect the word count.
+title, word_count = process_file_contents(text_path)
 
 # Load the images
 image_big, image_small = build_images(image_path)
@@ -189,7 +204,9 @@ cv2.imwrite(os.path.join(images_dir, IMAGE_BIG_NAME), image_big)
 cv2.imwrite(os.path.join(images_dir, IMAGE_SMALL_NAME), image_small)
 
 # Store this information in the database
-db.session.add(Article(name=title, category=category, dtime=now))
+db.session.add(
+    Article(name=title, category=category, dtime=now, word_count=word_count)
+)
 db.session.commit()
 
 # Print out the path the images dir into which we need to dump all of the
