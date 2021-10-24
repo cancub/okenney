@@ -26,6 +26,10 @@
       {{ details.description|safe}}
     </div>
   </div>
+  <div class="article-apercu-metadata">
+    <div class="article-apercu-date">{{ details.date_str }}</div>
+    <div class="article-apercu-temps-a-lire"></div>
+  </div>
 </a>
 {%- endmacro %}
 
@@ -43,6 +47,10 @@ function {{preview_fn_name}}(details) {
           <div class="article-apercu-description">
             ${details.description}
           </div>
+        </div>
+        <div class="article-apercu-metadata">
+          <div class="article-apercu-date">${details.date_str}</div>
+          <div class="article-apercu-temps-a-lire"></div>
         </div>
       </a>
     `);

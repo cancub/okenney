@@ -1,7 +1,6 @@
+import datetime
 import os.path
 import re
-
-import flask
 
 from app.mod_articles.models import Article as _Article
 
@@ -55,18 +54,39 @@ def get_contents(path):
 
     return title, description
 
-def get_article(subpath):
-    return _Article.query.filter_by(name=subpath).one()
+def datetime_to_relative_string(dtime):
+    '''
+    Take a datetime object and covert it to a string relative to the current
+    date. That is, if the datetime is from today, report just the time,
+    otherwise report just the date.
+    '''
+    # If the article was published today, specify the time, otherwise use
+    # the date.
+    if datetime.datetime.now().date() == dtime.date():
+        formatter = '%H:%M'
+    else:
+        formatter = '%B %d, %Y'
+
+    return datetime.datetime.strftime(dtime, formatter)
+
+def get_article(subpath, process_datetime=True):
+    article = _Article.query.filter_by(name=subpath).one()
+
+    if process_datetime:
+        article.date_str = datetime_to_relative_string(article.dtime)
+
+    return article
 
 def get_latest_articles(
     category=None,
     end_datetime=None,
     batch_size=None,
-    provide_title = True,
-    provide_description = True,
-    provide_article_path = True,
-    provide_image_path = True,
-    remote_request = True,
+    provide_title=True,
+    provide_description=True,
+    provide_article_path=True,
+    provide_image_path=True,
+    process_datetime=True,
+    remote_request=True,
 ):
     article_query = _Article.query
 
@@ -124,5 +144,8 @@ def get_latest_articles(
                 name,
                 remote=remote_request,
             )
+
+        if process_datetime:
+            article.date_str = datetime_to_relative_string(article.dtime)
 
     return articles

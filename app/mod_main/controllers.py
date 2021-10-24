@@ -1,4 +1,3 @@
-import datetime
 import flask
 import os
 
@@ -46,20 +45,8 @@ def other(category, subpath='index.html'):
             f'/{_articles.PROJECT_IMAGES_PATH}/{category}/{base_name}'
         )
 
-        # Collect the datetime for the article in question.
+        # Collect the datetime string for the article in question.
         name = os.path.splitext(subpath)[0]
-        article_dtime = _articles.get_article(name).dtime
-
-        # If the article was published today, specify the time, otherwise use
-        # the date.
-        if datetime.datetime.now().date() == article_dtime.date():
-            formatter = '%H:%M'
-        else:
-            formatter = '%B %d, %Y'
-
-        context['datetime'] = datetime.datetime.strftime(
-            article_dtime,
-            formatter,
-        )
+        context['date_str'] = _articles.get_article(name).date_str
 
     return flask.render_template(f'/articles/{category}/{subpath}', **context)
