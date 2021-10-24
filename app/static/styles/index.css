@@ -47,9 +47,16 @@
 }
 .article-apercu-metadata {
   grid-area: metadata;
+  display: flex;
+  align-items: center;
   padding-bottom: 0.5rem;
   font-size: 0.8em;
-  color: var(--okenney-dark-blue);
+  color: var(--okenney-blue-dark);
+}
+.article-apercu-metadata *:nth-child(n+2) {
+  margin-left: 0.5rem;
+  padding-left: 0.5rem;
+  border-left: 1px solid var(--okenney-blue-dark-faded);
 }
 
 .article-apercu:hover {
