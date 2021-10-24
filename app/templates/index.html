@@ -20,7 +20,7 @@
     {% for i in range(preload_count, preload_count + batch_size) %}
       {% if i < total_count %}
         {% set ns.last_dtime = latest[i].dtime %}
-        {{ article.article_preview(latest[i], 'image-recip') }}
+        {{ article.article_apercu(latest[i], 'image-recip') }}
       {% endif %}
     {% endfor %}
   </div>
@@ -37,11 +37,11 @@
 <div id="Refaconneur">
   <div id="ArticlesALune">
     <div id="ArticlePrincipal">
-      {{ article.article_preview(latest[0], 'image-recip') }}
+      {{ article.article_apercu(latest[0], 'image-recip') }}
     </div>
     <div id="DeuxProchainsArticles">
       {% for i in range(1, 3) %}
-        {{ article.article_preview(latest[i], 'image-recip') }}
+        {{ article.article_apercu(latest[i], 'image-recip') }}
       {% endfor %}
     </div>
   </div>
@@ -50,13 +50,13 @@
   </div>
   <div id="DeuxiemePageDarticles" class="articles-plus-vieux">
   {% for i in range(3, 6) %}
-    {{ article.article_preview(latest[i], 'image-recip') }}
+    {{ article.article_apercu(latest[i], 'image-recip') }}
   {% endfor %}
   </div>
 </div>
 <div id="ArticlesLesPlusVieux" class="articles-plus-vieux">
 {% for i in range(6, preload_count) %}
-  {{ article.article_preview(latest[i], 'image-recip') }}
+  {{ article.article_apercu(latest[i], 'image-recip') }}
 {% endfor %}
 </div>
 {% endblock %}

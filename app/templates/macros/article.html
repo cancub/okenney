@@ -17,19 +17,19 @@
 </div>
 {% endmacro %}
 
-{% macro article_preview(details, image_recip_class) -%}
-<a class="article-preview" href="{{ details.filepath }}">
+{% macro article_apercu(details, image_recip_class) -%}
+<a class="article-apercu" href="{{ details.filepath }}">
   {{ images.image_progressive(details.image_dir, image_recip_class)}}
-  <div class="article-preview-text">
-    <h2 class="article-preview-titre">{{ details.title }}</h2>
-    <div class="article-preview-description">
+  <div class="article-apercu-text">
+    <div class="article-apercu-titre">{{ details.title }}</div>
+    <div class="article-apercu-description">
       {{ details.description|safe}}
     </div>
   </div>
 </a>
 {%- endmacro %}
 
-{% macro article_preview_js_builder(preview_fn_name, image_recip_class) %}
+{% macro article_apercu_js_builder(preview_fn_name, image_recip_class) %}
 
 {% set prog_img_fn_name = 'progImg' %}
 {{ images.image_progressive_js_builder(prog_img_fn_name, image_recip_class) }}
@@ -37,10 +37,10 @@
 function {{preview_fn_name}}(details) {
     // Build the article preview.
     var $article = $(`
-      <a class="article-preview" href="${details.filepath}">
-        <div class="article-preview-text">
-          <h2 class="article-preview-titre">${details.title}</h2>
-          <div class="article-preview-description">
+      <a class="article-apercu" href="${details.filepath}">
+        <div class="article-apercu-text">
+          <div class="article-apercu-titre">${details.title}</div>
+          <div class="article-apercu-description">
             ${details.description}
           </div>
         </div>
@@ -124,7 +124,7 @@ function {{preview_fn_name}}(details) {
         }
 
         {% set builder_fn_name = 'buildArticlePreview' %}
-        {{ article_preview_js_builder(builder_fn_name, image_recip_class) }}
+        {{ article_apercu_js_builder(builder_fn_name, image_recip_class) }}
 
         function storeArticles(data) {
             data.forEach(function(item) {
