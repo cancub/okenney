@@ -1,12 +1,17 @@
 .article-apercu {
   display: grid;
+  grid-template-areas:
+    "img-recip text"
+    "img-recip metadata";
   grid-template-columns: min-content 1fr;
+  grid-template-rows: 1fr 1.5em;
   margin-bottom: 1.2em;
   text-decoration: none;
   background-color: white;
   box-shadow: var(--ombre-article-apercu);
 }
 .article-apercu .image-recip {
+  grid-area: img-recip;
   height: 6em;
   display: grid;
   grid-template-areas: "img";
@@ -15,16 +20,20 @@
   height: 6em;
   grid-area: img;
 }
-.article-apercu-text {
-  flex: 1;
-  align-self: center;
-  color: #222;
+.article-apercu-text,
+.article-apercu-metadata {
+  margin-left: 1rem;
 }
-.article-apercu-titre,
-.article-apercu-description {
-  margin: .5rem 1rem;
+.article-apercu-text {
+  grid-area: text;
+  align-self: center;
+  height: 100%;
+  padding-top: 0.5rem;
+  margin-right: 1em;
+  color: black;
 }
 .article-apercu-titre {
+  margin-bottom: 0.5em;
   font-size: 1rem;
   font-weight: bold;
   line-height: 1.25;
@@ -35,6 +44,12 @@
 }
 .article-apercu-description p {
   margin:0;
+}
+.article-apercu-metadata {
+  grid-area: metadata;
+  padding-bottom: 0.5rem;
+  font-size: 0.8em;
+  color: var(--okenney-dark-blue);
 }
 
 .article-apercu:hover {
@@ -124,6 +139,13 @@
     box-shadow: none;
   }
 
+
+  #ArticlesALune .article-apercu-text,
+  #ArticlesALune .article-apercu-metadata {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+
   #ArticlesALune .article-apercu-text {
     padding-top: 1em;
   }
@@ -139,13 +161,13 @@
     padding-left: var(--taille-ecart);
     padding-right: var(--taille-ecart);
   }
-  #ArticlePrincipal .article-apercu-text {
-    margin: 1em;
-    padding: 0;
-  }
   #ArticlePrincipal .article-apercu-titre {
     padding-bottom: 0.5em;
     font-weight: bold;
+  }
+
+  #DeuxProchainsArticles .article-apercu-metadata {
+    padding-top: 1rem;
   }
 
   #DeuxProchainsArticles {
