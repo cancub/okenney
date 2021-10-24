@@ -29,7 +29,11 @@
   <div class="article-apercu-metadata">
     <div clss="article-apercu-categorie">{{ details.category }}</div>
     <div class="article-apercu-date">{{ details.date_str }}</div>
-    <!-- <div class="article-apercu-temps-a-lire"></div> -->
+    <div class="article-apercu-temps-a-lire">
+      {{
+        ((details.word_count + 1) / 200) | round(method='ceil') | int
+      }} min read
+    </div>
   </div>
 </a>
 {%- endmacro %}
@@ -52,7 +56,9 @@ function {{preview_fn_name}}(details) {
         <div class="article-apercu-metadata">
           <div clss="article-apercu-categorie">${details.category}</div>
           <div class="article-apercu-date">${details.date_str}</div>
-          <!-- <div class="article-apercu-temps-a-lire"></div> -->
+          <div class="article-apercu-temps-a-lire">
+            ${ Math.ceil( (details.word_count+1) / 200 ) } min read
+          </div>
         </div>
       </a>
     `);
