@@ -16,8 +16,9 @@
   --okenney-dark-blue: #37636D;
   --button-border-radius: 10px;
   --ecart-articles: 1.2em;
-  --ombre-article-apercu: rgba(0, 0, 0, 0.16) 0px 4px 6px -2.4px;
-  --ombre-article:  rgba(0,0,0,0.16) 0 2px 4px 0;
+  --ombre-article-apercu: 0px 4px 6px -2.4px rgba(0, 0, 0, 0.16);
+  --ombre-article-apercu-selection: 0 2px 4px 0 rgb(0 0 0 / 32%);
+  --ombre-article:  0 2px 4px 0 rgba(0,0,0,0.16);
 }
 
 body {

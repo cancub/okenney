@@ -36,6 +36,9 @@
   margin:0;
 }
 
+.article-preview:hover {
+  box-shadow: var(--ombre-article-apercu-selection);
+}
 .article-preview:hover .article-preview-titre {
   color: var(--okenney-orange);
 }
