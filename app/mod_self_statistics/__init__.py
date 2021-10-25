@@ -22,9 +22,9 @@ def _translate_quantity(consom):
     if consom.unit.startswith(target_unit):
         return consom.quantity
 
-    target_unit_quant = float(
-        _re.search(rf'\(([\d\.]+) {target_unit}\)', consom.unit).group(1)
-    )
+    p = _re.compile(rf'\(([\d\.]+)\s*{target_unit}\)')
+
+    target_unit_quant = float(p.search(consom.unit).group(1))
     return target_unit_quant * float(consom.quantity)
 
 def get_chart_data():

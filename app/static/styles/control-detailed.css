@@ -1,0 +1,13 @@
+option.consom-depend {
+    display: none;
+}
+
+#jsGrid.consom-beer option.consom-beer,
+#jsGrid.consom-wine option.consom-wine,
+#jsGrid.consom-spirit option.consom-spirit,
+#jsGrid.consom-cannabis option.consom-cannabis,
+#jsGrid.consom-chips option.consom-chips,
+#jsGrid.consom-cigarette option.consom-cigarette,
+#jsGrid.consom-coffee option.consom-coffee {
+    display: inherit;
+}

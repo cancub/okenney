@@ -11,12 +11,20 @@ mod_self_stats = flask.Blueprint(
 )
 
 @mod_self_stats.route('/control')
+@mod_self_stats.route('/control/<path:subpath>')
 @flask_login.login_required
-def control():
+def control(subpath=None):
+    template_fname = 'control'
+
+    if subpath == 'detailed':
+        template_fname += '-detailed'
+
     return flask.render_template(
-        'control.html',
+        template_fname + '.html',
         categories=_models.Category.query.all(),
         products=_models.Product.query.all(),
         units=_models.Unit.query.all(),
-        CONSUMPTION_API='/api' + SELF_STATISTICS_PATH
+        CONSUMPTION_API='/api' + SELF_STATISTICS_PATH,
+        SIMPLE_CONTROL_URL=flask.url_for('self_stats.control'),
+        DETAILED_CONTROL_URL=flask.url_for('self_stats.control') + '/detailed',
     )
