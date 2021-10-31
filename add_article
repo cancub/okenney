@@ -7,6 +7,7 @@ import html.parser as HTMLParser
 import os
 import re
 import sys
+import shutil
 
 from app import db
 import app.mod_articles as _articles
@@ -19,6 +20,9 @@ TODO:
 '''
 
 CATEGORIES = ['about', 'ideas', 'politics', 'philosophy', 'projects']
+MAIN_ARTICLE_SUBDIR = 'main'
+MAIN_ARTICLE_TEXT_NAME = 'main.html'
+MAIN_ARTICLE_IMAGE_NAME = 'main.png'
 BIG_IMAGE_HEIGHT = 600
 BIG_IMAGE_WIDTH = 1000
 SMALL_IMAGE_SCALE = 0.15
@@ -65,13 +69,11 @@ def get_saved_title(title):
 
     return '-'.join(title_words[:title_length])
 
-def process_file_contents(path):
-    contents = _articles.process_file_contents(path)
-
+def get_word_count(html_text):
     counter = HTMLWordCounter()
-    counter.feed(contents['en']['text'])
+    counter.feed(html_text)
 
-    return get_saved_title(contents['en']['title']), counter.word_count
+    return counter.word_count
 
 def get_crop_dims(actual_dim, desired_dim):
     to_crop = (actual_dim - desired_dim) / 2
@@ -169,22 +171,58 @@ def build_paths(category, title):
 
     return os.path.join(article_dir, title + '.html'), images_dir
 
+def process_article(contents, images_dir):
+    # Use a regex to replace each image filename with the full path for the
+    # file.
+    new_contents = re.sub(
+        r'(image_et_legende\(.*?\)\s*-*%}\s*)(.*?)(\s*{%\s+endcall)',
+        fr'\1<img src="{images_dir}/\2"/>\3',
+        contents,
+    )
 
-text_path = os.path.abspath(sys.argv[1])
-image_path = sys.argv[2]
-category = sys.argv[3]
+    # Wrap paragraphs with p elements, ignoring macro and block statements.
+    # NOTE:
+    # This will wrap all existing elements. There are too many corner cases
+    # here, but these will be rare, so it's easier to just clean up after the
+    # fact than trying to handle, say a block that start with an <a> and ends
+    # with an </a>, but these are for two, separate links.
+    return re.sub(
+        r'(?<!})\n(.+?)(?<!})\n',
+        r'\n<p>\n\t\1\n</p>',
+        new_contents,
+    )
 
-if not os.path.exists(text_path):
-    raise Exception('No text file exists at {}'.format(text_path))
+
+root_article_dir = os.path.abspath(sys.argv[1])
+category = sys.argv[2]
+
+if not os.path.isdir(root_article_dir):
+    raise Exception('No directory exists at {}'.format(root_article_dir))
 
 if category not in CATEGORIES:
     raise Exception('Unknown category "{}"'.format(category))
 
+# There must be a subdirectory within the specified directory which contains
+# the article as well as the main image.
+main_article_dir = os.path.join(root_article_dir, MAIN_ARTICLE_SUBDIR)
+
+if not os.path.isdir(main_article_dir):
+    raise Exception('No subdirectory exists at {}'.format(main_article_dir))
+
+# Locate the first .html file we can find in the subdir.
+text_path = os.path.join(main_article_dir, MAIN_ARTICLE_TEXT_NAME)
+image_path = os.path.join(main_article_dir, MAIN_ARTICLE_IMAGE_NAME)
+
+if not os.path.exists(text_path):
+    raise Exception('No article exists at {}'.format(text_path))
 if not os.path.exists(image_path):
-    raise Exception('No image file exists at {}'.format(image_path))
+    raise Exception('No image exists at {}'.format(image_path))
+
+contents = _articles.ArticleContents(text_path)
 
 # Locate the title within the file and collect the word count.
-title, word_count = process_file_contents(text_path)
+title = get_saved_title(contents.en.title)
+word_count = get_word_count(contents.en.text)
 
 # Load the images
 image_big, image_small = build_images(image_path)
@@ -197,11 +235,30 @@ article_path, images_dir = build_paths(category, title)
 # Store the article in the specified directory under the title.
 if os.path.exists(article_path):
     raise FileExistsError('We already wrote an article with that name')
-os.rename(text_path, article_path)
+
+# Convert the image filename strings to <img> elements within the file and
+# return the processed article contents.
+processed_article_contents = process_article(
+    contents.contents,
+    f'/{_articles.PROJECT_IMAGES_PATH}/{category}/{title}'
+)
+
+# Write the processed file to its new home.
+with open(article_path, 'w') as F:
+    F.write(processed_article_contents)
 
 # Store the large and small image files in the images directory.
 cv2.imwrite(os.path.join(images_dir, IMAGE_BIG_NAME), image_big)
 cv2.imwrite(os.path.join(images_dir, IMAGE_SMALL_NAME), image_small)
+
+# Copy each of the remaining files to the article's image directory.
+for fname in os.listdir(root_article_dir):
+    fpath = os.path.join(root_article_dir, fname)
+
+    if os.path.isdir(fpath):
+        continue
+
+    shutil.copy(fpath, os.path.join(images_dir, fname))
 
 # Store this information in the database
 db.session.add(
@@ -209,6 +266,7 @@ db.session.add(
 )
 db.session.commit()
 
-# Print out the path the images dir into which we need to dump all of the
-# images for the article.
+# Print out the path the for the article as well as the directory in which its
+# images are stored.
+print(article_path)
 print(images_dir)

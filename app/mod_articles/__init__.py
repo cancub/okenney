@@ -18,44 +18,51 @@ ROOT_DIR = os.path.abspath(
 LOCAL_IMAGES_DIR = os.path.join(ROOT_DIR, PROJECT_IMAGES_PATH)
 LOCAL_ARTICLES_DIR = os.path.join(ROOT_DIR, PROJECT_ARTICLES_PATH)
 
-def process_file_contents(path):
-    result = {'fr': {}, 'en': {}}
+class LocaleContents(object):
+    def __init__(self, full_contents, locale='en'):
+        self._contents = full_contents
+        self._locale = locale
+        self.title = None
+        self.description = None
+        self.text = None
 
-    # Get the contents of the file.
-    with open(path, 'r') as F:
-        contents = F.read()
+        self._process_file()
 
-    def collect_string(template_type, name):
+    def _collect_string(self, type, name):
+        if self._locale  == 'en':
+            locale_name = name
+        else:
+            locale_name = f'{name}_{self._locale}'
+
         p = re.compile(
-            f'{{%\\s*{template_type}\\s+{name}\\s*%}}'
-            + '\\s*([^{{]*)\\s*'
-            + f'{{%\\s*end{template_type}\\s*%}}'
+            fr'{type}\s+{locale_name}\s*%}}\s*([\W\w\s]*?)\s*{{%\s*end{type}'
         )
 
         try:
-            return p.search(contents).groups(0)[0]
+            return p.search(self._contents).groups(0)[0]
         except AttributeError:
             return ''
 
-    def collect_macro_contents(name):
-        return collect_string('macro', name + '\\(\\)')
+    def _collect_macro_contents(self, name):
+        return self._collect_string('macro', name + '\(\)')
 
-    def collect_block_contents(name):
-        return collect_string('block', name)
+    def _collect_block_contents(self, name):
+        return self._collect_string('block', name)
 
-    # Retrieve the titles.
-    result['fr']['title'] = collect_macro_contents('titre_fr')
-    result['en']['title'] = collect_macro_contents('titre')
+    def _process_file(self):
+        self.title = self._collect_macro_contents('titre')
+        self.description = self._collect_macro_contents('description')
+        self.text = self._collect_block_contents('article_texte')
 
-    # Repeat with descriptions.
-    result['fr']['description'] = collect_macro_contents('description_fr')
-    result['en']['description'] = collect_macro_contents('description')
+class ArticleContents(object):
+    def __init__(self, article_path):
+        self._path = article_path
 
-    # And finally with the text itself.
-    result['fr']['text'] = collect_block_contents('article_texte_fr')
-    result['en']['text'] = collect_block_contents('article_texte')
+        with open(article_path, 'r') as F:
+            self.contents = F.read()
 
-    return result
+        self.fr = LocaleContents(self.contents, 'fr')
+        self.en = LocaleContents(self.contents, 'en')
 
 def article_images_dir_path(category, filename, remote=True):
     base_path = os.path.join(category, filename)
@@ -141,15 +148,12 @@ def get_latest_articles(
         )
 
         if provide_title or provide_description:
-            # Reach into the file and collect the title and description via the
-            # magic of regex. Avoid multiple loads of the file into memory by
-            # collecting both even if we only need one.
-            contents = process_file_contents(local_article_root + '.html')
+            contents = ArticleContents(f'{local_article_root}.html')
 
             if provide_title:
-                article.title = contents['en']['title']
+                article.title = contents.en.title
             if provide_description:
-                article.description = contents['en']['description']
+                article.description = contents.en.description
 
         if provide_article_path:
             remote_article_path = article_category_path(
