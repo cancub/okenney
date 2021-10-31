@@ -10,9 +10,19 @@
 }
 
 .marge-article,
-#TexteArticle >:not(img) {
+#TexteArticle >:not(img):not(.image-recip) {
   margin-left: 1.3em;
   margin-right: 1.3em;
+}
+
+#TexteArticle img,
+#TexteArticle div img{
+  max-width: 100%;
+}
+
+#TexteArticle .image-recip{
+    margin: 3em auto;
+    width: fit-content;
 }
 
 #Categorie {
@@ -73,7 +83,7 @@
   }
 
   .marge-article,
-  #TexteArticle >:not(img) {
+  #TexteArticle >:not(img):not(.image-recip) {
     margin-left: auto;
     margin-right: auto;
     width: calc(100% - 2 * var(--ecart-min));
