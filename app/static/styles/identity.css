@@ -116,3 +116,11 @@ body {
   padding-bottom: 1em;
   text-align: center;
 }
+
+code {
+  font-family: Consolas,"courier new";
+  color: var(--okenney-purple);
+  background-color: #bababa;
+  padding: 2px;
+  font-size: 105%;
+}
