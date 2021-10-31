@@ -11,8 +11,8 @@
 
 .marge-article,
 #TexteArticle >:not(img):not(.image-recip) {
-  margin-left: 1.3em;
-  margin-right: 1.3em;
+  margin-left: 1.3rem;
+  margin-right: 1.3rem;
 }
 
 #TexteArticle img,
