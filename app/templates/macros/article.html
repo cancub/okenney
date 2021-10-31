@@ -8,11 +8,11 @@
 {{ images.js() }}
 {%- endmacro%}
 
-{% macro image_et_legende(legende=None) %}
+{% macro image_et_legende(legende='') %}
 <div class="image-recip image-et-legende">
   {{ caller() }}
   <div class="imleg-legende">
-    {{legende}}
+    <span>{{legende}}</span>
   </div>
 </div>
 {% endmacro %}
