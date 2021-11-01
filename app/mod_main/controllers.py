@@ -38,6 +38,8 @@ def other(category, subpath='index.html'):
         })
 
     if subpath != 'index.html':
+        name = os.path.splitext(subpath)[0]
+
         # We're rendeing a specific article, so we need to let it know where it
         # can find its images.
         base_name = os.path.splitext(subpath)[0]
@@ -45,8 +47,8 @@ def other(category, subpath='index.html'):
             f'/{_articles.PROJECT_IMAGES_PATH}/{category}/{base_name}'
         )
 
-        # Collect the datetime string for the article in question.
-        name = os.path.splitext(subpath)[0]
-        context['date_str'] = _articles.get_article(name).date_str
+        # Provide the full details of the article for the template to process
+        # as it pleases.
+        context['details'] = _articles.get_article(name)
 
     return flask.render_template(f'/articles/{category}/{subpath}', **context)
