@@ -37,6 +37,9 @@
   </div>
   <div id="InfoArticle" class="marge-article">
     <div id="MisEnLigne">{{details.date_str}}</div>
+    <div id="TempsALire">
+      {{((details.word_count + 1) / 200) | round(method='ceil') | int}} min read
+    </div>
   </div>
   <div id="TexteArticle">
     {% block article_texte %} {% endblock %}

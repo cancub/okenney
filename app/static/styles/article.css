@@ -54,6 +54,17 @@
   line-height: 1.8;
 }
 
+#InfoArticle {
+  margin-bottom: 2em;
+  display: flex;
+  flex-direction: row;
+  color: var(--okenney-blue);
+}
+
+#InfoArticle div:nth-of-type(n+2) {
+  margin-left: 1em;
+}
+
 .imleg-legende {
   width: fit-content;
   margin: 0.5em auto;
