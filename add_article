@@ -174,22 +174,10 @@ def build_paths(category, title):
 def process_article(contents, images_dir):
     # Use a regex to replace each image filename with the full path for the
     # file.
-    new_contents = re.sub(
+    return re.sub(
         r'(image_et_legende\(.*?\)\s*-*%}\s*)(.*?)(\s*{%\s+endcall)',
         fr'\1<img src="{images_dir}/\2"/>\3',
         contents,
-    )
-
-    # Wrap paragraphs with p elements, ignoring macro and block statements.
-    # NOTE:
-    # This will wrap all existing elements. There are too many corner cases
-    # here, but these will be rare, so it's easier to just clean up after the
-    # fact than trying to handle, say a block that start with an <a> and ends
-    # with an </a>, but these are for two, separate links.
-    return re.sub(
-        r'(?<!})\n(.+?)(?<!})\n',
-        r'\n<p>\n\t\1\n</p>',
-        new_contents,
     )
 
 
