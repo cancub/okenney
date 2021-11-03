@@ -1,4 +1,5 @@
 import datetime
+import html.parser as HTMLParser
 import os.path
 import re
 
@@ -18,6 +19,14 @@ ROOT_DIR = os.path.abspath(
 LOCAL_IMAGES_DIR = os.path.join(ROOT_DIR, PROJECT_IMAGES_PATH)
 LOCAL_ARTICLES_DIR = os.path.join(ROOT_DIR, PROJECT_ARTICLES_PATH)
 
+class HTMLWordCounter(HTMLParser.HTMLParser):
+    def __init__(self):
+        super(HTMLWordCounter, self).__init__()
+        self.word_count = 0
+    def handle_data(self, data):
+        if self.get_starttag_text() != 'script':
+            self.word_count += len(data.split())
+
 class LocaleContents(object):
     def __init__(self, full_contents, locale='en'):
         self._contents = full_contents
@@ -25,6 +34,7 @@ class LocaleContents(object):
         self.title = None
         self.description = None
         self.text = None
+        self.word_count = None
 
         self._process_file()
 
@@ -54,9 +64,13 @@ class LocaleContents(object):
         self.description = self._collect_macro_contents('description')
         self.text = self._collect_block_contents('article_texte')
 
-class ArticleContents(object):
+        counter = HTMLWordCounter()
+        counter.feed(self.text)
+        self.word_count = counter.word_count
+
+class ArticleDetails(object):
     def __init__(self, article_path):
-        self._path = article_path
+        self.path = article_path
 
         with open(article_path, 'r') as F:
             self.contents = F.read()
@@ -104,7 +118,7 @@ def get_article(subpath, process_datetime=True):
 
     return article
 
-def get_latest_articles(
+def get_articles(
     category=None,
     end_datetime=None,
     batch_size=None,
@@ -114,6 +128,7 @@ def get_latest_articles(
     provide_image_path=True,
     process_datetime=True,
     remote_request=True,
+    reverse_order=False,
 ):
     article_query = _Article.query
 
@@ -121,11 +136,10 @@ def get_latest_articles(
         article_query = article_query.filter_by(category=category)
     if end_datetime is not None:
         article_query = article_query.filter(_Article.dtime < end_datetime)
-
-    # Make sure we present the articles in reverse chronological order (i.e.,
-    # newest to oldest).
-    article_query = article_query.order_by(_Article.dtime.desc())
-
+    if reverse_order:
+        # Make sure we present the articles in reverse chronological order
+        # (i.e., newest to oldest).
+        article_query = article_query.order_by(_Article.dtime.desc())
     if batch_size is not None:
         # Only return the number of desired articles.
         article_query = article_query.limit(int(batch_size))
@@ -148,7 +162,7 @@ def get_latest_articles(
         )
 
         if provide_title or provide_description:
-            contents = ArticleContents(f'{local_article_root}.html')
+            contents = ArticleDetails(f'{local_article_root}.html')
 
             if provide_title:
                 article.title = contents.en.title
@@ -173,3 +187,7 @@ def get_latest_articles(
             article.date_str = datetime_to_relative_string(article.dtime)
 
     return articles
+
+
+def get_latest_articles(**kwargs):
+    return get_articles(reverse_order=True, **kwargs)

@@ -1,0 +1,884 @@
+#! /usr/bin/env python
+
+import argparse
+import copy
+import cv2
+import datetime
+import functools
+import os
+import re
+import sys
+import shutil
+
+from app import db
+import app.mod_articles as _articles
+from app.mod_articles.models import Article
+
+'''
+TODO:
+- Use relational database for categories
+- use argparse
+'''
+
+CATEGORIES = ['about', 'ideas', 'politics', 'philosophy', 'projects']
+MAIN_ARTICLE_SUBDIR = 'main'
+MAIN_ARTICLE_TEXT_NAME = 'main.html'
+MAIN_ARTICLE_IMAGE_NAME = 'main.png'
+BIG_IMAGE_HEIGHT = 600
+BIG_IMAGE_WIDTH = 1000
+SMALL_IMAGE_SCALE = 0.15
+IMAGE_NAME = 'principal'
+IMAGE_BIG_NAME = IMAGE_NAME + '-gd.png'
+IMAGE_SMALL_NAME = IMAGE_NAME + '-pt.png'
+
+def get_crop_dims(actual_dim, desired_dim):
+    to_crop = (actual_dim - desired_dim) / 2
+
+    # No need to crop if we're already at the right dimension.
+    if to_crop == 0:
+        return 0, actual_dim
+
+    int_crop = int(to_crop)
+    if int_crop == to_crop:
+        # We're dealing with a whole number, which means we can crop the same
+        # amount from each side.
+        crop_high = crop_low = int_crop
+    else:
+        # We're dealing with a fraction. Round down for the high and round
+        # up for the low.
+        crop_high = int_crop
+        crop_low = int_crop + 1
+
+    return crop_low, actual_dim - crop_high
+
+def build_images(path):
+    image_big = cv2.imread(path)
+
+    height, width, _ = image_big.shape
+
+    # Scale dimension closest to the desired aspect ratio of 1000 x 600
+    height_scale = BIG_IMAGE_HEIGHT / height
+    width_scale = BIG_IMAGE_WIDTH / width
+
+    if width_scale < height_scale:
+        # The height is closer than the width to its respective dimension in
+        # the desired aspect ratio. So it's better to scale the height to
+        # the desired height and crop the width.
+        dx = int(width * height_scale)
+        dy = BIG_IMAGE_HEIGHT
+    else:
+        # The opposite is true.
+        dx = BIG_IMAGE_WIDTH
+        dy = int(height * width_scale)
+
+    # Scale the image
+    image_big = cv2.resize(image_big, (dx, dy))
+
+    # Prepare for the crop. Only one of these dimentions witll be changed.
+    height_crop_low = 0
+    height_crop_high = image_big.shape[0]
+    width_crop_low = 0
+    width_crop_high = image_big.shape[1]
+
+    if dy == BIG_IMAGE_HEIGHT:
+        # We scaled to the height, so we need to crop to the width.
+        width_crop_low, width_crop_high = get_crop_dims(
+            width_crop_high,
+            BIG_IMAGE_WIDTH,
+        )
+    else:
+        # We scaled to the width, so we need to crop to the height.
+        height_crop_low, height_crop_high = get_crop_dims(
+            height_crop_high,
+            BIG_IMAGE_HEIGHT,
+        )
+
+    # Crop and center to this aspect ratio.
+    image_big = image_big[
+        height_crop_low:height_crop_high,
+        width_crop_low:width_crop_high,
+        :
+    ]
+
+    # Make a copy and scale it down.
+    image_small = cv2.resize(
+        copy.copy(image_big),
+        (0, 0),
+        fx=SMALL_IMAGE_SCALE,
+        fy=SMALL_IMAGE_SCALE,
+    )
+
+    return image_big, image_small
+
+def build_paths(category, title):
+    # Make the directories in which the files will be stored, ensuring that
+    # all missing, intermediary directories are created.
+    images_dir = _articles.article_images_dir_path(
+        category,
+        title,
+        remote=False,
+    )
+    article_dir = _articles.article_category_path(category, remote=False)
+    for directory in (images_dir, article_dir):
+        try:
+            os.makedirs(directory)
+        except FileExistsError:
+            pass
+
+    return os.path.join(article_dir, title + '.html'), images_dir
+
+# =============================================================================
+# =================================== PARSER ==================================
+# =============================================================================
+
+parser = argparse.ArgumentParser()
+subparsers = parser.add_subparsers()
+
+# =============================================================================
+# ============================== COMMON HELPERS ===============================
+# =============================================================================
+
+
+# ======================== Article Retrieval Helpers ==========================
+
+# A parser specifically for providing options to select from existing articles.
+selector_parser = argparse.ArgumentParser(add_help=False)
+selector_group = selector_parser.add_mutually_exclusive_group(required=True)
+selector_group.add_argument(
+    '--path',
+    metavar='PATH',
+    help=('The path to an article which currently exists in the database and '
+          'app directory.'),
+)
+selector_group.add_argument(
+    '--name',
+    metavar='NAME',
+    help=('The name of an article which currently exists in the database and '
+          'app directory. Note that this is the filename without the ".html" '
+          'extension'),
+)
+selector_group.add_argument(
+    '--first',
+    action='store_true',
+    help=('Select the first-added article (optionally: for a specific '
+          '--category).'),
+)
+selector_group.add_argument(
+    '--last',
+    action='store_true',
+    help=('Select the last-added article (optionally: for a specific '
+          '--category).'),
+)
+selector_group.add_argument(
+    '--nth',
+    type=int,
+    help=('Select the nth-added article (optionally: for a specific '
+          '--category). 1-indexed, i.e. 1 == first, -1 == last'),
+)
+selector_parser.add_argument(
+    '--category', '-c',
+    choices=CATEGORIES,
+    help=('If --first, last or --nth options are selected, the selection can '
+          'be modified by specifying that that you would like it to apply to '
+          'a specific category. For example, the --first article in the '
+          '--category of "about"'),
+)
+
+# Methods used to process the above options (if given a query).
+def _get_article_record_by_index(args, query=None):
+    if query is None:
+        query = Article.query
+
+    if args.category is not None:
+        query = query.filter_by(category=args.category)
+
+    if args.nth == 0:
+        raise ValueError('Argument --nth uses 1-indexing, not 0-indexing.')
+
+    if args.first or args.nth == 1:
+        # The user think 1-indexed. We think 0-indexed.
+        index = 0
+    elif args.last or args.nth == -1:
+        index = -1
+    else:
+        index = args.nth - 1
+
+    # Locate the article.
+    if index == -1:
+        # Reverse so we can use just the one call to first().
+        query = query.order_by(Article.id.desc())
+    if index in (0, -1):
+        return query.first()
+
+    # The article is somethwere in between, so this'll take some slicing.
+    count = query.count()
+
+    # Reverse a negative value.
+    if index < 0:
+        index = count + index
+
+    # Did we go past either end?
+    if index < 0 or index > count-1:
+        raise IndexError(f'Invalid index {args.nth}. Only {count} article(s).')
+
+    return query.slice(index, index+1).first()
+
+def _get_article_record_by_name(name, query=None):
+    if query is None:
+        query = Article.query
+
+    article = query.filter_by(name=name).first()
+
+    if article is None:
+        raise ValueError(f'No article with name "{name}".')
+
+    return article
+
+def _get_article_record_by_path(path, query=None):
+    if query is None:
+        query = Article.query
+
+    # Make sure that the path actually exists.
+    if not os.path.isfile(path):
+        raise ValueError(f'Path {path} is not a file.')
+
+    fname = os.path.split(path)[1]
+    name, ext = os.path.splitext(fname)
+
+    if ext != '.html':
+        raise ValueError('Only .html files are accepted.')
+
+    return _get_article_record_by_name(query, name)
+
+def _get_article_details(record, path=None):
+    article_path = path
+    if article_path is None:
+        category_path = _articles.article_category_path(
+            record.category,
+            remote=False,
+        )
+        article_path = f'{category_path}/{record.name}.html'
+
+    # Both the args path as well as the path provided by
+    # article_category_path() may be relative. Get the absolute.
+    article_path = os.path.abspath(article_path)
+
+    return _articles.ArticleDetails(article_path)
+
+def insert_record_and_details_args(func):
+    '''
+    Decorator used to combine a sqlalchemy query and user-provided arguments to
+    locate an applicable record in the Article table, build an ArticleDetails
+    object and add the two into the decorated function's parameters.
+    '''
+    @functools.wraps(func)
+    def wrapper_insert_article(args):
+        query = Article.query
+
+        # The arguments might have been bad, in which case we want to catch the
+        # error and report on it without all of the traceback clutter.
+        try:
+            if args.first or args.last or args.nth is not None:
+                record = _get_article_record_by_index(args, query)
+            elif args.name is not None:
+                record = _get_article_record_by_name(args.name, query)
+            else:
+                record = _get_article_record_by_path(args.path, query)
+        except Exception as e:
+            sys.stderr.write(f'Unable to locate article: {e}\n')
+            sys.exit(1)
+
+        details = _get_article_details(record, args.path)
+
+        func(record, details, args)
+
+    return wrapper_insert_article
+
+def _article_exists(title):
+    return Article.query.filter_by(name=title).first() is not None
+
+# ======================== Content Processing Helpers =========================
+
+def _build_saved_title(title):
+    # Make the title lower case to look nicer in the directory.
+    title = title.lower()
+
+    # Remove articles, conjunctions, non-letter characters.
+    # TODO:
+    # There's problable a cleaner regex here, maybe
+    #       ((?<!\w)([[tT]he|[oO]f|[aA]nd|a|[Aa])(?!\w)|[$-/:-?{{-~!\"^_`\[\]])
+    # but this works for now.
+    letter_neg_lookbehind = '(?<!\w)'
+    letter_neg_lookahead = '(?!\w)'
+    title = re.sub(
+        ('{0}[tT]he{1}|{0}[oO]f{1}|{0}[aA]nd{1}|{0}a{1}|{0}[Aa]{1}|'
+         '[$-/:-?{{-~!"^_`\[\]]').format(
+            letter_neg_lookbehind,
+            letter_neg_lookahead,
+        ),
+        '',
+        title
+    )
+
+    # Remove the spaces from the end.
+    title = title.rstrip()
+
+    # Locate the individual words remaining
+    p = re.compile(r'\w+')
+    title_words = p.findall(title)
+
+    # Crop it down to the first 5 words or whatever number of words there are,
+    # whichever is smaller.
+    # TODO:
+    # Check if this name already exists in the set of articles (and maybe 
+    # increase the number of words in the title).
+    title_length = min(5, len(title_words))
+
+    return '-'.join(title_words[:title_length])
+
+def _build_img_elements(contents, images_dir):
+    # Use a regex to replace each image filename with the full path for the
+    # file.
+    # NOTE:
+    # We avoid the <img> elements that already exist with [^<]
+    return re.sub(
+        r'(image_et_legende\(.*?\).*?%}\s+)([^<].*?)(\s+{%\s+endcall)',
+        fr'\1<img src="{images_dir}/\2"/>\3',
+        contents,
+    )
+
+def _update_html_img_paths(contents, images_dir):
+    # Use a regex to replace the previous paths in <img> elements with the new
+    # paths.
+    return re.sub(
+        r'(<img.*src=\").*/(.*\..*?)\"',
+        fr'\1{images_dir}/\2"',
+        contents,
+    )
+
+def _configure_img_elements(contents, images_dir):
+    # Make sure there's a leading slash.
+    if images_dir[0] != '/':
+        images_dir = '/' + images_dir
+
+    # Update the existing <img> elements to use the expected path.
+    contents = _update_html_img_paths(contents, images_dir)
+
+    # Convert simple filenames into <img> elements with the expected path.
+    contents = _build_img_elements(contents, images_dir)
+
+    return contents
+
+
+# =============================================================================
+# =================================== LIST ====================================
+# =============================================================================
+
+# List the articles currently stored in the database.
+VERBOSE_ATTRIBUTES = [
+    'title',
+    'description',
+    'filepath',
+    'image_dir',
+    'date_str',
+]
+ATTR_INDENT = max(len(a) for a in VERBOSE_ATTRIBUTES) + 1
+def list_articles(args):
+    articles_info = _articles.get_articles(category=args.category)
+
+    for a_info in articles_info:
+        print(a_info.name)
+        if args.verbose:
+            for attr in VERBOSE_ATTRIBUTES:
+                print(f'\t{attr:<{ATTR_INDENT}}: {getattr(a_info, attr)}')
+            print()
+
+list_parser = subparsers.add_parser(
+    'list',
+    help='List the articles currently tracked in the database.'
+)
+list_parser.add_argument(
+    '--category', '-c',
+    choices=CATEGORIES,
+    help='Specify a category or articles to list.'
+)
+list_parser.add_argument(
+    '--verbose', '-v',
+    action='store_true',
+    help=('Display all of the details about the article, including the paths '
+          'to the article and its image directory.')
+)
+list_parser.set_defaults(func=list_articles)
+
+# =============================================================================
+# ==================================== ADD ====================================
+# =============================================================================
+
+# Globals to make sure we don't mess anything up with storage and retrieval.
+ARTICLE_HTML_KEY = 'html'
+ARTICLE_IMAGE_KEY = 'image'
+ARTICLE_DIR_KEY = 'dir'
+CURRENT_PATH_KEY = 'current'
+NEW_PATH_KEY = 'new'
+
+def _refresh_article_imgs(path, contents, images_dir):
+    processed_article_contents = _configure_img_elements(contents, images_dir)
+
+    # Overwrite the original article file.
+    with open(path, 'w') as F:
+        F.write(processed_article_contents)
+
+def _get_cached_article_details(args):
+    '''
+    The implication is that the file scructure of the article is such that
+    it was previously deleted from the database but the files were left in
+    tact. All we have to do, then, is reverse that by re-adding the file to the
+    database.
+    '''
+    if not os.path.isfile(args.path):
+        raise ValueError(f'No file exists at {args.path}.')
+    if not args.path.endswith('.html'):
+        raise ValueError(
+            f'Article file {args.path} must have a .html extension.'
+        )
+
+    # Start building the paths dictionary. We know that the path for the
+    # article itself is valid.
+    content_paths = {ARTICLE_HTML_KEY: os.path.abspath(args.path)}
+
+    # We know that the images directory must share the same title as the
+    # article file.
+    article_dir, fname = os.path.split(args.path)
+    title = os.path.splitext(fname)[0]
+
+    category = args.category
+    if category is None:
+        # A category hasn't been provided, which means that we can keep the
+        # category under which this article currently exists.
+        category = os.path.basename(article_dir)
+
+    images_dir = _articles.article_images_dir_path(
+        category,
+        title,
+        remote=False,
+    )
+
+    content_paths[ARTICLE_DIR_KEY] = os.path.abspath(images_dir)
+    content_paths[ARTICLE_IMAGE_KEY] = os.path.abspath(
+        os.path.join(images_dir, IMAGE_BIG_NAME)
+    )
+
+    return category, content_paths
+
+def _collect_content_paths_from_raw_dir(path):
+    content_paths = {}
+
+    files = os.listdir(path)
+    file_count = len(files)
+
+    def print_numbered_file_list():
+        for i, fname in enumerate(files):
+            print(f'[{i}] {fname}')
+
+    if file_count < 3:
+        raise Exception('Expecting at least 3 entries in the directory.')
+
+    for key in (ARTICLE_HTML_KEY, ARTICLE_IMAGE_KEY, ARTICLE_DIR_KEY):
+        while True:
+            # Get the user input for which file is which.
+            print_numbered_file_list()
+            file_index = input(f'Which entry is "{key}"? [0-{file_count-1}] ')
+
+            try:
+                file_index = int(file_index)
+            except ValueError:
+                print(f'"{file_index}" is not a valid integer.\n')
+                continue
+
+            if file_index >= file_count:
+                print(
+                    f'{file_index} is not in the range [0-{file_count-1}].\n'
+                )
+                continue
+
+            fname = files[file_index]
+
+            # Make sure the user didn't mistype.
+            response = input(f'Confirm "{fname}" for "{key}" file: [y/N] ')
+            if response.lower() == 'y':
+                break
+
+        # We've got our file, so remove it from the list of options.
+        files.remove(fname)
+        file_count -= 1
+
+        # Add it to our set of files.
+        content_paths[key] = os.path.join(path, fname)
+
+    return content_paths
+
+def _get_raw_article_details(args):
+    '''
+    This is a brand-new article, and the path in `args` is expected to be
+    pointing to a directory with the following structure:
+    <path>
+      +--<filename>.html
+      +--<header image>
+      +--<directory>
+          +--<image>
+          +--<image>
+          ...
+    '''
+    if not os.path.isdir(args.path):
+        raise ValueError(f'No directory exists at {args.path}')
+
+    if args.category is None:
+        raise ValueError(f'--category must be provided for new articles.')
+
+    # Locate the three, required items within the directory.
+    content_paths = _collect_content_paths_from_raw_dir(
+        os.path.abspath(args.path)
+    )
+
+    return args.category, content_paths
+
+# Subparser for adding a brand-new article.
+def add_article(args):
+    # We will process the article contents in very different ways depending on
+    # whether we are dealing with a cached article or not.
+    try:
+        if args.cached:
+            category, src_paths = _get_cached_article_details(args)
+        else:
+            category, src_paths = _get_raw_article_details(args)
+    except Exception as e:
+        sys.stderr.write(f'Error processing new article: {e}\n')
+        sys.exit(1)
+
+    # Attempt to process the HTML article file.
+    details = _articles.ArticleDetails(src_paths[ARTICLE_HTML_KEY])
+
+    # Use the title within the file to build a new filename that allows us to
+    # easily recognize an entry in the directory.
+    title = _build_saved_title(details.en.title)
+
+    # Make sure no such record with this title exists.
+    if _article_exists(title):
+        sys.stderr.write(
+            f'Article with title snippet "{title}" already exists.\n'
+        )
+        sys.exit(1)
+
+    # Build the directory for both images and templates.
+    # NOTE:
+    # If the article is cached and the category has not changed, these paths
+    # will be exactly the same as they are now.
+    article_path, images_dir = build_paths(category, title)
+
+    # We need to update the <img> elements in the file to show the path that
+    # browsers will need to request.
+    remote_images_dir = _articles.article_images_dir_path(
+        category,
+        title,
+        remote=True,
+    )
+
+    # We want to build the creation time now, just in case something fishy
+    # happens during either the update or move of a cached entry.
+    if args.cached:
+        # Keep the original creation time for cached articles.
+        creation_time = datetime.datetime.fromtimestamp(
+            os.path.getctime(src_paths[ARTICLE_HTML_KEY])
+        )
+    else:
+        # New article, so just use the current time.
+        creation_time = datetime.datetime.now()
+
+    # Convert the image filename strings to <img> elements and update any
+    # existing <img> hrefs within the file.
+    _refresh_article_imgs(
+        src_paths[ARTICLE_HTML_KEY],
+        details.contents,
+        remote_images_dir,
+    )
+
+    # Only move files if the locations are changing.
+    if not args.cached or article_path != src_paths[ARTICLE_HTML_KEY]:
+        # Move the article file.
+        os.rename(src_paths[ARTICLE_HTML_KEY], article_path)
+
+        # Move the contents of this images directory into the official images
+        # directory.
+        for fname in os.listdir(src_paths[ARTICLE_DIR_KEY]):
+            os.rename(
+                os.path.join(src_paths[ARTICLE_DIR_KEY], fname),
+                os.path.join(images_dir, fname)
+            )
+
+    # (Over)write the large and small versions of the header image in the image
+    # directory.
+    # NOTE:
+    # The process for generating the big and small versions may have changed
+    # since the last time a cached article was processed, so we must make sure
+    # to run it again.
+    image_big, image_small = build_images(src_paths[ARTICLE_IMAGE_KEY])
+    cv2.imwrite(os.path.join(images_dir, IMAGE_BIG_NAME), image_big)
+    cv2.imwrite(os.path.join(images_dir, IMAGE_SMALL_NAME), image_small)
+
+    record = Article(
+        name=title,
+        category=category,
+        word_count=details.en.word_count,
+        dtime=creation_time,
+    )
+
+    # Store this information in the database
+    db.session.add(record)
+    db.session.commit()
+
+    # Print out the path the for the article as well as the directory in which
+    # its images are stored.
+    print(article_path)
+    print(images_dir)
+
+add_parser = subparsers.add_parser(
+    'add',
+    help='Add a brand-new article not currently being tracked by the database'
+)
+add_parser.add_argument(
+    'path',
+    metavar='PATH',
+    help='The path to the article in question.',
+)
+add_parser.add_argument(
+    '--category',
+    choices=CATEGORIES,
+)
+add_parser.add_argument(
+    '--cached',
+    action='store_true',
+    help=('Signal that the article\'s contents has been cached in the '
+          'directory, and all that\'s needed is to create a database entry.')
+)
+add_parser.set_defaults(func=add_article)
+
+
+# =============================================================================
+# =================================== UPDATE ==================================
+# =============================================================================
+
+# Globals to make sure we don't mess anything up with storage and retrieval.
+FILENAME_KEY = 'name'
+WORD_COUNT_KEY = 'word_count'
+CATEGORY_KEY = 'category'
+
+# Subparser for updating an existing article.
+@insert_record_and_details_args
+def update_article(record, details, args):
+    # We'll get to French eventually.
+    en_details = details.en
+
+    # Store the original name, just in case we're about to change it. We will
+    # need it to update the file and directory names in that case.
+    orig_name = record.name
+
+    updates = {}
+
+    print(f'Checking for updates to "{en_details.title}."\n')
+
+    def check_and_store_change(metadata_name, key, old_value, new_value):
+
+        if old_value == new_value:
+            return False
+        else:
+            updates[key] = new_value
+            print(
+                f'{metadata_name} modified'
+                f'\n\tPreviously: {old_value}'
+                f'\n\tNow:        {new_value}\n'
+            )
+            return True
+
+    # Make sure to store whether we will be changing the name of files.
+    changing_paths = check_and_store_change(
+        'filename',
+        FILENAME_KEY,
+        old_value=orig_name,
+        new_value=_build_saved_title(en_details.title)
+    )
+
+    if args.change_category is not None:
+        # Make sure to store whether we will be changing the name of files.
+        changing_paths |= check_and_store_change(
+            'category',
+            CATEGORY_KEY,
+            old_value=record.category,
+            new_value=args.change_category
+        )
+
+    check_and_store_change(
+        'word count',
+        WORD_COUNT_KEY,
+        old_value=record.word_count,
+        new_value=en_details.word_count
+    )
+
+    if len(updates) == 0:
+        print('No changes to file metadata.')
+        return 
+
+    if input('Accept changes [y/N]? ').lower() != 'y':
+        print('Exiting without altering record or file.')
+        return
+
+    # Affect the changes.
+
+    # Save the old paths for rename purposes.
+    current_article_path = details.path
+    current_images_dir = _articles.article_images_dir_path(
+        record.category,
+        orig_name,
+        remote=False,
+    )
+
+    # Build the pieces of the new path.
+    category_to_write = record.category
+    name_to_write = orig_name
+
+    # Name
+    try:
+        record.name = updates[FILENAME_KEY]
+    except KeyError:
+        # Filename was not changed.
+        pass
+    else:
+        # The name is indeed being changed. Update the path piece.
+        name_to_write = updates[FILENAME_KEY]
+
+    # Category
+    try:
+        record.category = updates[CATEGORY_KEY]
+    except KeyError:
+        # Category was not changed.
+        pass
+    else:
+        # The category is indeed being changed. Update the path piece.
+        category_to_write = updates[CATEGORY_KEY]
+
+    # Word count. Track whether the word count has changed in order to
+    # determine if we need to overwrite the file.
+    word_count_changed = False
+    try:
+        record.word_count = updates[WORD_COUNT_KEY]
+    except KeyError:
+        # Word count has not changed.
+        pass
+    else:
+        word_count_changed = True
+
+    # At this point we know what the expected path to the image directory will
+    # be, Attempt to update/build the <img> elements with the path
+    images_dir = _articles.article_images_dir_path(
+        category_to_write,
+        name_to_write,
+        remote=False,
+    )
+    contents = _configure_img_elements(details.contents, images_dir)
+
+    # If the word count has changed, we know there's a chance that the <img>
+    # paths have changed in the file after the above call. Just to be sure,
+    # though, we also check whether the overall length of the contents has
+    # changed. This latter value differs in that it checks the length of the
+    # whole file instead of just the article text.
+    if word_count_changed or len(contents) != len(details.contents):
+        # Save to the contents back to the original file.
+        with open(current_article_path, 'w') as F:
+            F.write(contents)
+
+    # Finally, move the paths if need be.
+    if changing_paths:
+        new_article_dir = _articles.article_category_path(
+            category_to_write,
+            remote=False,
+        )
+        new_article_path = f'{new_article_dir}/{name_to_write}.html'
+
+        new_images_dir = _articles.article_images_dir_path(
+            category_to_write,
+            name_to_write,
+            remote=False,
+        )
+
+        # And move the updated article.
+        os.rename(current_article_path, new_article_path)
+
+        # Move the image files.
+        shutil.move(current_images_dir, new_images_dir)
+
+    # Commit the updated details.
+    db.session.commit()
+
+update_parser = subparsers.add_parser(
+    'update',
+    parents=[selector_parser],
+    help=('Update an article that currently exists in the database and in the '
+          'app/ directory')
+)
+update_parser.add_argument(
+    '--change-category',
+    choices=CATEGORIES,
+    help='Specify a different category for the article.',
+)
+update_parser.set_defaults(func=update_article)
+
+
+# =============================================================================
+# ================================== DELETE ===================================
+# =============================================================================
+
+# Subparser for deleting an existing article.
+@insert_record_and_details_args
+def delete_article(record, details, args):
+    # Make sure that the user actually wants to delete this article, and
+    # specify the current caching status.
+    print(f'Article to delete : {details.en.title}')
+    print(f'Caching           : {not args.no_cache}\n')
+
+    if input('Continue? [y/N] ').lower() != 'y':
+        print('Exiting without deletion')
+        exit(0)
+
+    if args.no_cache:
+        print('Clearing local files.')
+        # Get rid of the directory for images.
+        shutil.rmtree(
+            _articles.article_images_dir_path(
+                record.category,
+                record.name,
+                remote=False
+            )
+        )
+
+        # And the article itself.
+        os.unlink(details.path)
+
+    # Remove the record.
+    db.session.delete(record)
+    db.session.commit()
+
+delete_parser = subparsers.add_parser(
+    'delete',
+    parents=[selector_parser],
+    help='Add a brand-new article not currently being tracked by the database'
+)
+# Assume that we want to cache by default.
+delete_parser.add_argument(
+    '--no-cache',
+    action='store_true',
+    help=('Signal that the article\'s contents should remain cached in the '
+          'directory, and all that\'s needed is to remove the database entry.')
+)
+delete_parser.set_defaults(func=delete_article)
+
+args = parser.parse_args()
+args.func(args)
