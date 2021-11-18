@@ -97,7 +97,7 @@
 
 .table-traduction{
   width: fit-content !important;
-  margin: 0 auto;
+  margin: 0 auto !important;
   font-style: italic;
 }
 
