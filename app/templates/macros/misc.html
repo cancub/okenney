@@ -285,10 +285,7 @@
     var sel_axe = '.graphique-recip-{{nom}} .graphique-axe-y';
     var sel_donnees = '.graphique-recip-{{nom}} .graphique-donnees';
 
-    var pos_recip = $recip.position();
-
     var padding = 0.1;
-
 
     var donnees = {{consumption_data.data|tojson }};
     var categories = {{ consumption_data.categories|tojson }};
@@ -399,11 +396,13 @@
       let ecart = 5;
       let b = ecart + axe_largeur;
 
+      let pos_recip = $recip.position();
+
       // Figure out what we're working with in terms of dimensions of the data
       // box and the tooltip with the current data.
       let hauteurTTip = $ttip.outerHeight()
       let largeurTTip = $ttip.outerWidth();
-      let largeurDonnees = $('.graphique-donnees').outerWidth();
+      let largeurDonnees = $(sel_donnees).outerWidth();
 
       // Where does this pointer exist in the conatiner?
       let pos = d3.pointer(event, '.graphique-recip-{{nom}}');
