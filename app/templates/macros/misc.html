@@ -396,30 +396,29 @@
 
     // Three function that change the tooltip when user hover / move / leave a cell
     function regler_position_tooltip() {
-      var $grapiqueDonnees = $('.graphique-donnees');
-
-      var ecart = 5;
+      let ecart = 5;
+      let b = ecart + axe_largeur;
 
       // Figure out what we're working with in terms of dimensions of the data
       // box and the tooltip with the current data.
-      var hauteurTTip = $ttip.outerHeight()
-      var largerTTip = $ttip.outerWidth();
-      var largeurDonnees = $('.graphique-donnees').outerWidth();
+      let hauteurTTip = $ttip.outerHeight()
+      let largeurTTip = $ttip.outerWidth();
+      let largeurDonnees = $('.graphique-donnees').outerWidth();
 
       // Where does this pointer exist in the conatiner?
-      var pos = d3.pointer(event, '.graphique-recip-{{nom}}');
+      let pos = d3.pointer(event, '.graphique-recip-{{nom}}');
 
       // Calculate the left position of the tooltip based on a simple line
       // equation designed so that the tooltip at its current width never runs
       // off the sides of the data box.
-      var m = (largeurDonnees - largerTTip - 2 * ecart) / largeurDonnees;
-      var x_pos = m * pos[0] + ecart;
+      let m = (largeurDonnees - largeurTTip - 2 * ecart) / largeurDonnees;
+      let x_pos = m * (pos[0] - axe_largeur - pos_recip.left) + b;
 
       // Calculate the top location of the tooltip based on the location of the
       // mouse and the current height of the tooltip such that it does not
       // overflow the data box. This just flips the tooltip above or below the
       // mouse depending on the current dimensions.
-      var y_pos = pos[1] - pos_recip.top;
+      let y_pos = pos[1] - pos_recip.top;
       if (y_pos - 20 - hauteurTTip > 0)
         y_pos -= hauteurTTip + 20;
       else
