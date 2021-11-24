@@ -339,6 +339,10 @@
       return desc + "<br>" + date;
     }
 
+    // The rectangle which is currently being hovered over. We need to track
+    // this for mobile so that the tooltip goes away when the user scrolls.
+    var rectActuelle = null;
+
     var donnees_offset = $(sel_donnees).offset();
 
     // Append the svg object to the body of the page.
@@ -428,12 +432,15 @@
         .style("left", x_pos + "px")
         .style("top", y_pos + "px")
     }
-    var mouseover = function (d) {
+    var mouseover = function (event, d) {
       regler_position_tooltip();
       tooltip
         .style("opacity", 1)
       d3.select(this)
         .style("stroke", "black")
+
+      // Store the current rectangle in case the user scrolls.
+      rectActuelle = this;
     }
     var mousemove = function (event, d) {
       // Change the text so that the width will change.
@@ -443,11 +450,26 @@
       // Reposition the tooltip, taking into context the new width and position
       regler_position_tooltip();
     }
-    var mouseleave = function (d) {
+    var mouseleave = function (event, d) {
+      let rect = this;
+
+      if (rect == window) {
+        if (rectActuelle == undefined) {
+          // This is a mobile scroll where we don't have any rectangle
+          // selected.
+          return;
+        }
+        rect = rectActuelle;
+      }
+
       tooltip
         .style("opacity", 0);
-      d3.select(this)
+      d3.select(rect)
         .style("stroke", "none")
+
+      // We're no longer hovering over a cell, so we must avoid errors if the
+      // user scrolls in mobile by resetting the current cell value to null.
+      rectActuelle = null;
     }
 
     // Add the squares
@@ -480,6 +502,12 @@
 
     // Scroll to the radical right.
     $(sel_donnees).scrollLeft(largeur);
+
+    // Make sure that mobile scrolling within the container removes the
+    // tooltip.
+    $(sel_donnees).on('touchmove', function (event) {
+      mouseleave(rectActuelle);
+    });
 
     var pos = {left: largeur, x: 0 };
     var defiler = false; 
